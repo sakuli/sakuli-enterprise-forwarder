@@ -1,0 +1,32 @@
+{
+  "name": "@sakuli/forwarder-gearman",
+  "version": "2.0.0",
+  "description": "Gearman forwarder for Sakuli v2+",
+  "keywords": [
+    "monitoring",
+    "e2e"
+  ],
+  "author": "Tim Keiner <keiner.tim@gmail.com>",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "dependencies": {
+    "@nut-tree/secrets": "^4.0.0",
+    "@sakuli/commons": "^2.0.0-RC2",
+    "@sakuli/core": "^2.0.0-RC2",
+    "@sakuli/forwarder-commons": "2.0.0",
+    "gearman": "^2.1.0",
+    "twig": "^1.13.2",
+    "twing": "^2.2.3"
+  },
+  "devDependencies": {
+    "@types/jest": "24.0.11",
+    "@types/twig": "^1.12.2",
+    "jest": "24.5.0",
+    "ts-jest": "^24.0.1",
+    "typescript": "3.4.1"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  }
+}
