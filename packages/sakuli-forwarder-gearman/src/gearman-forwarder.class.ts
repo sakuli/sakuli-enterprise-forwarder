@@ -4,6 +4,9 @@ import { submitJob } from './gearman/submit-job.function';
 import { encrypt } from './crypto/aes-crypto.function';
 import { TemplateEnvironment } from '@sakuli/forwarder-commons';
 import { GearmanForwarderProperties } from './gearman-forwarder-properties.class';
+import { testEntityToTemplateModel } from './output/test-entity-to-template-model.function';
+import { createParentMap, ParentMap } from './output/create-parent-map.function';
+
 
 export class GearmanForwarder implements Forwarder {
 
@@ -12,7 +15,6 @@ export class GearmanForwarder implements Forwarder {
     ) { }
 
     async forward(ctx: TestExecutionContext, project: Project): Promise<any> {
-        // TODO: Read connection from properties
         const props = project.objectFactory(GearmanForwarderProperties)
         let client = gearman(
             props.serverHost,
@@ -26,7 +28,12 @@ export class GearmanForwarder implements Forwarder {
             ...ctx.testCases,
             ...ctx.testSteps,
         ]
-        for (let testDataEntity of testEntities) {
+        const parentMap = ctx.testSuites
+            .map(createParentMap)
+            .reduce((agg, map) => new Map([...agg, ...map]),new Map as ParentMap);
+
+        for (let testContextEntity of testEntities) {
+            const testDataEntity = testEntityToTemplateModel(testContextEntity, parentMap);
             const renderedTemplate = template.render({
                 gearman: props,
                 testDataEntity
@@ -37,7 +44,6 @@ export class GearmanForwarder implements Forwarder {
                 : renderedTemplate;
             await submitJob(client, payload);
         }
-
     }
 
 }

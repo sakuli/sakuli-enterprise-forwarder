@@ -16,19 +16,20 @@ export class ExtendedTwingTokenParserSpaceless extends TwingTokenParserSpaceless
 
 class ExtendendTwingNodeSpaceless extends TwingNodeSpaceless {
     compile(compiler: TwingCompiler) {
-        console.log('Running extended spaceless');
 
         //.replaceAll("(?m)^[\\s\\t]+|\\n|\\r", "")
         const runTimeOperations = [
             ".obGetClean()",
+            ".split('\\n')",
+            ".map(l => l.trim())",
+            ".join('')",
+            ".replace(/^[\\s\\t]+|\\n|\\r/g, '')",
             ".replace(/>\\s+</g, '><')",
-            ".trim()",
-            ".replace(/^\\s+|\\s+$/gm, '')",
             ".replace(/\\$whitespace\\$/g, ' ')",
             ".replace(/\\$newline\\$/g, '\\n')",
+            ".trim()"
         ].join('');
 
-        console.log('RT: ', runTimeOperations);
         compiler
             .addDebugInfo(this)
             .addSourceMapEnter(this)

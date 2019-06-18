@@ -1,22 +1,22 @@
 {%- spaceless -%}
     {%- import 'error_message_creator.twig' as errorMessageCreator -%}
-    type={{- gearman.serviceType -}}
-    $newline$host_name=
+    type={{- gearman.serviceType -}}$newline$
+    host_name=
     {%- if (not empty(gearman.nagiosHost)) -%}
         {{- gearman.nagiosHost -}}
     {%- else -%}
         {{- testsuite.host -}}
-    {%- endif -%}
-    $newline$start_time={{- convertToUnixTimestamp(testDataEntity.startDate) -}}
-    finish_time={{- convertToUnixTimestamp(testDataEntity.stopDate) -}}
-    return_code={{- testDataEntity.state.nagiosErrorCode -}}
-    {%- set testDataEntityType = getTestDataEntityType(testDataEntity) -%}
-    {%- if ('TestSuite' == testDataEntityType) -%}
-        service_description={{- gearman.nagiosServiceDescription -}}
-    {%- elseif ('TestCase' == testDataEntityType) -%}
-        service_description={{- testSuiteId -}}_{{- testDataEntity.id -}}$newline$
-    {%- elseif ('TestCaseStep' == testDataEntityType) -%}
-        service_description={{- testSuiteId -}}_{{- testCaseId -}}_{{- testDataEntity.id -}}$newline$
+    {%- endif -%}$newline$
+    start_time={{- testDataEntity.startDateAsUnixTimestamp -}}$newline$
+    finish_time={{- testDataEntity.endDateAsUnixTimestamp -}}$newline$
+    return_code={{- testDataEntity.stateNagiosErrorCode -}}$newline$
+    entity={{ testDataEntity.testDataEntityType }}$newline$
+    {%- if ('TestSuite' == testDataEntity.testDataEntityType) -%}
+        service_description={{- gearman.nagiosServiceDescription -}}$newline$
+    {%- elseif ('TestCase' == testDataEntity.testDataEntityType) -%}
+        service_description={{- testDataEntity.testSuiteId -}}_{{ testDataEntity.id }}$newline$
+    {%- elseif ('TestCaseStep' == testDataEntity.testDataEntityType) -%}
+        service_description={{- testDataEntity.testSuiteId -}}_{{- testDataEntity.testCaseId -}}_{{- testDataEntity.id -}}$newline$
     {%- endif -%}
     output={%- include 'short_summary.twig' -%}\n{%- include 'detailed_summary.twig' -%}{%- include 'performance_data.twig' -%}$whitespace$[{{- gearman.nagiosCheckCommand -}}]
 {%- endspaceless -%}

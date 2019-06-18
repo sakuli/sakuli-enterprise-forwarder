@@ -8,7 +8,9 @@ export class TemplateEnvironment {
         readonly rootPath: string = process.cwd()
     ) {
         this.loader = new TwingLoaderFilesystem(rootPath);
-        this.twingEnv = new TwingEnvironment(this.loader);
+        this.twingEnv = new TwingEnvironment(this.loader, {
+            autoescape: false
+        });
         this.twingEnv.addExtension(new TwigSakuliExtension);
     }
 
