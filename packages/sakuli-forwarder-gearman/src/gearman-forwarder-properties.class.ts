@@ -33,7 +33,7 @@ export class GearmanForwarderProperties {
     @Property('sakuli.forwarder.gearman.server.host')
     readonly serverHost: string = "changeme";
 
-    readonly serviceType: string = 'passive'
+    readonly serviceType: string = 'passive';
 
     /**
      * DEFAULT: 4730
@@ -93,7 +93,7 @@ export class GearmanForwarderProperties {
     readonly nagiosCheckCommand: string = "check_sakuli";
 
     /**
-     * optional service description forwarded to nagios check result. DEFAULT: testsuite.id
+     * optional service description forwarded to Nagios check result. DEFAULT: testsuite.id
      */
     @Property('sakuli.forwarder.gearman.nagios.service_description')
     readonly nagiosServiceDescription: string = "${testsuite.id}";

@@ -2,7 +2,7 @@ import { GearmanClient } from "gearman";
 import { inspect } from "util";
 
 class GearmanJobError extends Error {
-    constructor(type: string, ...args: any[]) {        
+    constructor(type: string, ...args: any[]) {
         super(`${type}:\n${inspect(args, true, null, true)}`);
     }
 }
@@ -12,7 +12,7 @@ export async function submitJob(connection: GearmanClient, payload: string): Pro
         const finish = (fn:(d: any) => void) => {
             connection.close();
             return (d: any) => fn(d);
-        }
+        };
         const res = finish(resolve);
         const rej = finish(reject);
 
@@ -28,14 +28,12 @@ export async function submitJob(connection: GearmanClient, payload: string): Pro
         // connect to the gearman server
         connection.connect(function () {
             // submit a job to uppercase a string with normal priority in the foreground
-            console.log('connected')
+            console.log('connected');
             const d = new Date();
             connection.setOption();
             connection.submitJob('check_results', payload, {
                 encoding: 'utf8'
             })
-
         })
-
     })
 }

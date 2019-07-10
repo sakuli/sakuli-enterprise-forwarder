@@ -1,0 +1,26 @@
+{
+  "name": "@sakuli/result-builder-commons",
+  "version": "2.0.1",
+  "description": "Common code for result builders",
+  "author": "Simon Hofmann <simon.hofmann@consol.de>",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@sakuli/commons": "2.0.1",
+    "@sakuli/core": "2.0.1",
+    "sneer": "1.0.1",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.11",
+    "@types/uuid": "^3.4.4",
+    "jest": "^24.7.1",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.4.3"
+  }
+}
