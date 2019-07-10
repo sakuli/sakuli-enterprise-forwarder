@@ -1,50 +1,37 @@
-import { Forwarder, TestExecutionContext, Project, TestSuiteContext, FinishedMeasurable, TestStepContext } from "../node_modules/@sakuli/core/dist";
-import axios from '../node_modules/axios'
-import {Agent} from 'https';
-import { ProcessCheckResultRequest } from "./icinga2-process-check-result.interface";
+import { Forwarder, TestExecutionContext, Project, FinishedMeasurable, TestActionContext } from "@sakuli/core";
+import { ProcessCheckResultRequest } from "./access/process-check-result-request.interface";
+import { SimpleLogger, Maybe, ifPresent } from "@sakuli/commons/dist";
+import { Icinga2Properties } from "./icinga2-properties.class";
+import { createIcinga2ApiAdapter } from "./access/create-icinga2-api-adapter.function";
 
 export class Icinga2Forwarder implements Forwarder {
 
-    async forwardStepResult(entity: TestStepContext & FinishedMeasurable, ctx: TestExecutionContext): Promise<void> {
+    private project: Maybe<Project>;
 
+    forwardActionResult(entity: TestActionContext & FinishedMeasurable, ctx: TestExecutionContext): Promise<void> {
+        return Promise.resolve();
     }
 
-    async forward(ctx: TestExecutionContext, project: Project): Promise<any> {
+    async setup(project: Project, logger: SimpleLogger) {
+        this.project = project;
+    }
+
+    async forward(ctx: TestExecutionContext): Promise<any> {
         //https://my-icinga-host:5665/v1/actions/process-check-result
 
-        const http = axios.create({
-            baseURL: 'https://localhost:5665/v1',
-            headers: { 'Accept': 'application/json' },
-            httpsAgent: new Agent({
-                rejectUnauthorized: false
-            }),
-            auth: {
-                username: 'root',
-                password: '083db1c1bd9c4688'
+        await ifPresent(this.project, async project => {
+            const properties = project.objectFactory(Icinga2Properties);
+            const api = await createIcinga2ApiAdapter(properties);
+            const requestData: ProcessCheckResultRequest = {
+                check_source: 'check_sakuli',
+                check_command: 'check_sakuli',
+                exit_status: 0,
+                plugin_output: "Sakuli suite 'example_ubuntu_0' (ID: 0000) ran in 49.31 seconds.",
+                performance_data: []
             }
-        });
-
-        const requestData: ProcessCheckResultRequest = {
-            type: 'Host',
-            filter: 'host.name="sakuliclient01"',
-            check_source: 'check_sakuli',
-            check_command: 'check_sakuli',
-            exit_status: 0,
-            plugin_output: "Sakuli suite 'example_ubuntu_0' (ID: 0000) ran in 49.31 seconds.",
-            performance_data: []
-        }
-
-        const defaultNodeTlsRejectUnauthorized = process.env["NODE_TLS_REJECT_UNAUTHORIZED"];
-        try {
-            process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
-            const resp = await http.post('actions/process-check-result?host=sakuliclient01', requestData);
-            console.log(resp);
-
-        } catch(e) {
-            console.warn(e);
-        } finally {
-            process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = defaultNodeTlsRejectUnauthorized;
-        }
+            const resp = await api.processCheckResult(requestData);
+        },
+        () => Promise.reject('Could not obtain project object'));
     }
 
 }

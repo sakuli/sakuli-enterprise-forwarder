@@ -1,11 +1,21 @@
 export interface ProcessCheckResultRequest {
 
-    type: "Host" | "Service",
+    //type: "Host" | "Service",
 
     filter?:string;
 
     /**
-     * Required. For services: 0=OK, 1=WARNING, 2=CRITICAL, 3=UNKNOWN, for hosts: 0=OK, 1=CRITICAL.
+     * Required. For services:
+     *
+     * - 0=OK,
+     * - 1=WARNING,
+     * - 2=CRITICAL,
+     * - 3=UNKNOWN,
+     *
+     * for hosts:
+     * 
+     * - 0=OK,
+     * - 1=CRITICAL.
      */
     exit_status: number;
 

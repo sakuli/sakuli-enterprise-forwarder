@@ -4,3 +4,5 @@ dist/
 tsconfig.tsbuildinfo
 
 lerna-debug.log
+
+sakuli-forwarder-icinga2/e2e/icinga-server/icinga2

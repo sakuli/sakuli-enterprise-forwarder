@@ -1,7 +1,7 @@
-import { TestContextEntity } from "../node_modules/@sakuli/core/dist";
+import { TestContextEntity } from "@sakuli/core/dist";
 import { PerfData } from "./perfdata.class";
 
-export const pefDataFromTestEntity = (e: TestContextEntity): PerfData => {
+export const perfDataFromTestEntity = (e: TestContextEntity): PerfData => {
     return new PerfData(
         e.id || 'UNNAMED',
         e.duration,
