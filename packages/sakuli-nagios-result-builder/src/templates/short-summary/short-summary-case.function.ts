@@ -4,7 +4,7 @@ import {TestCaseContext, TestContextEntityStates, TestStepContext} from "@sakuli
 import {getShortState} from "../../state.function";
 import {NagiosState, NagiosStateObject} from "../../nagios-state-description.interface";
 import {renderLastRun} from "../render/render-last-run.function";
-import {abbreviate} from "@sakuli/result-builder-commons/dist";
+import {abbreviate} from "@sakuli/result-builder-commons";
 import {renderStepWarnings} from "../render/render-step-warnings.function";
 import {renderCaseErrors} from "../render/render-error.function";
 

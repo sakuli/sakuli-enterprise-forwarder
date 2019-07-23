@@ -3,37 +3,47 @@ import { BooleanProperty, StringProperty, NumberProperty, Maybe } from "@sakuli/
 
 export class Icinga2Properties {
 
-    @IsBoolean()
     @BooleanProperty('sakuli.forwarder.icinga2.enabled')
+    @IsBoolean()
     enabled: boolean = true;
 
-    @IsString()
-    @StringProperty('sakuli.forwarder.api.host')
+    @StringProperty('sakuli.forwarder.icinga2.api.host')
     apiHost: Maybe<string>;
 
+    @StringProperty('sakuli.forwarder.icinga2.check_command')
+    @IsString()
+    checkCommand: string = 'check_sakuli';
 
-    @IsNumber()
+    @StringProperty('sakuli.forwarder.icinga2.check_source')
+    @IsString()
+    checkSource: string = 'check_sakuli';
+
     @NumberProperty('sakuli.forwarder.icinga2.api.port')
+    @IsNumber()
     apiPort: number = 5665;
 
+    @StringProperty('sakuli.forwarder.icinga2.api.username')
     @ValidateIf(o => !!o.apiPassword)
     @IsNotEmpty()
     @IsString()
-    @StringProperty('sakuli.forwarder.icinga2.api.username')
     apiUserName: string = '';
 
+    @StringProperty('sakuli.forwarder.icinga2.api.password')
     @ValidateIf(o => !!o.apiUserName)
     @IsNotEmpty()
     @IsString()
-    @StringProperty('sakuli.forwarder.icinga2.api.password')
     apiPassword: string = '';
 
+    @StringProperty('sakuli.forwarder.icinga2.hostname')
     @IsString()
     @IsNotEmpty()
-    @StringProperty('sakuli.forwarder.icinga2.api.hostname')
-    apiHostName: string = '';
+    hostName: string = '';
+
+    @StringProperty('sakuli.forwarder.icinga2.service_description')
+    @IsString()
+    serviceDescription: string = '${testsuite.id}';
 
     get hostBaseUrl(): string {
-        return `${this.apiHost}:${this.apiPort}/v1`;
+        return `https://${this.apiHost}:${this.apiPort}/v1`;
     }
 }

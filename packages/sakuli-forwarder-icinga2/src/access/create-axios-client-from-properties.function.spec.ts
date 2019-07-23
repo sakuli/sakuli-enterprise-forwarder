@@ -14,7 +14,7 @@ describe('createAxiosClient', () => {
         properties.apiUserName = 'user';
         properties.apiPassword = 'pw';
         properties.apiPort = 5665;
-        properties.apiHostName = 'sakulihost';
+        properties.hostName = 'sakulihost';
     })
 
     it('should create an AxiosInstance', async () => {

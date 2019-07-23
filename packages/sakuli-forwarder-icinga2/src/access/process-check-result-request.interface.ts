@@ -1,9 +1,5 @@
 export interface ProcessCheckResultRequest {
 
-    //type: "Host" | "Service",
-
-    filter?:string;
-
     /**
      * Required. For services:
      *
@@ -13,7 +9,7 @@ export interface ProcessCheckResultRequest {
      * - 3=UNKNOWN,
      *
      * for hosts:
-     * 
+     *
      * - 0=OK,
      * - 1=CRITICAL.
      */

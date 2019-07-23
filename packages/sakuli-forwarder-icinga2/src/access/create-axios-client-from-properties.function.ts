@@ -10,7 +10,7 @@ import { validate } from "class-validator";
  */
 export const createAxiosClientFromProperties = async (properties: Icinga2Properties) => {
     const errors = await validate(properties);
-    if(errors.length) {
+    if (errors.length) {
         throw Error(errors.map(e => e.toString()).join("\n"))
     }
     return axios.create({

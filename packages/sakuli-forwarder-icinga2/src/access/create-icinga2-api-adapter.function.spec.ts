@@ -21,7 +21,8 @@ describe('createIcinga2ApiAdapter', () => {
             post: postMock
         })
         properties = new Icinga2Properties();
-        properties.apiHostName = 'mockhost';
+        properties.hostName = 'mockhost';
+        properties.serviceDescription = 'mockservice'
         api = await createIcinga2ApiAdapter(properties)
     })
     it('should create an api adapter', async () => {
@@ -35,7 +36,7 @@ describe('createIcinga2ApiAdapter', () => {
             plugin_output: ''
         }
         await api.processCheckResult(requestBody);
-        expect(postMock).toHaveBeenCalledWith(`actions/process-check-result?type=host&host=mockhost`, requestBody)
+        expect(postMock).toHaveBeenCalledWith(`actions/process-check-result?type=service&service=mockhost!mockservice`, requestBody)
     })
 
 })

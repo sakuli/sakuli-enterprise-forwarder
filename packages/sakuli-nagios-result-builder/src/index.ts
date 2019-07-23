@@ -9,6 +9,8 @@ import {OutputResultParameters} from "@sakuli/result-builder-commons";
 const UNKNOWN_SUITE = "UNKNOWN_SUITE";
 const UNKNOWN_CASE = "UNKNOWN_CASE";
 
+export * from './public-api';
+
 export class NagiosTestResultOutputBuilder {
     public render(testContextEntity: TestContextEntity, params: OutputResultParameters): string {
         const {currentSuite, currentCase, props} = params;
