@@ -1,0 +1,43 @@
+{
+    // Verwendet IntelliSense zum Ermitteln möglicher Attribute.
+    // Zeigen Sie auf vorhandene Attribute, um die zugehörigen Beschreibungen anzuzeigen.
+    // Weitere Informationen finden Sie unter https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "name": "icinga-jest-tests",
+            "request": "launch",
+            "args": [
+                "--runInBand"
+            ],
+            "cwd": "${workspaceFolder}/packages/sakuli-forwarder-icinga2",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "program": "${workspaceFolder}/packages/sakuli-forwarder-icinga2/node_modules/jest/bin/jest",
+            "runtimeExecutable": "/Users/timkeiner/.nvm/versions/node/v10.12.0/bin/node"
+        },
+        {
+            "type": "node",
+            "name": "vscode-jest-tests",
+            "request": "launch",
+            "args": [
+                "--runInBand"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+            "runtimeExecutable": "/Users/timkeiner/.nvm/versions/node/v10.12.0/bin/node"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/packages/sakuli-forwarder-icinga2/src/icinga2-forwarder.class.spec.ts",
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
+            ]
+        }
+    ]
+}

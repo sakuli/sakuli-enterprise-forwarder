@@ -1,6 +1,6 @@
 {
   "name": "@sakuli/forwarder-gearman",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Gearman forwarder for Sakuli v2+",
   "keywords": [
     "monitoring",
@@ -10,17 +10,16 @@
   "license": "ISC",
   "main": "dist/index.js",
   "dependencies": {
-    "@nut-tree/secrets": "^4.0.0",
-    "@sakuli/commons": "^2.0.0-RC2",
-    "@sakuli/core": "^2.0.0-RC2",
-    "@sakuli/forwarder-commons": "2.0.0",
+    "@nut-tree/secrets": "4.0.0",
+    "@sakuli/commons": "2.0.1",
+    "@sakuli/core": "2.0.1",
+    "@sakuli/nagios-result-builder": "2.0.1",
     "gearman": "^2.1.0",
-    "twig": "^1.13.2",
-    "twing": "^2.2.3"
+    "sneer": "^1.0.1"
   },
   "devDependencies": {
     "@types/jest": "24.0.11",
-    "@types/twig": "^1.12.2",
+    "@types/luxon": "^1.15.1",
     "jest": "24.5.0",
     "ts-jest": "^24.0.1",
     "typescript": "3.4.1"
