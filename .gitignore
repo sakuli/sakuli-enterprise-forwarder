@@ -1,6 +1,12 @@
 node_modules/
 dist/
+.idea
 
 tsconfig.tsbuildinfo
 
 lerna-debug.log
+
+packages/sakuli-forwarder-icinga2/e2e/icinga-server
+
+
+sakuli-forwarder-icinga2/e2e/icinga-server/icinga2
