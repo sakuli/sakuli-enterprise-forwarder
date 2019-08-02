@@ -1,5 +1,5 @@
 {
-	"name": "@sakuli/forwarder-check_mk",
+	"name": "@sakuli/forwarder-checkmk",
 	"version": "2.0.1",
 	"description": "check_mk forwarder for Sakuli v2+",
 	"keywords": [
