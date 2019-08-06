@@ -7,13 +7,12 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.11",
-    "@types/node": "^11.9.4",
-    "@types/react": "^16.8.3",
-    "@types/react-dom": "^16.8.2",
-    "jest": "^24.5.0",
-    "lerna": "^3.4.3",
-    "ts-jest": "^24.0.1",
-    "typescript": "^3.4.1"
+    "@types/jest": "24.0.16",
+    "@types/node": "12.6.9",
+    "fs-extra": "8.1.0",
+    "jest": "24.8.0",
+    "lerna": "3.4.3",
+    "ts-jest": "24.0.2",
+    "typescript": "3.4.5"
   }
 }
