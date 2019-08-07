@@ -7,7 +7,7 @@ class GearmanJobError extends Error {
     }
 }
 
-export async function submitJob(connection: GearmanClient, payload: string): Promise<any> {
+export async function submitJob(connection: GearmanClient, checkQueue: string, payload: string): Promise<any> {
     return new Promise((resolve, reject) => {
         const finish = (fn:(d: any) => void) => {
             connection.close();
@@ -27,13 +27,10 @@ export async function submitJob(connection: GearmanClient, payload: string): Pro
 
         // connect to the gearman server
         connection.connect(function () {
-            // submit a job to uppercase a string with normal priority in the foreground
-            console.log('connected');
-            const d = new Date();
             connection.setOption();
-            connection.submitJob('check_results', payload, {
+            connection.submitJob(checkQueue, payload, {
                 encoding: 'utf8'
-            })
+            });
         })
     })
 }
