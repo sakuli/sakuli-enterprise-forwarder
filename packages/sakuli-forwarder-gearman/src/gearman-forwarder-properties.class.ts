@@ -153,5 +153,4 @@ export class GearmanForwarderProperties {
      */
     @Property('sakuli.forwarder.gearman.nagios.template.screenshotDivWidth')
     readonly nagiosTemplateScreenshotDivWidth: number = 640;
-
 }
