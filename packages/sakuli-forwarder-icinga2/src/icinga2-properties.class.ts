@@ -43,6 +43,10 @@ export class Icinga2Properties {
     @IsString()
     serviceDescription: string = '${testsuite.id}';
 
+    @StringProperty('sakuli.forwarder.icinga2.allow_insecure_connection')
+    @IsBoolean()
+    allowInsecure: boolean = false;
+
     get hostBaseUrl(): string {
         return `https://${this.apiHost}:${this.apiPort}/v1`;
     }
