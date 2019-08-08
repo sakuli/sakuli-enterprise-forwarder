@@ -11,8 +11,8 @@
   "main": "dist/index.js",
   "dependencies": {
     "@nut-tree/secrets": "4.0.0",
-    "@sakuli/commons": "2.0.1",
-    "@sakuli/core": "2.0.1",
+    "@sakuli/commons": "next",
+    "@sakuli/core": "next",
     "@sakuli/nagios-result-builder": "2.0.1",
     "gearman": "^2.1.0",
     "sneer": "^1.0.1"
