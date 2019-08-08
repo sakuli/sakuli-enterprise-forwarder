@@ -1,7 +1,7 @@
-import { Icinga2Properties } from "../icinga2-properties.class";
-import { createAxiosClientFromProperties } from "./create-axios-client-from-properties.function";
-import { runInsecure } from "./run-insecure.function";
-import { ProcessCheckResultRequest } from "./process-check-result-request.interface";
+import {Icinga2Properties} from "../icinga2-properties.class";
+import {createAxiosClientFromProperties} from "./create-axios-client-from-properties.function";
+import {runInsecure} from "./run-insecure.function";
+import {ProcessCheckResultRequest} from "./process-check-result-request.interface";
 
 export const createIcinga2ApiAdapter = async (
     properties: Icinga2Properties,
@@ -12,5 +12,4 @@ export const createIcinga2ApiAdapter = async (
             return http.post(`actions/process-check-result?type=service&service=${properties.hostName}!${properties.serviceDescription}`, data);
         })
     })
-}
-
+};
