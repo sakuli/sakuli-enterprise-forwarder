@@ -28,7 +28,9 @@
     "typescript": "3.4.1"
   },
   "scripts": {
-    "build": "tsc",
+    "obfuscate": "javascript-obfuscator ./dist --output ./out --config ../../scripts/obfuscate.js",
+    "copy": "node ../../scripts/move-files.js ./out .",
+    "build": "tsc && npm run obfuscate && npm run copy",
     "test": "jest"
   }
 }

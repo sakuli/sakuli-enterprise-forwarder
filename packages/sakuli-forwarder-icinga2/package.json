@@ -1,44 +1,35 @@
 {
-	"name": "@sakuli/forwarder-icinga2",
-	"version": "2.0.1",
-	"description": "Inciga2 forwarder for Sakuli v2+",
-	"keywords": [
-		"monitoring",
-		"e2e"
-	],
-	"author": "Tim Keiner <keiner.tim@gmail.com>",
-	"license": "ISC",
-	"main": "dist/index.js",
-	"typings": "dist/index.d.ts",
-	"scripts": {
-		"obfuscate": "javascript-obfuscator ./dist --output ./out --config ../../scripts/obfuscate.js",
-		"copy": "node ../../scripts/move-files.js ./out .",
-		"build": "tsc && npm run obfuscate && npm run copy",
-		"test": "jest"
-	},
-	"dependencies": {
-		"@sakuli/commons": "next",
-		"@sakuli/core": "next",
-		"axios": "0.19.0",
-		"class-validator": "0.9.1",
-		"@sakuli/result-builder-commons": "2.0.1"
-		"axios": "0.19.0",
-		"class-validator": "0.9.1"
-	},
-	"devDependencies": {
-		"@types/jest": "24.0.16",
-		"@types/node": "12.6.9 ",
-		"javascript-obfuscator": "0.18.1",
-		"jest": "24.5.0",
-		"sneer": "1.0.1",
-		"ts-jest": "24.0.2",
-		"typescript": "3.5.3"
-		"sneer": "1.0.1",
-		"ts-jest": "24.0.1",
-		"typescript": "3.4.1"
-	},
-	"scripts": {
-		"build": "tsc",
-		"test": "jest"
-	}
+  "name": "@sakuli/forwarder-icinga2",
+  "version": "2.0.1",
+  "description": "Inciga2 forwarder for Sakuli v2+",
+  "keywords": [
+    "monitoring",
+    "e2e"
+  ],
+  "author": "Tim Keiner <keiner.tim@gmail.com>",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "obfuscate": "javascript-obfuscator ./dist --output ./out --config ../../scripts/obfuscate.js",
+    "copy": "node ../../scripts/move-files.js ./out .",
+    "build": "tsc && npm run obfuscate && npm run copy",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@sakuli/commons": "next",
+    "@sakuli/core": "next",
+    "axios": "0.19.0",
+    "class-validator": "0.9.1",
+    "@sakuli/result-builder-commons": "2.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "24.0.16",
+    "@types/node": "12.6.9 ",
+    "javascript-obfuscator": "0.18.1",
+    "jest": "24.5.0",
+    "sneer": "1.0.1",
+    "ts-jest": "24.0.2",
+    "typescript": "3.5.3"
+  }
 }

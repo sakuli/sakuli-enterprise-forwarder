@@ -15,8 +15,8 @@
     "@sakuli/commons": "next",
     "@sakuli/core": "next",
     "gearman": "2.1.0",
-    "sneer": "1.0.1"
-    "@sakuli/result-builder-omd": "2.0.1",
+    "sneer": "1.0.1",
+    "@sakuli/result-builder-omd": "2.0.1"
   },
   "devDependencies": {
     "@types/jest": "24.0.16",
