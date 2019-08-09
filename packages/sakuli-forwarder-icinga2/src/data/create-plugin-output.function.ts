@@ -1,7 +1,7 @@
 import {TestContextEntity} from "@sakuli/core";
 import {ifPresent, Maybe} from "@sakuli/commons";
-import {getShortState} from '@sakuli/nagios-result-builder';
 import {concat} from "./concat.function";
+import {getShortState} from "@sakuli/result-builder-commons";
 
 /**
  * @param entity

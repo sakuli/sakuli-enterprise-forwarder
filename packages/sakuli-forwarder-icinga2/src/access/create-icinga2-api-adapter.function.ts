@@ -9,7 +9,7 @@ export const createIcinga2ApiAdapter = async (
     const http = await createAxiosClientFromProperties(properties);
     return ({
         processCheckResult: async (data: ProcessCheckResultRequest) => {
-            if (properties.allowInsecure) {
+            if ((properties.allowInsecure as any) === 'true') {
                 return runInsecure(() => {
                     return http.post(`actions/process-check-result?type=service&service=${properties.hostName}!${properties.serviceDescription}`, data);
                 })

@@ -1,28 +1,29 @@
-import { IsBoolean, IsFQDN, ValidateIf, IsNotEmpty, IsString, IsNumber } from "class-validator";
-import { BooleanProperty, StringProperty, NumberProperty, Maybe } from "@sakuli/commons";
+import {IsBoolean, IsNotEmpty, IsNumber, IsString, ValidateIf} from "class-validator";
+import {Maybe, Property, StringProperty} from "@sakuli/commons";
 
 export class Icinga2Properties {
 
-    @BooleanProperty('sakuli.forwarder.icinga2.enabled')
+    @Property('sakuli.forwarder.icinga2.enabled')
     @IsBoolean()
     enabled: boolean = true;
 
-    @StringProperty('sakuli.forwarder.icinga2.api.host')
+    @Property('sakuli.forwarder.icinga2.api.host')
+    @IsString()
     apiHost: Maybe<string>;
 
-    @StringProperty('sakuli.forwarder.icinga2.check_command')
+    @Property('sakuli.forwarder.icinga2.check_command')
     @IsString()
     checkCommand: string = 'check_sakuli';
 
-    @StringProperty('sakuli.forwarder.icinga2.check_source')
+    @Property('sakuli.forwarder.icinga2.check_source')
     @IsString()
     checkSource: string = 'check_sakuli';
 
-    @NumberProperty('sakuli.forwarder.icinga2.api.port')
+    @Property('sakuli.forwarder.icinga2.api.port')
     @IsNumber()
     apiPort: number = 5665;
 
-    @StringProperty('sakuli.forwarder.icinga2.api.username')
+    @Property('sakuli.forwarder.icinga2.api.username')
     @ValidateIf(o => !!o.apiPassword)
     @IsNotEmpty()
     @IsString()

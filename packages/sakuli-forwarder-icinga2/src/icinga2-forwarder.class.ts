@@ -30,7 +30,11 @@ export class Icinga2Forwarder implements Forwarder {
     async forward(ctx: TestExecutionContext): Promise<any> {
         await ifPresent(this.project, async project => {
                 const properties = createPropertyObjectFactory(project)(Icinga2Properties);
-                await this.send(properties, ctx);
+                if ((properties.enabled as any) === true) {
+                    await this.send(properties, ctx);
+                } else {
+                    this.logDebug(`Icinga2 forwarding disabled via properties.`);
+                }
             },
             () => Promise.reject('Could not obtain project object'));
     }
