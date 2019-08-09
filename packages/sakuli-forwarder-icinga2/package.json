@@ -9,24 +9,19 @@
 	"author": "Tim Keiner <keiner.tim@gmail.com>",
 	"license": "ISC",
 	"main": "dist/index.js",
-	"scripts": {
-		"build": "tsc",
-		"test": "jest"
-	},
 	"dependencies": {
 		"@sakuli/commons": "next",
 		"@sakuli/core": "next",
+		"@sakuli/result-builder-commons": "2.0.1",
 		"axios": "^0.19.0",
-		"class-validator": "^0.9.1",
-		"@sakuli/nagios-result-builder": "2.0.1",
-		"@sakuli/result-builder-commons": "2.0.1"
+		"class-validator": "^0.9.1"
 	},
 	"devDependencies": {
 		"@types/jest": "24.0.11",
 		"@types/node": "^12.6.2",
 		"@types/twig": "^1.12.2",
-		"sneer": "^1.0.1",
 		"jest": "24.5.0",
+		"sneer": "^1.0.1",
 		"ts-jest": "^24.0.1",
 		"typescript": "3.4.1"
 	}

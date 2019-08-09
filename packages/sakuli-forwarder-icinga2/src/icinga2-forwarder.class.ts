@@ -7,7 +7,7 @@ import {createPerformanceData} from "./data/create-performance-data.function";
 import {concat as flatten} from "./data/concat.function";
 import {createPluginOutput} from "./data/create-plugin-output.function";
 import {EOL} from "os";
-import {convertToUnixTimestamp} from "@sakuli/nagios-result-builder";
+import {convertToUnixTimestamp} from "@sakuli/result-builder-commons";
 
 export class Icinga2Forwarder implements Forwarder {
 
