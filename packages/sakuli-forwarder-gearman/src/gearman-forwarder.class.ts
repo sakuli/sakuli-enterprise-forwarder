@@ -49,7 +49,7 @@ export class GearmanForwarder implements Forwarder {
     async forwardSuiteResult(entity: TestSuiteContext & FinishedMeasurable, ctx: TestExecutionContext): Promise<void> {
         await ifPresent(this.gearmanProps, async (props) => {
             const properties = props as GearmanForwarderProperties;
-            if (properties.enabled) {
+            if ((properties.enabled as any) === 'true') {
                 const renderedTemplate = this.outputBuilder.render(entity, {
                     currentSuite: entity,
                     props
@@ -74,7 +74,7 @@ export class GearmanForwarder implements Forwarder {
     async forwardCaseResult(entity: TestCaseContext & FinishedMeasurable, ctx: TestExecutionContext): Promise<void> {
         await ifPresent(this.gearmanProps, async (props) => {
             const properties = props as GearmanForwarderProperties;
-            if (properties.enabled) {
+            if ((properties.enabled as any) === 'true') {
                 const parentSuite = ctx.testSuites.find(ts => ts.getChildren().includes(entity));
                 ifPresent(parentSuite, async (suite) => {
                     const renderedTemplate = this.outputBuilder.render(entity, {
@@ -103,7 +103,7 @@ export class GearmanForwarder implements Forwarder {
     async forwardStepResult(entity: TestStepContext & FinishedMeasurable, ctx: TestExecutionContext): Promise<void> {
         await ifPresent(this.gearmanProps, async (props) => {
             const properties = props as GearmanForwarderProperties;
-            if (properties.enabled) {
+            if ((properties.enabled as any) === 'true') {
                 const parentCase: Maybe<TestCaseContext> = ctx.testCases.find(tc => tc.getChildren().includes(entity));
                 const parentSuite: Maybe<TestSuiteContext> = ifPresent(parentCase, (testCase) => {
                     return ctx.testSuites.find(ts => ts.getChildren().includes(testCase));
@@ -143,7 +143,7 @@ export class GearmanForwarder implements Forwarder {
     async forward(ctx: TestExecutionContext): Promise<any> {
         await ifPresent(this.gearmanProps, async (props) => {
             const properties = props as GearmanForwarderProperties;
-            if (properties.enabled) {
+            if ((properties.enabled as any) === 'true') {
                 for (const testContextEntity of ctx.testSuites) {
                     const renderedTemplate = this.outputBuilder.render(testContextEntity, {
                         currentSuite: testContextEntity,
@@ -174,7 +174,7 @@ export class GearmanForwarder implements Forwarder {
 
                 this.logDebug(`Forwarding to queue '${properties.serverQueue}' on Gearman host '${properties.serverHost}:${properties.serverPort}'.`);
 
-                const payload = properties.encryption
+                const payload = (properties.encryption as any) === 'true'
                     ? await encrypt(rawPayload, properties.secretKey)
                     : rawPayload;
                 await submitJob({

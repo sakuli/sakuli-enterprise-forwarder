@@ -1,5 +1,5 @@
-import {BooleanProperty, NumberProperty, Property, StringProperty} from "@sakuli/commons";
-import {IsNumber, IsBoolean, IsNotEmpty} from 'class-validator'
+import {Property} from "@sakuli/commons";
+import {IsBoolean, IsNotEmpty, IsNumber, IsString, ValidateIf} from 'class-validator'
 
 /**
  *######################################################################################
@@ -11,15 +11,16 @@ export class GearmanForwarderProperties {
      * Disable or enable Gearman based forwarding
      * DEFAULT: false
      */
-    @BooleanProperty('sakuli.forwarder.gearman.enabled')
-    readonly enabled: boolean = false;
+    @Property('sakuli.forwarder.gearman.enabled')
+    @IsBoolean()
+    enabled: boolean = false;
 
     /**
      * Gearman hostname
      */
-    @StringProperty('sakuli.forwarder.gearman.server.host')
+    @Property('sakuli.forwarder.gearman.server.host')
     @IsNotEmpty()
-    readonly serverHost: string = "changeme";
+    serverHost: string = "changeme";
 
     readonly serviceType: string = 'passive';
 
@@ -27,74 +28,78 @@ export class GearmanForwarderProperties {
      * Gearman port
      * DEFAULT: 4730
      */
-    @NumberProperty('sakuli.forwarder.gearman.server.port')
+    @Property('sakuli.forwarder.gearman.server.port')
     @IsNumber()
-    readonly serverPort: number = 4730;
+    serverPort: number = 4730;
 
     /**
      * Nagios host where all Sakuli services are defined on. If necessary, overwrite this value per test suite.
      */
-    @StringProperty('sakuli.forwarder.gearman.nagios.hostname')
+    @Property('sakuli.forwarder.gearman.nagios.hostname')
     @IsNotEmpty()
-    readonly nagiosHost: string = "changeme";
+    nagiosHost: string = "changeme";
 
     /**
      * Gearman result queue
      * DEFAULT: check_results
      */
-    @StringProperty('sakuli.forwarder.gearman.server.queue')
+    @Property('sakuli.forwarder.gearman.server.queue')
     @IsNotEmpty()
-    readonly serverQueue: string = "check_results";
+    serverQueue: string = "check_results";
 
     /**
      * Forward encrypted results
      * DEFAULT: true
      */
-    @BooleanProperty('sakuli.forwarder.gearman.encryption')
-    readonly encryption: boolean = true;
+    @Property('sakuli.forwarder.gearman.encryption')
+    @IsBoolean()
+    encryption: boolean = true;
 
     /**
      * Secret used to encrypt data prior to forwarding
      * ATTENTION: change the secret for production use!
      */
-    @StringProperty('sakuli.forwarder.gearman.secret.key')
-    readonly secretKey: string = "sakuli_secret";
+    @Property('sakuli.forwarder.gearman.secret.key')
+    @ValidateIf(o => !!o.apiPassword)
+    @IsNotEmpty()
+    @IsString()
+    secretKey: string = "sakuli_secret";
 
     /**
      * Nagios check command
      * Will be appended to the performance data string and will be used as PNP template name
      * DEFAULT: check_sakuli
      */
-    @StringProperty('sakuli.forwarder.gearman.nagios.check_command')
+    @Property('sakuli.forwarder.gearman.nagios.check_command')
     @IsNotEmpty()
-    readonly nagiosCheckCommand: string = "check_sakuli";
+    nagiosCheckCommand: string = "check_sakuli";
 
     /**
      * Optional service description forwarded to Nagios check result.
      * DEFAULT: testsuite.id
      */
-    @StringProperty('sakuli.forwarder.gearman.nagios.service_description')
-    readonly nagiosServiceDescription: string = "";
+    @Property('sakuli.forwarder.gearman.nagios.service_description')
+    nagiosServiceDescription: string = "";
 
     /**
      * Max. length for suite summary
      */
-    @NumberProperty('sakuli.forwarder.gearman.nagios.template.suite.summary.maxLength')
+    @Property('sakuli.forwarder.gearman.nagios.template.suite.summary.maxLength')
     @IsNumber()
-    readonly nagiosTemplateSuiteSummaryMaxLength: number = 200;
+    nagiosTemplateSuiteSummaryMaxLength: number = 200;
 
     /**
      *# Screenshot dimensions in Gearman output
      */
-    @NumberProperty('sakuli.forwarder.gearman.nagios.template.screenshotDivWidth')
+    @Property('sakuli.forwarder.gearman.nagios.template.screenshotDivWidth')
     @IsNumber()
-    readonly nagiosTemplateScreenshotDivWidth: number = 640;
+    nagiosTemplateScreenshotDivWidth: number = 640;
 
     /**
      * Boolean property to disable detailed summary in check results
      * DEFAULT: true
      */
-    @BooleanProperty("sakuli.forwarder.check_mk.details")
+    @Property('sakuli.forwarder.gearman.output.details')
+    @IsBoolean()
     outputDetails: boolean = true;
-
 }
