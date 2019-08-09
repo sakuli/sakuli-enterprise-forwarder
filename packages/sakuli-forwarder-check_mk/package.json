@@ -16,7 +16,7 @@
 	"dependencies": {
 		"@sakuli/commons": "next",
 		"@sakuli/core": "next",
-		"@sakuli/nagios-result-builder": "2.0.1",
+		"@sakuli/result-builder-checkmk": "2.0.1",
 		"@sakuli/result-builder-commons": "2.0.1",
 		"axios": "^0.19.0",
 		"class-validator": "^0.9.1",
