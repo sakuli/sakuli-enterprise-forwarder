@@ -4,7 +4,7 @@ import {CheckMkForwarderProperties} from "./checkmk-forwarder-properties.class";
 import {promises as fs} from 'fs';
 import {dirExists} from "./dir-exists.fucntion";
 import {join, resolve} from "path";
-import {CheckMkTestResultOutputBuilder} from "@sakuli/result-builder-checkmk/dist";
+import {CheckMkTestResultOutputBuilder} from "@sakuli/result-builder-checkmk";
 import {createSpoolFileName} from "./create-spool-file.function";
 
 export class CheckMkForwarder implements Forwarder {
@@ -29,14 +29,14 @@ export class CheckMkForwarder implements Forwarder {
     async forward(ctx: TestExecutionContext): Promise<any> {
         return ifPresent(this.properties, async props => {
                 const properties = props as CheckMkForwarderProperties;
-                if (properties.enabled) {
+                if ((properties.enabled as any) === 'true') {
                     for (const testContextEntity of ctx.testSuites) {
                         const renderedTemplate = this.outputBuilder.render(testContextEntity, {
                             currentSuite: testContextEntity,
-                            props: properties
+                            props
                         });
-                        const fileName = createSpoolFileName(testContextEntity, properties as CheckMkForwarderProperties);
-                        const path = properties.spoolDir;
+                        const fileName = createSpoolFileName(testContextEntity, props);
+                        const path = props.spoolDir;
                         this.logDebug(`Forwarding final result to checkmk via spool file '${fileName}' in '${path}'.`);
                         const spoolFile = resolve(join(path, fileName));
                         if (await dirExists(path)) {
@@ -53,6 +53,8 @@ export class CheckMkForwarder implements Forwarder {
                             this.logDebug(`spool directory '${path}' does not exists, skipping checkmk forwarding.`);
                         }
                     }
+                } else {
+                    this.logDebug(`CheckMK forwarding disabled via properties.`);
                 }
             },
             () => Promise.reject(Error('Could not create CheckMK Properties from Project'))
