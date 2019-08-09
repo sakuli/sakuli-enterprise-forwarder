@@ -13,7 +13,7 @@ import {GearmanData, submitJob} from './gearman/submit-job.function';
 import {encrypt} from './crypto/aes-crypto.function';
 import {GearmanForwarderProperties} from './gearman-forwarder-properties.class';
 import {createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger} from "@sakuli/commons";
-import {NagiosTestResultOutputBuilder} from "@sakuli/nagios-result-builder";
+import {OmdTestResultOutputBuilder} from "@sakuli/result-builder-omd";
 
 
 export class GearmanForwarder implements Forwarder {
@@ -22,8 +22,7 @@ export class GearmanForwarder implements Forwarder {
     private logger: Maybe<SimpleLogger> = null;
 
     constructor(
-        private jobQueue = [],
-        private outputBuilder = new NagiosTestResultOutputBuilder()
+        private outputBuilder = new OmdTestResultOutputBuilder()
     ) {
     }
 
@@ -49,14 +48,19 @@ export class GearmanForwarder implements Forwarder {
      */
     async forwardSuiteResult(entity: TestSuiteContext & FinishedMeasurable, ctx: TestExecutionContext): Promise<void> {
         await ifPresent(this.gearmanProps, async (props) => {
-            const renderedTemplate = this.outputBuilder.render(entity, {
-                currentSuite: entity,
-                props
-            });
-            this.logDebug(`Forwarding suite result.`);
-            await this.doForward(renderedTemplate);
+            const properties = props as GearmanForwarderProperties;
+            if ((properties.enabled as any) === 'true') {
+                const renderedTemplate = this.outputBuilder.render(entity, {
+                    currentSuite: entity,
+                    props
+                });
+                this.logDebug(`Forwarding suite result.`);
+                await this.doForward(renderedTemplate);
+            } else {
+                this.logDebug(`Gearman forwarding disabled via properties.`);
+            }
         }, () => {
-            ctx.logger.debug(`Missing Gearman configuration, aborting forwarding`);
+            this.logDebug(`Missing Gearman configuration, aborting forwarding`);
             return Promise.resolve();
         });
         return Promise.resolve();
@@ -68,17 +72,22 @@ export class GearmanForwarder implements Forwarder {
      * @param ctx: The current TestExecutionContext to forward
      */
     async forwardCaseResult(entity: TestCaseContext & FinishedMeasurable, ctx: TestExecutionContext): Promise<void> {
-        const parentSuite = ctx.testSuites.find(ts => ts.getChildren().includes(entity));
         await ifPresent(this.gearmanProps, async (props) => {
-            ifPresent(parentSuite, async (suite) => {
-                const renderedTemplate = this.outputBuilder.render(entity, {
-                    currentSuite: suite,
-                    currentCase: entity,
-                    props
+            const properties = props as GearmanForwarderProperties;
+            if ((properties.enabled as any) === 'true') {
+                const parentSuite = ctx.testSuites.find(ts => ts.getChildren().includes(entity));
+                ifPresent(parentSuite, async (suite) => {
+                    const renderedTemplate = this.outputBuilder.render(entity, {
+                        currentSuite: suite,
+                        currentCase: entity,
+                        props
+                    });
+                    this.logDebug(`Forwarding case result.`);
+                    await this.doForward(renderedTemplate);
                 });
-                this.logDebug(`Forwarding case result.`);
-                await this.doForward(renderedTemplate);
-            });
+            } else {
+                this.logDebug(`Gearman forwarding disabled via properties.`);
+            }
         }, () => {
             ctx.logger.debug(`Missing Gearman configuration, aborting forwarding`);
             return Promise.resolve();
@@ -92,21 +101,26 @@ export class GearmanForwarder implements Forwarder {
      * @param ctx: The current TestExecutionContext to forward
      */
     async forwardStepResult(entity: TestStepContext & FinishedMeasurable, ctx: TestExecutionContext): Promise<void> {
-        const parentCase: Maybe<TestCaseContext> = ctx.testCases.find(tc => tc.getChildren().includes(entity));
-        const parentSuite: Maybe<TestSuiteContext> = ifPresent(parentCase, (testCase) => {
-            return ctx.testSuites.find(ts => ts.getChildren().includes(testCase));
-        }, () => undefined);
         await ifPresent(this.gearmanProps, async (props) => {
-            ifPresent(parentSuite, async (suite) => {
-                const renderedTemplate = this.outputBuilder.render(entity, {
-                    currentSuite: suite,
-                    currentCase: parentCase,
-                    props
+            const properties = props as GearmanForwarderProperties;
+            if ((properties.enabled as any) === 'true') {
+                const parentCase: Maybe<TestCaseContext> = ctx.testCases.find(tc => tc.getChildren().includes(entity));
+                const parentSuite: Maybe<TestSuiteContext> = ifPresent(parentCase, (testCase) => {
+                    return ctx.testSuites.find(ts => ts.getChildren().includes(testCase));
+                }, () => undefined);
+                ifPresent(parentSuite, async (suite) => {
+                    const renderedTemplate = this.outputBuilder.render(entity, {
+                        currentSuite: suite,
+                        currentCase: parentCase,
+                        props
+                    });
+                    this.logDebug(`Forwarding step result.`);
+                    await this.doForward(renderedTemplate);
+                    return Promise.resolve();
                 });
-                this.logDebug(`Forwarding step result.`);
-                await this.doForward(renderedTemplate);
-                return Promise.resolve();
-            });
+            } else {
+                this.logDebug(`Gearman forwarding disabled via properties.`);
+            }
         }, () => {
             ctx.logger.debug(`Missing Gearman configuration, aborting forwarding`);
             return Promise.resolve();
@@ -125,52 +139,56 @@ export class GearmanForwarder implements Forwarder {
     /**
      * Is called after the test execution has finished
      * @param ctx
-     * @param project
      */
     async forward(ctx: TestExecutionContext): Promise<any> {
-        for (const testContextEntity of ctx.testSuites) {
-            await ifPresent(this.gearmanProps, async (props) => {
-                const renderedTemplate = this.outputBuilder.render(testContextEntity, {
-                    currentSuite: testContextEntity,
-                    props
-                });
-                this.logDebug(`Forwarding final result.`);
-                await this.doForward(renderedTemplate);
-            }, () => {
-                ctx.logger.debug(`Missing Gearman configuration, aborting forwarding`);
-                return Promise.resolve();
-            });
-        }
+        await ifPresent(this.gearmanProps, async (props) => {
+            const properties = props as GearmanForwarderProperties;
+            if ((properties.enabled as any) === 'true') {
+                for (const testContextEntity of ctx.testSuites) {
+                    const renderedTemplate = this.outputBuilder.render(testContextEntity, {
+                        currentSuite: testContextEntity,
+                        props
+                    });
+                    this.logDebug(`Forwarding final result.`);
+                    await this.doForward(renderedTemplate);
+                }
+            } else {
+                this.logDebug(`Gearman forwarding disabled via properties.`);
+            }
+        }, () => {
+            ctx.logger.debug(`Missing Gearman configuration, aborting forwarding`);
+            return Promise.resolve();
+        });
         return Promise.resolve();
     }
 
     private async doForward(rawPayload: string): Promise<any> {
-        ifPresent(this.gearmanProps, async (props) => {
-            if (props.enabled) {
-                try {
-                    let client = gearman(
-                        props.serverHost,
-                        props.serverPort,
-                        {timeout: 15000}
-                    );
+        await ifPresent(this.gearmanProps, async (props) => {
+            const properties = props as GearmanForwarderProperties;
+            try {
+                let client = gearman(
+                    properties.serverHost,
+                    properties.serverPort,
+                    {timeout: 15000}
+                );
 
-                    this.logDebug(`Forwarding to queue '${props.serverQueue}' on Gearman host '${props.serverHost}:${props.serverPort}'.`);
+                this.logDebug(`Forwarding to queue '${properties.serverQueue}' on Gearman host '${properties.serverHost}:${properties.serverPort}'.`);
 
-                    const payload = props.encryption
-                        ? await encrypt(rawPayload, props.secretKey)
-                        : rawPayload;
-                    await submitJob({
-                            connection: client,
-                            checkQueue: props.serverQueue,
-                            payload
-                        } as GearmanData,
-                        this.logger);
-                } catch (err) {
-                    this.logDebug(`Failed to forward, error occured.`, err);
-                }
-            } else {
-                this.logDebug(`Gearman forwarding enabled: ${props.enabled}`)
+                const payload = (properties.encryption as any) === 'true'
+                    ? await encrypt(rawPayload, properties.secretKey)
+                    : rawPayload;
+                await submitJob({
+                        connection: client,
+                        checkQueue: properties.serverQueue,
+                        payload
+                    } as GearmanData,
+                    this.logger);
+            } catch (err) {
+                this.logDebug(`Failed to forward, error occured.`, err);
             }
+        }, () => {
+            this.logDebug(`Missing Gearman configuration, aborting forwarding`);
+            return Promise.resolve();
         });
     }
 
