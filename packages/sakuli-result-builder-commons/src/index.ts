@@ -5,6 +5,11 @@ export * from "./create-entity.function";
 export * from "./output";
 export * from "./templates";
 
+export type CurrentExecutionState = {
+    suiteId: string;
+    caseId: string;
+}
+
 export interface OutputResultParameters {
     currentSuite?: TestSuiteContext
     currentCase?: TestCaseContext

@@ -7,7 +7,7 @@ import {
     renderShortSummary,
     TestContextOutputBuilder
 } from "@sakuli/result-builder-commons";
-import {stripIndents} from "common-tags";
+import {oneLine, stripIndents} from "common-tags";
 import {getEntityId} from "@sakuli/result-builder-commons/dist/output/get-entity-id.function";
 
 
@@ -20,7 +20,13 @@ export class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder 
             caseId: getEntityId(currentCase)
         };
         const serviceDescription = (props && props.serviceDescription) || current.suiteId;
-        const data = `${getNagiosResultState(testContextEntity)} ${serviceDescription} ${renderPerformanceData(testContextEntity)} ${renderShortSummary(testContextEntity)} ${renderDetailedSummary(testContextEntity)}`;
+        const data = oneLine`
+        ${getNagiosResultState(testContextEntity)}
+        ${serviceDescription}
+        ${renderPerformanceData(testContextEntity)}
+        ${renderShortSummary(testContextEntity)}
+        ${props.outputDetails === 'false' ? "" : renderDetailedSummary(testContextEntity)}
+        `;
         return stripIndents`<<<local>>>
                 ${data}
 

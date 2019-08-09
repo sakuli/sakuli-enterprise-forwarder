@@ -1,6 +1,8 @@
 import {TestContextEntity} from "@sakuli/core";
 import {
-    convertToUnixTimestamp, getEntityId,
+    convertToUnixTimestamp,
+    CurrentExecutionState,
+    getEntityId,
     getNagiosResultState,
     OutputResultParameters,
     renderDetailedSummary,
@@ -8,7 +10,6 @@ import {
     TestContextOutputBuilder
 } from "@sakuli/result-builder-commons";
 import {renderPerformanceData} from "./templates/performance_data";
-
 
 export class OmdTestResultOutputBuilder implements TestContextOutputBuilder {
     public render(testContextEntity: TestContextEntity, params: OutputResultParameters): string {
@@ -26,10 +27,17 @@ start_time=${convertToUnixTimestamp(testContextEntity.startDate)}
 finish_time=${convertToUnixTimestamp(testContextEntity.endDate)}
 return_code=${getNagiosResultState(testContextEntity)}
 ${getServiceDescription(testContextEntity, current, props)}
-output=${renderShortSummary(testContextEntity, current)}\\n${renderDetailedSummary(testContextEntity, current)}|${renderPerformanceData(testContextEntity, current.suiteId)} [${props.nagiosCheckCommand}]
+output=${renderShortSummary(testContextEntity, current)}${getDetailedSummary(testContextEntity, current, props)}|${renderPerformanceData(testContextEntity, current.suiteId)} [${props.nagiosCheckCommand}]
 `
     };
 }
+
+const getDetailedSummary = (entity: TestContextEntity, current: CurrentExecutionState, props: any): string => {
+    if (props.outputDetails === 'false') {
+        return "";
+    }
+    return `\\n${renderDetailedSummary(entity, current)}`
+};
 
 const getServiceDescription = (testContextEntity: TestContextEntity, current: { suiteId: string, caseId: string }, props: any): string => {
     switch (testContextEntity.kind) {
