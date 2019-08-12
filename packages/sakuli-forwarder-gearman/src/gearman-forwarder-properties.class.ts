@@ -1,4 +1,4 @@
-import {Property} from "@sakuli/commons";
+import {BooleanProperty, NumberProperty, Property, StringProperty} from "@sakuli/commons";
 import {IsBoolean, IsNotEmpty, IsNumber, IsString, ValidateIf} from 'class-validator'
 
 /**
@@ -11,16 +11,16 @@ export class GearmanForwarderProperties {
      * Disable or enable Gearman based forwarding
      * DEFAULT: false
      */
-    @Property('sakuli.forwarder.gearman.enabled')
+    @BooleanProperty('sakuli.forwarder.gearman.enabled')
     @IsBoolean()
     enabled: boolean = false;
 
     /**
      * Gearman hostname
      */
-    @Property('sakuli.forwarder.gearman.server.host')
+    @StringProperty('sakuli.forwarder.gearman.server.host')
     @IsNotEmpty()
-    serverHost: string = "changeme";
+    serverHost: string = "";
 
     readonly serviceType: string = 'passive';
 
@@ -28,16 +28,16 @@ export class GearmanForwarderProperties {
      * Gearman port
      * DEFAULT: 4730
      */
-    @Property('sakuli.forwarder.gearman.server.port')
+    @NumberProperty('sakuli.forwarder.gearman.server.port')
     @IsNumber()
     serverPort: number = 4730;
 
     /**
      * Nagios host where all Sakuli services are defined on. If necessary, overwrite this value per test suite.
      */
-    @Property('sakuli.forwarder.gearman.nagios.hostname')
+    @StringProperty('sakuli.forwarder.gearman.nagios.hostname')
     @IsNotEmpty()
-    nagiosHost: string = "changeme";
+    nagiosHost: string = "";
 
     /**
      * Gearman result queue
@@ -51,7 +51,7 @@ export class GearmanForwarderProperties {
      * Forward encrypted results
      * DEFAULT: true
      */
-    @Property('sakuli.forwarder.gearman.encryption')
+    @BooleanProperty('sakuli.forwarder.gearman.encryption')
     @IsBoolean()
     encryption: boolean = true;
 
@@ -59,7 +59,7 @@ export class GearmanForwarderProperties {
      * Secret used to encrypt data prior to forwarding
      * ATTENTION: change the secret for production use!
      */
-    @Property('sakuli.forwarder.gearman.secret.key')
+    @StringProperty('sakuli.forwarder.gearman.secret.key')
     @ValidateIf(o => !!o.apiPassword)
     @IsNotEmpty()
     @IsString()
@@ -70,7 +70,7 @@ export class GearmanForwarderProperties {
      * Will be appended to the performance data string and will be used as PNP template name
      * DEFAULT: check_sakuli
      */
-    @Property('sakuli.forwarder.gearman.nagios.check_command')
+    @StringProperty('sakuli.forwarder.gearman.nagios.check_command')
     @IsNotEmpty()
     nagiosCheckCommand: string = "check_sakuli";
 
@@ -78,20 +78,20 @@ export class GearmanForwarderProperties {
      * Optional service description forwarded to Nagios check result.
      * DEFAULT: testsuite.id
      */
-    @Property('sakuli.forwarder.gearman.nagios.service_description')
+    @StringProperty('sakuli.forwarder.gearman.nagios.service_description')
     nagiosServiceDescription: string = "";
 
     /**
      * Max. length for suite summary
      */
-    @Property('sakuli.forwarder.gearman.nagios.template.suite.summary.maxLength')
+    @NumberProperty('sakuli.forwarder.gearman.nagios.template.suite.summary.maxLength')
     @IsNumber()
     nagiosTemplateSuiteSummaryMaxLength: number = 200;
 
     /**
      *# Screenshot dimensions in Gearman output
      */
-    @Property('sakuli.forwarder.gearman.nagios.template.screenshotDivWidth')
+    @NumberProperty('sakuli.forwarder.gearman.nagios.template.screenshotDivWidth')
     @IsNumber()
     nagiosTemplateScreenshotDivWidth: number = 640;
 
@@ -99,7 +99,7 @@ export class GearmanForwarderProperties {
      * Boolean property to disable detailed summary in check results
      * DEFAULT: true
      */
-    @Property('sakuli.forwarder.gearman.output.details')
+    @BooleanProperty('sakuli.forwarder.gearman.output.details')
     @IsBoolean()
     outputDetails: boolean = true;
 }
