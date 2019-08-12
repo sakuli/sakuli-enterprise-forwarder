@@ -15,7 +15,6 @@
     "@sakuli/commons": "next",
     "@sakuli/core": "next",
     "@sakuli/result-builder-commons": "2.0.1",
-    "@sakuli/result-builder-omd": "2.0.1",
     "gearman": "2.1.0",
     "sneer": "1.0.1",
     "@sakuli/result-builder-omd": "2.0.1"
@@ -23,12 +22,11 @@
   "devDependencies": {
     "@types/luxon": "1.15.2",
     "javascript-obfuscator": "0.18.1",
-    "jest": "24.5.0",
     "ts-jest": "24.0.2",
-    "typescript": "3.5.3"
+    "typescript": "3.5.3",
     "@types/jest": "24.0.17",
     "@types/node": "12.7.1",
-    "jest": "24.5.0",
+    "jest": "24.5.0"
   },
   "scripts": {
     "obfuscate": "javascript-obfuscator ./dist --output ./out --config ../../scripts/obfuscate.js",
