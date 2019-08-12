@@ -1,6 +1,7 @@
 import {TestContextEntity} from "@sakuli/core";
 import {renderPerformanceData} from "./templates/performance_data";
 import {
+    getEntityId,
     getNagiosResultState,
     OutputResultParameters,
     renderDetailedSummary,
@@ -8,7 +9,6 @@ import {
     TestContextOutputBuilder
 } from "@sakuli/result-builder-commons";
 import {oneLine, stripIndents} from "common-tags";
-import {getEntityId} from "@sakuli/result-builder-commons/dist/output/get-entity-id.function";
 
 
 export class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder {

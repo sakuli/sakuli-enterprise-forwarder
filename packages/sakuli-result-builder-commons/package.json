@@ -18,16 +18,17 @@
     "sneer": "1.0.1",
     "uuid": "3.3.2",
     "common-tags": "1.8.0",
-    "dateformat": "3.0.3"
+    "dateformat": "3.0.3",
+    "class-validator": "0.9.1"
   },
   "devDependencies": {
-    "@types/jest": "24.0.11",
-    "@types/uuid": "3.4.4",
-    "javascript-obfuscator": "0.18.1",
-    "jest": "24.7.1",
-    "ts-jest": "24.0.2",
-    "typescript": "3.4.3",
     "@types/common-tags": "1.8.0",
-    "@types/dateformat": "3.0.0"
+    "@types/dateformat": "3.0.0",
+    "@types/jest": "24.0.17",
+    "@types/uuid": "3.4.5",
+    "javascript-obfuscator": "0.18.1",
+    "jest": "24.8.0",
+    "ts-jest": "24.0.2",
+    "typescript": "3.5.3"
   }
 }

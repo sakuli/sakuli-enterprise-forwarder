@@ -1,46 +1,47 @@
-import {Property} from '@sakuli/commons'
-import {IsBoolean, IsNotEmpty, IsNumber} from 'class-validator'
+import {BooleanProperty, NumberProperty, StringProperty} from '@sakuli/commons'
+import {IsBoolean, IsNotEmpty, IsNumber, IsString} from 'class-validator'
 
 export class CheckMkForwarderProperties {
 
     /**
      * Send results to a CheckMK-enabled monitoring system, using the parameters below in your 'sakuli.properties' to activate the forwarder.
      */
-    @Property("sakuli.forwarder.check_mk.enabled")
+    @BooleanProperty("sakuli.forwarder.check_mk.enabled")
     @IsBoolean()
     enabled: boolean = false;
 
     /**
      * spool dir, default /var/lib/check_mk_agent/spool (Linux) / (installation_path)\spool (Windows)
      */
-    @Property("sakuli.forwarder.check_mk.spooldir")
+    @StringProperty("sakuli.forwarder.check_mk.spooldir")
+    @IsString()
     @IsNotEmpty()
     spoolDir: string = '/var/lib/check_mk_agent/spool';
 
     /**
      * Max result age. Prepend this number on the file name, e.g. 600_sakuli_suite_XYZ
      */
-    @Property("sakuli.forwarder.check_mk.freshness")
+    @NumberProperty("sakuli.forwarder.check_mk.freshness")
     @IsNumber()
     freshness: number = 600;
 
     /**
      * Prefix of the file name for CheckMK
      */
-    @Property("sakuli.forwarder.check_mk.spoolfile_prefix")
+    @StringProperty("sakuli.forwarder.check_mk.spoolfile_prefix")
     spoolfilePrefix: string = "sakuli_suite";
 
     /**
      * optional service description forwarded to the output check result, when not set, testsuite.id is used
      */
-    @Property("sakuli.forwarder.check_mk.service_description")
+    @StringProperty("sakuli.forwarder.check_mk.service_description")
     serviceDescription: string = "";
 
     /**
      * Boolean property to disable detailed summary in check results
      * DEFAULT: true
      */
-    @Property("sakuli.forwarder.check_mk.output.details")
+    @BooleanProperty("sakuli.forwarder.check_mk.output.details")
     @IsBoolean()
     outputDetails: boolean = true;
 }
