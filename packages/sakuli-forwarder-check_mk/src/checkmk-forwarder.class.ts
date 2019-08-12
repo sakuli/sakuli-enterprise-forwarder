@@ -6,6 +6,7 @@ import {dirExists} from "./dir-exists.fucntion";
 import {join, resolve} from "path";
 import {CheckMkTestResultOutputBuilder} from "@sakuli/result-builder-checkmk";
 import {createSpoolFileName} from "./create-spool-file.function";
+import {validateProps} from "@sakuli/result-builder-commons";
 
 export class CheckMkForwarder implements Forwarder {
 
@@ -21,15 +22,15 @@ export class CheckMkForwarder implements Forwarder {
         ifPresent(this.logger, log => log.debug(message, ...data));
     }
 
-    async setup(project: Project, logger: SimpleLogger): Promise<any> {
+    async setup(project: Project, logger: SimpleLogger): Promise<void> {
         this.properties = createPropertyObjectFactory(project)(CheckMkForwarderProperties);
+        await validateProps(this.properties);
         this.logger = logger;
     }
 
     async forward(ctx: TestExecutionContext): Promise<any> {
         return ifPresent(this.properties, async props => {
-                const properties = props as CheckMkForwarderProperties;
-                if ((properties.enabled as any) === 'true') {
+                if (props.enabled) {
                     for (const testContextEntity of ctx.testSuites) {
                         const renderedTemplate = this.outputBuilder.render(testContextEntity, {
                             currentSuite: testContextEntity,
@@ -60,6 +61,4 @@ export class CheckMkForwarder implements Forwarder {
             () => Promise.reject(Error('Could not create CheckMK Properties from Project'))
         )
     }
-
-
 }

@@ -16,19 +16,19 @@
 	"dependencies": {
 		"@sakuli/commons": "next",
 		"@sakuli/core": "next",
-		"@sakuli/result-builder-checkmk": "2.0.1",
 		"@sakuli/result-builder-commons": "2.0.1",
-		"axios": "^0.19.0",
-		"class-validator": "^0.9.1",
-		"common-tags": "^1.8.0"
+		"@sakuli/result-builder-checkmk": "2.0.1",
+		"axios": "0.19.0",
+		"class-validator": "0.9.1",
+		"common-tags": "1.8.0"
 	},
 	"devDependencies": {
-		"@types/common-tags": "^1.8.0",
-		"@types/jest": "24.0.11",
-		"@types/node": "^12.6.2",
-		"jest": "24.5.0",
-		"sneer": "^1.0.1",
-		"ts-jest": "^24.0.1",
-		"typescript": "3.4.1"
+		"@types/common-tags": "1.8.0",
+		"@types/jest": "24.0.17",
+		"@types/node": "12.7.1",
+		"jest": "24.8.0",
+		"sneer": "1.0.1",
+		"ts-jest": "24.0.2",
+		"typescript": "3.5.3"
 	}
 }
