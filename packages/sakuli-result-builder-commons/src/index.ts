@@ -4,6 +4,7 @@ export * from "./check-result";
 export * from "./create-entity.function";
 export * from "./output";
 export * from "./templates";
+export * from "./validate-props.function";
 
 export type CurrentExecutionState = {
     suiteId: string;
