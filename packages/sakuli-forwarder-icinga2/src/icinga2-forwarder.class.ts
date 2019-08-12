@@ -1,4 +1,4 @@
-import {FinishedMeasurable, Forwarder, Project, TestActionContext, TestExecutionContext} from "@sakuli/core";
+import {Forwarder, Project, TestExecutionContext} from "@sakuli/core";
 import {ProcessCheckResultRequest} from "./access/process-check-result-request.interface";
 import {createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger} from "@sakuli/commons";
 import {Icinga2Properties} from "./icinga2-properties.class";
@@ -7,19 +7,16 @@ import {createPerformanceData} from "./data/create-performance-data.function";
 import {concat as flatten} from "./data/concat.function";
 import {createPluginOutput} from "./data/create-plugin-output.function";
 import {EOL} from "os";
-import {convertToUnixTimestamp} from "@sakuli/result-builder-commons";
+import {convertToUnixTimestamp, validateProps} from "@sakuli/result-builder-commons";
 
 export class Icinga2Forwarder implements Forwarder {
 
-    private project: Maybe<Project>;
+    private properties: Maybe<Icinga2Properties>;
     private logger: Maybe<SimpleLogger>;
 
-    forwardActionResult(entity: TestActionContext & FinishedMeasurable, ctx: TestExecutionContext): Promise<void> {
-        return Promise.resolve();
-    }
-
-    async setup(project: Project, logger: SimpleLogger) {
-        this.project = project;
+    async setup(project: Project, logger: SimpleLogger): Promise<void> {
+        this.properties = createPropertyObjectFactory(project)(Icinga2Properties);
+        await validateProps(this.properties);
         this.logger = logger;
     }
 
@@ -28,29 +25,35 @@ export class Icinga2Forwarder implements Forwarder {
     }
 
     async forward(ctx: TestExecutionContext): Promise<any> {
-        await ifPresent(this.project, async project => {
-                const properties = createPropertyObjectFactory(project)(Icinga2Properties);
-                if ((properties.enabled as any) === true) {
-                    await this.send(properties, ctx);
+        await ifPresent(this.properties, props => {
+                if (props.enabled) {
+                    this.logDebug(`Forwarding check result to Icinga2.`);
+                    return this.send(props, ctx);
                 } else {
                     this.logDebug(`Icinga2 forwarding disabled via properties.`);
+                    return Promise.resolve();
                 }
             },
             () => Promise.reject('Could not obtain project object'));
     }
 
     async send(properties: Icinga2Properties, ctx: TestExecutionContext) {
-        const api = await createIcinga2ApiAdapter(properties);
-        const requestData: ProcessCheckResultRequest = {
-            "check_source": properties.checkCommand,
-            "check_command": properties.checkSource,
-            "exit_status": ctx.resultState,
-            "plugin_output": ctx.testSuites.map(createPluginOutput).reduce(flatten, []).join(EOL),
-            "performance_data": ctx.testSuites.map(createPerformanceData).reduce(flatten, []),
-            execution_start: convertToUnixTimestamp(ctx.startDate),
-            execution_end: convertToUnixTimestamp(ctx.endDate),
-        };
-
-        const resp = await api.processCheckResult(requestData);
+        this.logDebug(`Creating API client.`);
+        try {
+            const api = await createIcinga2ApiAdapter(properties, this.logger);
+            const requestData: ProcessCheckResultRequest = {
+                "check_source": properties.checkCommand,
+                "check_command": properties.checkSource,
+                "exit_status": ctx.resultState,
+                "plugin_output": ctx.testSuites.map(createPluginOutput).reduce(flatten, []).join(EOL),
+                "performance_data": ctx.testSuites.map(createPerformanceData).reduce(flatten, []),
+                execution_start: convertToUnixTimestamp(ctx.startDate),
+                execution_end: convertToUnixTimestamp(ctx.endDate),
+            };
+            return await api.processCheckResult(requestData);
+        } catch (e) {
+            this.logDebug(e);
+            return await Promise.reject(e);
+        }
     }
 }
