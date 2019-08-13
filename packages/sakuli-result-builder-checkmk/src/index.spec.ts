@@ -22,7 +22,8 @@ describe('suite templates', () => {
         let expected: string;
         beforeEach(() => {
             properties = {
-                serviceDescription: "service_description"
+                serviceDescription: "service_description",
+                outputDetails: true
             };
             expected = readFileSync(join(__dirname, '__snapshots__', 'suites', key + '.txt')).toString();
         });
@@ -42,7 +43,8 @@ describe('suite templates', () => {
         let expected: string;
         beforeEach(() => {
             properties = {
-                serviceDescription: "service_description"
+                serviceDescription: "service_description",
+                outputDetails: true
             };
             expected = readFileSync(join(__dirname, '__snapshots__', 'suites', 'TestSuite_ERRORS' + '.txt')).toString();
         });
@@ -65,7 +67,7 @@ describe('suite templates', () => {
         beforeEach(() => {
             properties = {
                 serviceDescription: "service_description",
-                outputDetails: 'false'
+                outputDetails: false
             };
             expected = readFileSync(join(__dirname, '__snapshots__', 'suites', 'TestSuite_ERRORS' + '.txt')).toString();
         });

@@ -28,7 +28,8 @@ describe('suite templates', () => {
                 nagiosHost: 'my.nagios.host',
                 serviceType: 'passive',
                 nagiosServiceDescription: "example_xfce",
-                nagiosCheckCommand: "check_sakuli"
+                nagiosCheckCommand: "check_sakuli",
+                outputDetails: true
             };
             expected = readFileSync(join(__dirname, '__snapshots__', 'suites', key + '.txt')).toString();
         });
@@ -52,7 +53,8 @@ describe('suite templates', () => {
                 nagiosHost: 'my.nagios.host',
                 serviceType: 'passive',
                 nagiosServiceDescription: "example_xfce",
-                nagiosCheckCommand: "check_sakuli"
+                nagiosCheckCommand: "check_sakuli",
+                outputDetails: true
             };
             expected = readFileSync(join(__dirname, '__snapshots__', 'suites', 'TestSuite_ERRORS' + '.txt')).toString();
         });
@@ -93,7 +95,8 @@ describe('case templates', () => {
                 nagiosHost: 'my.nagios.host',
                 serviceType: 'passive',
                 nagiosServiceDescription: "example_xfce",
-                nagiosCheckCommand: "check_sakuli"
+                nagiosCheckCommand: "check_sakuli",
+                outputDetails: true
             };
             expected = readFileSync(join(__dirname, '__snapshots__', 'cases', key + '.txt')).toString();
         });
@@ -117,7 +120,8 @@ describe('case templates', () => {
                 nagiosHost: 'my.nagios.host',
                 serviceType: 'passive',
                 nagiosServiceDescription: "example_xfce",
-                nagiosCheckCommand: "check_sakuli"
+                nagiosCheckCommand: "check_sakuli",
+                outputDetails: true
             };
             expected = readFileSync(join(__dirname, '__snapshots__', 'cases', 'TestCase_ERRORS' + '.txt')).toString();
         });
@@ -158,7 +162,8 @@ describe('step templates', () => {
                 nagiosHost: 'my.nagios.host',
                 serviceType: 'passive',
                 nagiosServiceDescription: "example_xfce",
-                nagiosCheckCommand: "check_sakuli"
+                nagiosCheckCommand: "check_sakuli",
+                outputDetails: true
             };
             expected = readFileSync(join(__dirname, '__snapshots__', 'steps', key + '.txt')).toString();
         });
@@ -182,7 +187,8 @@ describe('step templates', () => {
                 nagiosHost: 'my.nagios.host',
                 serviceType: 'passive',
                 nagiosServiceDescription: "example_xfce",
-                nagiosCheckCommand: "check_sakuli"
+                nagiosCheckCommand: "check_sakuli",
+                outputDetails: true
             };
             expected = readFileSync(join(__dirname, '__snapshots__', 'steps', 'TestStep_ERRORS' + '.txt')).toString();
         });
@@ -214,7 +220,7 @@ output=[CRIT] Case "case2" of Sakuli suite "example_xfce" (13.55s) EXCEPTION: ST
                 serviceType: 'passive',
                 nagiosServiceDescription: "example_xfce",
                 nagiosCheckCommand: "check_sakuli",
-                outputDetails: 'false'
+                outputDetails: false
             };
             expected = readFileSync(join(__dirname, '__snapshots__', 'steps', 'TestStep_ERRORS' + '.txt')).toString();
         });

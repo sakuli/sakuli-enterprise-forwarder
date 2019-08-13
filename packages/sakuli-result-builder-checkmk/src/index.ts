@@ -25,7 +25,7 @@ export class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder 
         ${serviceDescription}
         ${renderPerformanceData(testContextEntity)}
         ${renderShortSummary(testContextEntity)}
-        ${props.outputDetails === 'false' ? "" : renderDetailedSummary(testContextEntity)}
+        ${props.outputDetails ? renderDetailedSummary(testContextEntity) : ""}
         `;
         return stripIndents`<<<local>>>
                 ${data}

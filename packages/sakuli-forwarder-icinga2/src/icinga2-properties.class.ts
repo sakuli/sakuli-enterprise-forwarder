@@ -5,7 +5,7 @@ export class Icinga2Properties {
 
     @BooleanProperty('sakuli.forwarder.icinga2.enabled')
     @IsBoolean()
-    enabled: Maybe<boolean> = undefined;
+    enabled: Maybe<boolean> = false;
 
     @StringProperty('sakuli.forwarder.icinga2.api.host')
     @IsString()

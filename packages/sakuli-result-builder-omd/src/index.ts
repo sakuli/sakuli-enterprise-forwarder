@@ -27,7 +27,7 @@ start_time=${convertToUnixTimestamp(testContextEntity.startDate)}
 finish_time=${convertToUnixTimestamp(testContextEntity.endDate)}
 return_code=${getNagiosResultState(testContextEntity)}
 ${getServiceDescription(testContextEntity, current, props)}
-output=${renderShortSummary(testContextEntity, current)}${getDetailedSummary(testContextEntity, current, props)}|${renderPerformanceData(testContextEntity, current.suiteId)} [${props.nagiosCheckCommand}]
+output=${renderShortSummary(testContextEntity, current)}${props.outputDetails ? getDetailedSummary(testContextEntity, current, props) : ""}|${renderPerformanceData(testContextEntity, current.suiteId)} [${props.nagiosCheckCommand}]
 `
     };
 }
