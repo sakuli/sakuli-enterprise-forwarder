@@ -29,7 +29,7 @@ describe('createIcinga2ApiAdapter', () => {
         api = await createIcinga2ApiAdapter(properties, logger);
     });
     it('should create an api adapter', async () => {
-        expect(createAxiosClientFromProperties).toHaveBeenCalledWith(properties);
+        expect(createAxiosClientFromProperties).toHaveBeenCalledWith(properties, expect.any(SimpleLogger));
     });
 
     it('should use properties when sending request', async () => {
