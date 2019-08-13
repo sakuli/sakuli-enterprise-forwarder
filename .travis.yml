@@ -8,6 +8,9 @@ cache: npm
 
 install: true
 
+before_script:
+  - export TZ=Europe/Vienna
+
 script:
   - travis_wait npm ci
   - lerna run build > /dev/null 2>&1
