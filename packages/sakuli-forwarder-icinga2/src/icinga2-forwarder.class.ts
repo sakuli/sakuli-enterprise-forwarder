@@ -42,8 +42,8 @@ export class Icinga2Forwarder implements Forwarder {
         try {
             const api = await createIcinga2ApiAdapter(properties, this.logger);
             const requestData: ProcessCheckResultRequest = {
-                "check_source": properties.checkCommand,
-                "check_command": properties.checkSource,
+                "check_source": properties.checkSource,
+                "check_command": properties.checkCommand,
                 "exit_status": ctx.resultState,
                 "plugin_output": ctx.testSuites.map(createPluginOutput).reduce(flatten, []).join(EOL),
                 "performance_data": ctx.testSuites.map(createPerformanceData).reduce(flatten, []),
