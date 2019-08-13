@@ -1,9 +1,8 @@
 {
   "name": "@sakuli/result-builder-commons",
-  "version": "2.0.1",
+  "version": "2.1.1-RC1",
   "description": "Common code for result builders",
   "author": "Simon Hofmann <simon.hofmann@consol.de>",
-  "license": "ISC",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
@@ -11,11 +10,12 @@
     "obfuscate": "javascript-obfuscator ./dist --output ./out --config ../../scripts/obfuscate.js",
     "copy": "node ../../scripts/move-files.js ./out .",
     "build": "tsc",
-    "build:release": "tsc && npm run obfuscate && npm run copy"
+    "build:release": "tsc && npm run obfuscate && npm run copy",
+    "prepublishOnly": "lerna bootstrap --ignore integration-tests && npm run build:release && npm test"
   },
   "dependencies": {
-    "@sakuli/commons": "2.0.1",
-    "@sakuli/core": "2.0.1",
+    "@sakuli/commons": "2.1.1",
+    "@sakuli/core": "2.1.1",
     "sneer": "1.0.1",
     "uuid": "3.3.2",
     "common-tags": "1.8.0",

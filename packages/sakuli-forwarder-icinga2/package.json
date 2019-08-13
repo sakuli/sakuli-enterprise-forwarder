@@ -1,18 +1,17 @@
 {
   "name": "@sakuli/forwarder-icinga2",
-  "version": "2.0.1",
+  "version": "2.1.1-RC1",
   "description": "Inciga2 forwarder for Sakuli v2+",
   "keywords": [
     "monitoring",
     "e2e"
   ],
   "author": "Tim Keiner <keiner.tim@gmail.com>",
-  "license": "ISC",
   "main": "dist/index.js",
   "dependencies": {
-    "@sakuli/commons": "next",
-    "@sakuli/core": "next",
-    "@sakuli/result-builder-commons": "2.0.1",
+    "@sakuli/commons": "2.1.1",
+    "@sakuli/core": "2.1.1",
+    "@sakuli/result-builder-commons": "2.1.1-RC1",
     "axios": "0.19.0",
     "class-validator": "0.9.1"
   },
@@ -31,6 +30,7 @@
     "copy": "node ../../scripts/move-files.js ./out .",
     "build": "tsc",
     "build:release": "tsc && npm run obfuscate && npm run copy",
-    "test": "jest"
+    "test": "jest",
+    "prepublishOnly": "lerna bootstrap --ignore integration-tests && npm run build:release && npm test"
   }
 }

@@ -1,19 +1,18 @@
 {
   "name": "@sakuli/result-builder-omd",
-  "version": "2.0.1",
+  "version": "2.1.1-RC1",
   "description": "OMD check result builder for Sakuli v2+",
   "keywords": [
     "monitoring",
     "e2e"
   ],
   "author": "Simon Hofmann <simon.hofmann@consol.de>",
-  "license": "ISC",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "dependencies": {
-    "@sakuli/commons": "2.0.1",
-    "@sakuli/core": "2.0.1",
-    "@sakuli/result-builder-commons": "2.0.1",
+    "@sakuli/commons": "2.1.1",
+    "@sakuli/core": "2.1.1",
+    "@sakuli/result-builder-commons": "2.1.1-RC1",
     "common-tags": "1.8.0",
     "dateformat": "3.0.3",
     "sneer": "1.0.1",
@@ -34,6 +33,7 @@
     "copy": "node ../../scripts/move-files.js ./out .",
     "build": "tsc",
     "build:release": "tsc && npm run obfuscate && npm run copy",
-    "test": "jest"
+    "test": "jest",
+    "prepublishOnly": "lerna bootstrap --ignore integration-tests && npm run build:release && npm test"
   }
 }
