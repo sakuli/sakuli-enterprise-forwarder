@@ -1,13 +1,14 @@
-import { IsBoolean, IsFQDN, ValidateIf, IsNotEmpty, IsString, IsNumber } from "class-validator";
-import { BooleanProperty, StringProperty, NumberProperty, Maybe } from "@sakuli/commons";
+import {IsBoolean, IsNotEmpty, IsNumber, IsString, ValidateIf} from "class-validator";
+import {BooleanProperty, Maybe, NumberProperty, StringProperty} from "@sakuli/commons";
 
 export class Icinga2Properties {
 
     @BooleanProperty('sakuli.forwarder.icinga2.enabled')
     @IsBoolean()
-    enabled: boolean = true;
+    enabled: Maybe<boolean> = false;
 
     @StringProperty('sakuli.forwarder.icinga2.api.host')
+    @IsString()
     apiHost: Maybe<string>;
 
     @StringProperty('sakuli.forwarder.icinga2.check_command')
@@ -24,14 +25,14 @@ export class Icinga2Properties {
 
     @StringProperty('sakuli.forwarder.icinga2.api.username')
     @ValidateIf(o => !!o.apiPassword)
-    @IsNotEmpty()
     @IsString()
+    @IsNotEmpty()
     apiUserName: string = '';
 
     @StringProperty('sakuli.forwarder.icinga2.api.password')
     @ValidateIf(o => !!o.apiUserName)
-    @IsNotEmpty()
     @IsString()
+    @IsNotEmpty()
     apiPassword: string = '';
 
     @StringProperty('sakuli.forwarder.icinga2.hostname')
@@ -42,6 +43,10 @@ export class Icinga2Properties {
     @StringProperty('sakuli.forwarder.icinga2.service_description')
     @IsString()
     serviceDescription: string = '${testsuite.id}';
+
+    @BooleanProperty('sakuli.forwarder.icinga2.allow_insecure_connection')
+    @IsBoolean()
+    allowInsecure: boolean = false;
 
     get hostBaseUrl(): string {
         return `https://${this.apiHost}:${this.apiPort}/v1`;

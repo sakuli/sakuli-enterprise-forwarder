@@ -1,5 +1,5 @@
-import {StringProperty, BooleanProperty, NumberProperty} from '@sakuli/commons'
-import {IsNumber, IsBoolean, IsNotEmpty} from 'class-validator'
+import {BooleanProperty, NumberProperty, StringProperty} from '@sakuli/commons'
+import {IsBoolean, IsNotEmpty, IsNumber, IsString} from 'class-validator'
 
 export class CheckMkForwarderProperties {
 
@@ -8,12 +8,13 @@ export class CheckMkForwarderProperties {
      */
     @BooleanProperty("sakuli.forwarder.check_mk.enabled")
     @IsBoolean()
-    enabled: boolean = false
+    enabled: boolean = false;
 
     /**
      * spool dir, default /var/lib/check_mk_agent/spool (Linux) / (installation_path)\spool (Windows)
      */
     @StringProperty("sakuli.forwarder.check_mk.spooldir")
+    @IsString()
     @IsNotEmpty()
     spoolDir: string = '/var/lib/check_mk_agent/spool';
 
@@ -28,14 +29,19 @@ export class CheckMkForwarderProperties {
      * Prefix of the file name for CheckMK
      */
     @StringProperty("sakuli.forwarder.check_mk.spoolfile_prefix")
-    @IsNotEmpty()
-    spoolfilePrefix: string ="sakuli_suite_";
+    spoolfilePrefix: string = "sakuli_suite";
 
     /**
      * optional service description forwarded to the output check result, when not set, testsuite.id is used
      */
     @StringProperty("sakuli.forwarder.check_mk.service_description")
-    @IsNotEmpty()
-    serviceDescription:string = "${testsuite.id}";
+    serviceDescription: string = "";
 
+    /**
+     * Boolean property to disable detailed summary in check results
+     * DEFAULT: true
+     */
+    @BooleanProperty("sakuli.forwarder.check_mk.output.details")
+    @IsBoolean()
+    outputDetails: boolean = true;
 }

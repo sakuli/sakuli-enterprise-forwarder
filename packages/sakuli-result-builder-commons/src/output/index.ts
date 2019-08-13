@@ -4,3 +4,6 @@ export * from './empty.function';
 export * from './get-output-duration.function';
 export * from './convert-to-unix-timestamp.function';
 export * from './is-blank.function';
+export * from './replace-whitespace.function';
+export * from './pad-number.function';
+export * from './get-entity-id.function';

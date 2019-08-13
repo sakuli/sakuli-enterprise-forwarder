@@ -1,34 +1,39 @@
 {
-	"name": "@sakuli/forwarder-check_mk",
-	"version": "2.0.1",
+	"name": "@sakuli/forwarder-checkmk",
+	"version": "2.1.1-RC1",
 	"description": "check_mk forwarder for Sakuli v2+",
 	"keywords": [
 		"monitoring",
 		"e2e"
 	],
-	"author": "Tim Keiner <keiner.tim@gmail.com>",
-	"license": "ISC",
+	"author": "Simon Hofmann <simon.hofmann@consol.de>",
 	"main": "dist/index.js",
+	"typings": "dist/index.d.ts",
 	"scripts": {
+		"obfuscate": "javascript-obfuscator ./dist --output ./out --config ../../scripts/obfuscate.js",
+		"copy": "node ../../scripts/move-files.js ./out .",
 		"build": "tsc",
-		"test": "jest"
+		"build:release": "tsc && npm run obfuscate && npm run copy",
+		"test": "jest",
+		"prepublishOnly": "lerna bootstrap --ignore integration-tests && npm run build:release && npm test"
 	},
 	"dependencies": {
-		"@sakuli/commons": "next",
-		"@sakuli/core": "next",
-		"@sakuli/nagios-result-builder": "2.0.1",
-		"@sakuli/result-builder-commons": "2.0.1",
-		"axios": "^0.19.0",
-		"class-validator": "^0.9.1",
-		"common-tags": "^1.8.0"
+		"@sakuli/commons": "2.1.1",
+		"@sakuli/core": "2.1.1",
+		"@sakuli/result-builder-commons": "2.1.1-RC1",
+		"@sakuli/result-builder-checkmk": "2.1.1-RC1",
+		"axios": "0.19.0",
+		"class-validator": "0.9.1",
+		"common-tags": "1.8.0"
 	},
 	"devDependencies": {
-		"@types/common-tags": "^1.8.0",
-		"@types/jest": "24.0.11",
-		"@types/node": "^12.6.2",
-		"jest": "24.5.0",
-		"sneer": "^1.0.1",
-		"ts-jest": "^24.0.1",
-		"typescript": "3.4.1"
+		"@types/common-tags": "1.8.0",
+		"@types/jest": "24.0.17",
+		"@types/node": "12.7.1",
+		"javascript-obfuscator": "0.18.1",
+		"jest": "24.8.0",
+		"sneer": "1.0.1",
+		"ts-jest": "24.0.2",
+		"typescript": "3.5.3"
 	}
 }

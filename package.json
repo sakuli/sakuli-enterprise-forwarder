@@ -4,16 +4,17 @@
   "scripts": {
     "postinstall": "lerna bootstrap",
     "build": "lerna run build",
-    "test": "jest"
+    "test": "jest",
+    "lerna:publish": "lerna publish from-package --yes ",
+    "lerna:publish-next": "lerna publish --canary --preid next --dist-tag next --pre-dist-tag next --no-push --no-git-tag-version --no-git-reset --force-publish --yes"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.11",
-    "@types/node": "^11.9.4",
-    "@types/react": "^16.8.3",
-    "@types/react-dom": "^16.8.2",
-    "jest": "^24.5.0",
-    "lerna": "^3.4.3",
-    "ts-jest": "^24.0.1",
-    "typescript": "^3.4.1"
+    "@types/jest": "24.0.17",
+    "fs-extra": "8.1.0",
+    "@types/node": "12.7.1",
+    "jest": "24.8.0",
+    "lerna": "3.16.4",
+    "ts-jest": "24.0.2",
+    "typescript": "3.5.3"
   }
 }

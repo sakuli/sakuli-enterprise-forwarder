@@ -1,39 +1,51 @@
-import { GearmanClient } from "gearman";
-import { inspect } from "util";
+import {GearmanClient} from "gearman";
+import {ifPresent, Maybe, SimpleLogger} from "@sakuli/commons";
 
-class GearmanJobError extends Error {
-    constructor(type: string, ...args: any[]) {
-        super(`${type}:\n${inspect(args, true, null, true)}`);
-    }
+export interface GearmanData {
+    connection: GearmanClient;
+    checkQueue: string;
+    payload: string;
 }
 
-export async function submitJob(connection: GearmanClient, payload: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-        const finish = (fn:(d: any) => void) => {
-            connection.close();
-            return (d: any) => fn(d);
+export async function submitJob(data: GearmanData, logger: Maybe<SimpleLogger>): Promise<any> {
+    return new Promise((resolve) => {
+        const finish = (fn: () => void) => {
+            data.connection.close();
+            return () => fn();
         };
         const res = finish(resolve);
-        const rej = finish(reject);
 
         [
             "WORK_FAIL",
             "WORK_EXCEPTION",
-            "timeout"
-        ].forEach(evt => connection.on(evt, (...args: any[]) => rej(new GearmanJobError(evt, ...args))));
+            "timeout",
+            "error"
+        ].forEach(evt => data.connection.on(evt, (args: any) => {
+            ifPresent(logger, (log) => {
+                log.debug(`Received Gearman event: ${evt} - ${args ? args : ""}`);
+            });
+            res();
+        }));
 
-        connection.on("WORK_COMPLETE", res);
-        connection.on('JOB_CREATED', id => console.log('Created JOB: ' + id));
+        data.connection.on("WORK_COMPLETE", res);
+        data.connection.on('JOB_CREATED', id => {
+            ifPresent(logger, (log) => {
+                log.debug('Created JOB: ' + id)
+            });
+        });
 
         // connect to the gearman server
-        connection.connect(function () {
-            // submit a job to uppercase a string with normal priority in the foreground
-            console.log('connected');
-            const d = new Date();
-            connection.setOption();
-            connection.submitJob('check_results', payload, {
-                encoding: 'utf8'
+        try {
+            data.connection.connect(function () {
+                data.connection.setOption();
+                data.connection.submitJob(data.checkQueue, data.payload, {
+                    encoding: 'utf8'
+                });
             })
-        })
+        } catch (err) {
+            ifPresent(logger, (log) => {
+                log.error('Failed to connect to Gearman server.', err);
+            });
+        }
     })
 }

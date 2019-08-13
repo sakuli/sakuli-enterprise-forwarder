@@ -1,44 +1,64 @@
-import { Forwarder, TestExecutionContext, Project } from "@sakuli/core";
-import { SimpleLogger, Maybe, ifPresent, createPropertyObjectFactory } from "@sakuli/commons";
-import { renderShortSummary, renderDetailedSummary, renderPerformanceData } from '@sakuli/nagios-result-builder';
-import { CheckMkForwarderProperties } from "./checkmk-forwarder-properties.class";
-import { stripIndents } from "common-tags";
-import { promises as fs } from 'fs';
-import { dirExists } from "./dir-exists.fucntion";
-import { resolve, join } from "path";
+import {Forwarder, Project, TestExecutionContext} from "@sakuli/core";
+import {createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger} from "@sakuli/commons";
+import {CheckMkForwarderProperties} from "./checkmk-forwarder-properties.class";
+import {promises as fs} from 'fs';
+import {dirExists} from "./dir-exists.fucntion";
+import {join, resolve} from "path";
+import {CheckMkTestResultOutputBuilder} from "@sakuli/result-builder-checkmk";
+import {createSpoolFileName} from "./create-spool-file.function";
+import {validateProps} from "@sakuli/result-builder-commons";
 
 export class CheckMkForwarder implements Forwarder {
 
-    private properties: Maybe<CheckMkForwarderProperties>
+    private properties: Maybe<CheckMkForwarderProperties>;
+    private logger: Maybe<SimpleLogger>;
 
-    async setup(project: Project, logger: SimpleLogger): Promise<any> {
+    constructor(
+        private outputBuilder = new CheckMkTestResultOutputBuilder()
+    ) {
+    }
+
+    logDebug(message: string, ...data: any[]) {
+        ifPresent(this.logger, log => log.debug(message, ...data));
+    }
+
+    async setup(project: Project, logger: SimpleLogger): Promise<void> {
         this.properties = createPropertyObjectFactory(project)(CheckMkForwarderProperties);
+        await validateProps(this.properties);
+        this.logger = logger;
     }
 
     async forward(ctx: TestExecutionContext): Promise<any> {
-        return ifPresent(this.properties, async properties => {
-            if (properties.enabled) {
-
-                const [suite] = ctx.testSuites;
-                const data = `${ctx.resultState} ${renderPerformanceData(suite)} ${renderShortSummary(suite)} ${renderDetailedSummary(suite)}`;
-                const entry = stripIndents`<<<local>>>
-                ${data}
-
-                `
-                const fileName = `${properties.freshness}_${properties.spoolfilePrefix}${suite.id}`;
-                const path = properties.spoolDir;
-                if( await dirExists(path)) {
-
-                    await fs.writeFile(
-                        resolve(join(path, fileName)),
-                        entry,
-                        {flag: 'a'}
-                    );
+        return ifPresent(this.properties, async props => {
+                if (props.enabled) {
+                    for (const testContextEntity of ctx.testSuites) {
+                        const renderedTemplate = this.outputBuilder.render(testContextEntity, {
+                            currentSuite: testContextEntity,
+                            props
+                        });
+                        const fileName = createSpoolFileName(testContextEntity, props);
+                        const path = props.spoolDir;
+                        this.logDebug(`Forwarding final result to checkmk via spool file '${fileName}' in '${path}'.`);
+                        const spoolFile = resolve(join(path, fileName));
+                        if (await dirExists(path)) {
+                            try {
+                                await fs.writeFile(
+                                    spoolFile,
+                                    renderedTemplate,
+                                    {flag: 'w'}
+                                );
+                            } catch (e) {
+                                this.logDebug(`Failed to write to '${spoolFile}'. Reason:`, e);
+                            }
+                        } else {
+                            this.logDebug(`spool directory '${path}' does not exists, skipping checkmk forwarding.`);
+                        }
+                    }
+                } else {
+                    this.logDebug(`CheckMK forwarding disabled via properties.`);
                 }
-            }
-        }, () => Promise.reject(Error('Could not create CheckMK Properties from Project')))
+            },
+            () => Promise.reject(Error('Could not create CheckMK Properties from Project'))
+        )
     }
-
-
-
 }
