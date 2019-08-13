@@ -23,12 +23,15 @@
     "@types/dateformat": "3.0.0",
     "@types/jest": "24.0.17",
     "@types/uuid": "3.4.5",
+    "javascript-obfuscator": "0.18.1",
     "jest": "24.5.0",
     "ts-jest": "24.0.2",
     "typescript": "3.5.3"
   },
   "scripts": {
-    "build": "tsc",
+    "obfuscate": "javascript-obfuscator ./dist --output ./out --config ../../scripts/obfuscate.js",
+    "copy": "node ../../scripts/move-files.js ./out .",
+    "build": "tsc && npm run obfuscate && npm run copy",
     "test": "jest"
   }
 }

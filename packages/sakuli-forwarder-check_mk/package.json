@@ -9,8 +9,11 @@
 	"author": "Tim Keiner <keiner.tim@gmail.com>",
 	"license": "ISC",
 	"main": "dist/index.js",
+	"typings": "dist/index.d.ts",
 	"scripts": {
-		"build": "tsc",
+		"obfuscate": "javascript-obfuscator ./dist --output ./out --config ../../scripts/obfuscate.js",
+		"copy": "node ../../scripts/move-files.js ./out .",
+		"build": "tsc && npm run obfuscate && npm run copy",
 		"test": "jest"
 	},
 	"dependencies": {
@@ -26,6 +29,7 @@
 		"@types/common-tags": "1.8.0",
 		"@types/jest": "24.0.17",
 		"@types/node": "12.7.1",
+		"javascript-obfuscator": "0.18.1",
 		"jest": "24.8.0",
 		"sneer": "1.0.1",
 		"ts-jest": "24.0.2",
