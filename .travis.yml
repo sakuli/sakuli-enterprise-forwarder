@@ -16,7 +16,7 @@ before_script:
 
 script:
   - travis_wait npm ci
-  - lerna run build > /dev/null 2>&1
+  - lerna run build:release > /dev/null 2>&1
   - npm test -- --runInBand --ci --bail
 
 before_deploy:
