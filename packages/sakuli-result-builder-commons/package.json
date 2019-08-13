@@ -10,7 +10,8 @@
     "test": "jest",
     "obfuscate": "javascript-obfuscator ./dist --output ./out --config ../../scripts/obfuscate.js",
     "copy": "node ../../scripts/move-files.js ./out .",
-    "build": "tsc && npm run obfuscate && npm run copy"
+    "build": "tsc",
+    "build:release": "tsc && npm run obfuscate && npm run copy"
   },
   "dependencies": {
     "@sakuli/commons": "2.0.1",
