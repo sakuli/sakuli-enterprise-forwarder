@@ -3,7 +3,7 @@ import {oneLine} from "common-tags";
 import {performanceMetaData} from "./performance-meta-data.function";
 import {getNagiosResultState, getOutputDuration, padNumberWithZeros} from "@sakuli/result-builder-commons";
 import {performanceDataStep} from "./performance-data-step.function";
-import {ifPresent, Maybe} from "@sakuli/commons";
+import {ifPresent, isPresent, Maybe} from "@sakuli/commons";
 
 export interface PerformanceDataCaseParameters {
     testCaseIdx: Maybe<string>
@@ -14,6 +14,9 @@ export const performanceDataCase = (testCase: TestCaseContext, params: Performan
     const {testCaseIdx, suiteId} = params;
     const stepResults = testCase
         .getChildren()
+        .filter((child) => {
+            return (isPresent(child.id) && child.id.length)
+        })
         .map((child, idx) => performanceDataStep(child as TestStepContext, {
             testStepIdx: padNumberWithZeros(idx + 1, 3),
             testCaseIdx,

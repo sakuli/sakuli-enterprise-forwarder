@@ -1,5 +1,5 @@
 import {TestContextEntity} from "@sakuli/core";
-import {ifPresent, Maybe} from "@sakuli/commons";
+import {ifPresent, isPresent, Maybe} from "@sakuli/commons";
 import {concat} from "./concat.function";
 import {getNagiosResultState, getShortState} from "@sakuli/result-builder-commons";
 
@@ -26,6 +26,9 @@ export const createPluginOutput = (entity: TestContextEntity): string[] => {
     const text = `${getShortState(getNagiosResultState(entity))} ${entity.kind} "${entity.id}" ${runTimeInfo}`;
     outputs.push(text, ...entity
         .getChildren()
+        .filter((child) => {
+            return (isPresent(child.id) && child.id.length)
+        })
         .map(createPluginOutput)
         .reduce(concat, [])
     );
