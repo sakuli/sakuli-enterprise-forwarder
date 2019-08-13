@@ -6,6 +6,9 @@ node_js:
   - "10"
 cache: npm
 
+before_install:
+  - npm i -g lerna
+
 install: true
 
 before_script:
