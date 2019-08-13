@@ -20,9 +20,9 @@ export async function submitJob(data: GearmanData, logger: Maybe<SimpleLogger>):
             "WORK_EXCEPTION",
             "timeout",
             "error"
-        ].forEach(evt => data.connection.on(evt, (...args: any[]) => {
+        ].forEach(evt => data.connection.on(evt, (args: any) => {
             ifPresent(logger, (log) => {
-                log.error(evt, ...args);
+                log.debug(`Received Gearman event: ${evt} - ${args ? args : ""}`);
             });
             res();
         }));
