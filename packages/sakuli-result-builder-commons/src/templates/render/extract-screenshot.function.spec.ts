@@ -34,5 +34,12 @@ describe('extract-screenshot-function', () => {
         });
         expect(html).toContain(Base64String);
         expect(html).toContain('data:image/png;');
-    })
+    });
+
+    it('should return an empty string for wrong files', () => {
+        const html = extractScreenshot({
+            screenshot: join(__dirname, 'fail.png')
+        });
+        expect(html).toBe("");
+    });
 });

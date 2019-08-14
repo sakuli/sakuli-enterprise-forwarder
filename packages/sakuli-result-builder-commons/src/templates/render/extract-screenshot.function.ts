@@ -15,14 +15,18 @@ const template = ({id, format, base64Screenshot}: { id: string, format: string, 
 
 export const extractScreenshot = (error: any | { screenshot: string }) => {
     if (error != null && "screenshot" in error) {
-        const format = error.screenshot.split('.').pop();
-        const screeShotFile = readFileSync(error.screenshot);
-        const base64Screenshot = Buffer.from(screeShotFile).toString('base64');
-        return oneLineTrim(template({
-            id: uuid(),
-            base64Screenshot,
-            format
-        }))
+        try {
+            const format = error.screenshot.split('.').pop();
+            const screeShotFile = readFileSync(error.screenshot);
+            const base64Screenshot = Buffer.from(screeShotFile).toString('base64');
+            return oneLineTrim(template({
+                id: uuid(),
+                base64Screenshot,
+                format
+            }))
+        } catch (e) {
+            return ''
+        }
     } else {
         return ''
     }
