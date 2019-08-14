@@ -1,6 +1,6 @@
 {
   "name": "@sakuli/result-builder-commons",
-  "version": "2.1.1-RC1",
+  "version": "2.1.1",
   "description": "Common code for result builders",
   "author": "Simon Hofmann <simon.hofmann@consol.de>",
   "main": "dist/index.js",
@@ -14,8 +14,8 @@
     "prepublishOnly": "lerna bootstrap --ignore integration-tests && npm run build:release && npm test"
   },
   "dependencies": {
-    "@sakuli/commons": "2.1.1",
-    "@sakuli/core": "2.1.1",
+    "@sakuli/commons": "2.1.2",
+    "@sakuli/core": "2.1.2",
     "sneer": "1.0.1",
     "uuid": "3.3.2",
     "common-tags": "1.8.0",

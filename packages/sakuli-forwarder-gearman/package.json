@@ -1,6 +1,6 @@
 {
   "name": "@sakuli/forwarder-gearman",
-  "version": "2.1.1-RC1",
+  "version": "2.1.1",
   "description": "Gearman forwarder for Sakuli v2+",
   "keywords": [
     "monitoring",
@@ -11,10 +11,10 @@
   "typings": "dist/index.d.ts",
   "dependencies": {
     "@nut-tree/secrets": "4.0.0",
-    "@sakuli/commons": "2.1.1",
-    "@sakuli/core": "2.1.1",
-    "@sakuli/result-builder-commons": "2.1.1-RC1",
-    "@sakuli/result-builder-omd": "2.1.1-RC1",
+    "@sakuli/commons": "2.1.2",
+    "@sakuli/core": "2.1.2",
+    "@sakuli/result-builder-commons": "2.1.1",
+    "@sakuli/result-builder-omd": "2.1.1",
     "gearman": "2.1.0",
     "sneer": "1.0.1"
   },
