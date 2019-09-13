@@ -26,10 +26,17 @@ export class CheckMkForwarderProperties {
     freshness: number = 600;
 
     /**
-     * Prefix of the file name for CheckMK
+     * Prefix of the spool file name for CheckMK
      */
     @StringProperty("sakuli.forwarder.check_mk.spoolfile_prefix")
     spoolfilePrefix: string = "sakuli_suite";
+
+    /**
+     * Hostname for check results (<<<YOUR_HOSTNAME_HERE>>>)
+     * Configurable for piggyback results, defaults to 'local'
+     */
+    @StringProperty("sakuli.forwarder.check_mk.piggyback_hostname")
+    piggybackHostname: string = "local";
 
     /**
      * optional service description forwarded to the output check result, when not set, testsuite.id is used
