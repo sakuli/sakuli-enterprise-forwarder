@@ -42,7 +42,7 @@ const getDetailedSummary = (entity: TestContextEntity, current: CurrentExecution
 const getServiceDescription = (testContextEntity: TestContextEntity, current: { suiteId: string, caseId: string }, props: any): string => {
     switch (testContextEntity.kind) {
         case "suite":
-            return `service_description=${props.nagiosServiceDescription || current.suiteId}`;
+            return `service_description=${props.nagiosServiceDescription}`;
         case "case":
             return `service_description=${current.suiteId}_${current.caseId}`;
         case "step":

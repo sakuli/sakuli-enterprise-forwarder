@@ -21,6 +21,15 @@ export class CheckMkForwarder implements Forwarder {
     logDebug(message: string, ...data: any[]) {
         ifPresent(this.logger, log => log.debug(message, ...data));
     }
+    logInfo(message: string, ...data: any[]) {
+        ifPresent(this.logger, log => log.info(message, ...data));
+    }
+    logWarn(message: string, ...data: any[]) {
+        ifPresent(this.logger, log => log.warn(message, ...data));
+    }
+    logError(message: string, ...data: any[]) {
+        ifPresent(this.logger, log => log.error(message, ...data));
+    }
 
     async setup(project: Project, logger: SimpleLogger): Promise<void> {
         this.properties = createPropertyObjectFactory(project)(CheckMkForwarderProperties);
@@ -48,10 +57,10 @@ export class CheckMkForwarder implements Forwarder {
                                     {flag: 'w'}
                                 );
                             } catch (e) {
-                                this.logDebug(`Failed to write to '${spoolFile}'. Reason:`, e);
+                                this.logError(`Failed to write to '${spoolFile}'. Reason:`, e);
                             }
                         } else {
-                            this.logDebug(`spool directory '${path}' does not exists, skipping checkmk forwarding.`);
+                            this.logWarn(`spool directory '${path}' does not exists, skipping checkmk forwarding.`);
                         }
                     }
                 } else {

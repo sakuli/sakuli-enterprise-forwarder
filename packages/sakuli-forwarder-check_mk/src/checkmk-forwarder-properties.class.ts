@@ -42,7 +42,7 @@ export class CheckMkForwarderProperties {
      * optional service description forwarded to the output check result, when not set, testsuite.id is used
      */
     @StringProperty("sakuli.forwarder.check_mk.service_description")
-    serviceDescription: string = "";
+    serviceDescription: string = "${testsuite.id}";
 
     /**
      * Boolean property to disable detailed summary in check results

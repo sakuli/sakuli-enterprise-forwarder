@@ -23,14 +23,20 @@ export class Icinga2Forwarder implements Forwarder {
     logDebug(message: string, ...data: any[]) {
         ifPresent(this.logger, log => log.debug(message, ...data));
     }
+    logInfo(message: string, ...data: any[]) {
+        ifPresent(this.logger, log => log.info(message, ...data));
+    }
+    logError(message: string, ...data: any[]) {
+        ifPresent(this.logger, log => log.error(message, ...data));
+    }
 
     async forward(ctx: TestExecutionContext): Promise<any> {
         await ifPresent(this.properties, props => {
                 if (props.enabled) {
-                    this.logDebug(`Forwarding check result to Icinga2.`);
+                    this.logInfo(`Forwarding check result to Icinga2.`);
                     return this.send(props, ctx);
                 } else {
-                    this.logDebug(`Icinga2 forwarding disabled via properties.`);
+                    this.logInfo(`Icinga2 forwarding disabled via properties.`);
                     return Promise.resolve();
                 }
             },
@@ -52,7 +58,7 @@ export class Icinga2Forwarder implements Forwarder {
             };
             return await api.processCheckResult(requestData);
         } catch (e) {
-            this.logDebug(e);
+            this.logError(e);
             return await Promise.reject(e);
         }
     }
