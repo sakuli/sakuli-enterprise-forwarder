@@ -30,6 +30,15 @@ export class GearmanForwarder implements Forwarder {
     logDebug(message: string, ...data: any[]) {
         ifPresent(this.logger, log => log.debug(message, ...data));
     }
+    logInfo(message: string, ...data: any[]) {
+        ifPresent(this.logger, log => log.info(message, ...data));
+    }
+    logWarn(message: string, ...data: any[]) {
+        ifPresent(this.logger, log => log.warn(message, ...data));
+    }
+    logError(message: string, ...data: any[]) {
+        ifPresent(this.logger, log => log.error(message, ...data));
+    }
 
     /**
      * Is called after all project loader has run and before TestExecution has started
@@ -61,7 +70,7 @@ export class GearmanForwarder implements Forwarder {
                 this.logDebug(`Gearman forwarding disabled via properties.`);
             }
         }, () => {
-            this.logDebug(`Missing Gearman configuration, aborting forwarding`);
+            this.logWarn(`Missing Gearman configuration, aborting forwarding`);
             return Promise.resolve();
         });
         return Promise.resolve();
@@ -90,7 +99,7 @@ export class GearmanForwarder implements Forwarder {
                 this.logDebug(`Gearman forwarding disabled via properties.`);
             }
         }, () => {
-            ctx.logger.debug(`Missing Gearman configuration, aborting forwarding`);
+            this.logWarn(`Missing Gearman configuration, aborting forwarding`);
             return Promise.resolve();
         });
         return Promise.resolve();
@@ -123,7 +132,7 @@ export class GearmanForwarder implements Forwarder {
                 this.logDebug(`Gearman forwarding disabled via properties.`);
             }
         }, () => {
-            ctx.logger.debug(`Missing Gearman configuration, aborting forwarding`);
+            this.logWarn(`Missing Gearman configuration, aborting forwarding`);
             return Promise.resolve();
         });
     }
@@ -157,7 +166,7 @@ export class GearmanForwarder implements Forwarder {
                 this.logDebug(`Gearman forwarding disabled via properties.`);
             }
         }, () => {
-            ctx.logger.debug(`Missing Gearman configuration, aborting forwarding`);
+            this.logWarn(`Missing Gearman configuration, aborting forwarding`);
             return Promise.resolve();
         });
         return Promise.resolve();
@@ -185,10 +194,10 @@ export class GearmanForwarder implements Forwarder {
                     } as GearmanData,
                     this.logger);
             } catch (err) {
-                this.logDebug(`Failed to forward, error occured.`, err);
+                this.logError(`Failed to forward, error occured.`, err);
             }
         }, () => {
-            this.logDebug(`Missing Gearman configuration, aborting forwarding`);
+            this.logWarn(`Missing Gearman configuration, aborting forwarding`);
             return Promise.resolve();
         });
     }

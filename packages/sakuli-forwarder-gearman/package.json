@@ -11,8 +11,8 @@
   "typings": "dist/index.d.ts",
   "dependencies": {
     "@nut-tree/secrets": "4.0.0",
-    "@sakuli/commons": "2.1.2",
-    "@sakuli/core": "2.1.2",
+    "@sakuli/commons": "2.1.3",
+    "@sakuli/core": "2.1.3",
     "@sakuli/result-builder-commons": "2.1.1",
     "@sakuli/result-builder-omd": "2.1.1",
     "gearman": "2.1.0",

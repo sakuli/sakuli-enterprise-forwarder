@@ -79,7 +79,7 @@ export class GearmanForwarderProperties {
      * DEFAULT: testsuite.id
      */
     @StringProperty('sakuli.forwarder.gearman.nagios.service_description')
-    nagiosServiceDescription: string = "";
+    nagiosServiceDescription: string = "${testsuite.id}";
 
     /**
      * Max. length for suite summary
