@@ -42,7 +42,7 @@ export class Icinga2Properties {
 
     @StringProperty('sakuli.forwarder.icinga2.service_description')
     @IsString()
-    serviceDescription: string = '${testsuite.id}';
+    serviceDescription: string = '';
 
     @BooleanProperty('sakuli.forwarder.icinga2.allow_insecure_connection')
     @IsBoolean()
