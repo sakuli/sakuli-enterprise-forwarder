@@ -27,7 +27,7 @@ export class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder 
         ${renderShortSummary(testContextEntity)}
         ${props.outputDetails ? renderDetailedSummary(testContextEntity) : ""}
         `;
-        if (props.piggybackTransport) {
+        if (props.piggybackHostname && props.piggybackHostname.length) {
             return stripIndents`<<<<${props.piggybackHostname}>>>>
                 <<<local>>>
                 ${data}
@@ -37,8 +37,7 @@ export class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder 
         } else {
             return stripIndents`<<<local>>>
                 ${data}
-
                 `;
         }
-    };
+    }
 }
