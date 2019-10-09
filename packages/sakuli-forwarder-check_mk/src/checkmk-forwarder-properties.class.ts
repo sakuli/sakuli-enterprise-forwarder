@@ -1,4 +1,4 @@
-import {BooleanProperty, NumberProperty, StringProperty} from '@sakuli/commons'
+import {BooleanProperty, Maybe, NumberProperty, StringProperty} from '@sakuli/commons'
 import {IsBoolean, IsNotEmpty, IsNumber, IsString} from 'class-validator'
 
 export class CheckMkForwarderProperties {
@@ -32,11 +32,11 @@ export class CheckMkForwarderProperties {
     spoolfilePrefix: string = "sakuli_suite";
 
     /**
-     * Hostname for check results (<<<YOUR_HOSTNAME_HERE>>>)
-     * Configurable for piggyback results, defaults to 'local'
+     * Hostname for piggyback check results (<<<<YOUR_HOSTNAME_HERE>>>>)
      */
     @StringProperty("sakuli.forwarder.check_mk.piggyback_hostname")
-    piggybackHostname: string = "local";
+    @IsString()
+    piggybackHostname: Maybe<string>;
 
     /**
      * optional service description forwarded to the output check result, when not set, testsuite.id is used

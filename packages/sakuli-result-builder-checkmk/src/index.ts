@@ -27,9 +27,17 @@ export class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder 
         ${renderShortSummary(testContextEntity)}
         ${props.outputDetails ? renderDetailedSummary(testContextEntity) : ""}
         `;
-        return stripIndents`<<<${props.piggybackHostname}>>>
+        if (props.piggybackHostname && props.piggybackHostname.length) {
+            return stripIndents`<<<<${props.piggybackHostname}>>>>
+                <<<local>>>
                 ${data}
+                <<<<>>>>
 
                 `;
-    };
+        } else {
+            return stripIndents`<<<local>>>
+                ${data}
+                `;
+        }
+    }
 }
