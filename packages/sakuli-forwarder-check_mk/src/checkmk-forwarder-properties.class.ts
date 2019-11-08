@@ -3,6 +3,10 @@ import {IsBoolean, IsNotEmpty, IsNumber, IsString} from 'class-validator'
 
 export class CheckMkForwarderProperties {
 
+    public constructor(init?:Partial<CheckMkForwarderProperties>) {
+        Object.assign(this, init);
+    }
+
     /**
      * Send results to a CheckMK-enabled monitoring system, using the parameters below in your 'sakuli.properties' to activate the forwarder.
      */
@@ -37,6 +41,14 @@ export class CheckMkForwarderProperties {
     @StringProperty("sakuli.forwarder.check_mk.piggyback_hostname")
     @IsString()
     piggybackHostname: Maybe<string>;
+
+    /**
+     * Name of the reported section (<<<YOUR_SECTION_NAME>>>)
+     * DEFAULT: local
+     */
+    @StringProperty("sakuli.forwarder.check_mk.section_name")
+    @IsString()
+    sectionName: string = "local";
 
     /**
      * optional service description forwarded to the output check result, when not set, testsuite.id is used
