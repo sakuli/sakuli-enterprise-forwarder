@@ -9,11 +9,11 @@ import {TestCase_OK} from "./__mocks__/test-case-ok.entity";
 import {TestSuite_ERRORS} from "./__mocks__/test-suite-error.entity";
 import {stripIndents} from "common-tags";
 
-describe('result builder checkmk', () =>{
+describe('checkmk result builder', () =>{
     let ctx: TestExecutionContext;
     let renderer: CheckMkTestResultOutputBuilder;
-    let errorTestSuite = readFileSync(join(__dirname, '__snapshots__', 'suites', 'TestSuite_ERRORS.txt')).toString();
-    let errorScreenshot = readFileSync(join(__dirname, '__snapshots__', 'screenshots', 'Screenshot_ERROR.txt')).toString();
+    const errorTestSuite = readFileSync(join(__dirname, '__snapshots__', 'suites', 'TestSuite_ERRORS.txt')).toString();
+    const errorScreenshot = readFileSync(join(__dirname, '__snapshots__', 'screenshots', 'Screenshot_ERROR.txt')).toString();
 
     beforeEach(() => {
         ctx = new TestExecutionContext(new SimpleLogger);
@@ -230,6 +230,113 @@ describe('result builder checkmk', () =>{
                 expect(rendered).toContain(errorTestSuite);
                 expect(rendered).not.toContain(errorScreenshot);
             })
+        });
+    });
+
+    describe('with section name configuration', () =>{
+
+        const testSuiteWithSectionConfigured =
+            readFileSync(join(__dirname, '__snapshots__', 'suites', 'TestSuite_OK_with_Section.txt')).toString();
+
+        const testSuiteWithDefaultSection =
+            readFileSync(join(__dirname, '__snapshots__', 'suites', 'TestSuite_OK.txt')).toString();
+
+        it('should print section name', () => {
+            //GIVEN
+            const properties = {
+                serviceDescription: "service_description",
+                outputDetails: true,
+                sectionName: "Isengard"
+            };
+
+            //WHEN
+            const rendered = renderer.render(TestSuite_OK, {
+                currentSuite: TestSuite_OK as TestSuiteContext,
+                currentCase: TestCase_OK as TestCaseContext,
+                props: properties
+            });
+
+            //THEN
+            expect(rendered).toContain(testSuiteWithSectionConfigured);
+        });
+
+        it('should print section name default if not configured', () => {
+            //GIVEN
+            const properties = {
+                serviceDescription: "service_description",
+                outputDetails: true,
+            };
+
+            //WHEN
+            const rendered = renderer.render(TestSuite_OK, {
+                currentSuite: TestSuite_OK as TestSuiteContext,
+                currentCase: TestCase_OK as TestCaseContext,
+                props: properties
+            });
+
+            //THEN
+            expect(rendered).toContain(testSuiteWithDefaultSection);
+        });
+
+        it('should print section name default if property is undefined', () => {
+            //GIVEN
+            const properties = {
+                serviceDescription: "service_description",
+                outputDetails: true,
+                sectionName: undefined
+            };
+
+            //WHEN
+            const rendered = renderer.render(TestSuite_OK, {
+                currentSuite: TestSuite_OK as TestSuiteContext,
+                currentCase: TestCase_OK as TestCaseContext,
+                props: properties
+            });
+
+            //THEN
+            expect(rendered).toContain(testSuiteWithDefaultSection);
+        });
+
+
+        it('should print section name default if property is null', () => {
+            //GIVEN
+            const properties = {
+                serviceDescription: "service_description",
+                outputDetails: true,
+                sectionName: null
+            };
+
+            //WHEN
+            const rendered = renderer.render(TestSuite_OK, {
+                currentSuite: TestSuite_OK as TestSuiteContext,
+                currentCase: TestCase_OK as TestCaseContext,
+                props: properties
+            });
+
+            //THEN
+            expect(rendered).toContain(testSuiteWithDefaultSection);
+        });
+
+        it('should print section name in combination with piggyback host', () => {
+            //GIVEN
+            const properties = {
+                serviceDescription: "service_description",
+                outputDetails: true,
+                sectionName: "Isengard",
+                piggybackHostname: "piggyback_host"
+            };
+
+            //WHEN
+            const rendered = renderer.render(TestSuite_OK, {
+                currentSuite: TestSuite_OK as TestSuiteContext,
+                currentCase: TestCase_OK as TestCaseContext,
+                props: properties
+            });
+
+            //THEN
+            expect(rendered).toContain(stripIndents`<<<<${properties.piggybackHostname}>>>>
+                                                    ${testSuiteWithSectionConfigured}
+                                                    <<<<>>>>`);
         });
     });
 });
