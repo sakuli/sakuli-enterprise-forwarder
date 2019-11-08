@@ -2,7 +2,7 @@ import {Forwarder, Project, TestExecutionContext} from "@sakuli/core";
 import {createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger} from "@sakuli/commons";
 import {CheckMkForwarderProperties} from "./checkmk-forwarder-properties.class";
 import {promises as fs} from 'fs';
-import {dirExists} from "./dir-exists.fucntion";
+import {dirExists} from "./dir-exists.function";
 import {join, resolve} from "path";
 import {CheckMkTestResultOutputBuilder} from "@sakuli/result-builder-checkmk";
 import {createSpoolFileName} from "./create-spool-file.function";
