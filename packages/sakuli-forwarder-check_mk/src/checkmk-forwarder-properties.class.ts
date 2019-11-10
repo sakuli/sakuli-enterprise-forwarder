@@ -48,7 +48,8 @@ export class CheckMkForwarderProperties {
      */
     @StringProperty("sakuli.forwarder.check_mk.section_name")
     @IsString()
-    sectionName: string = "local";
+    sectionName: string = CheckMkForwarderProperties.SECTION_NAME_DEFAULT;
+    static readonly SECTION_NAME_DEFAULT: string = "local";
 
     /**
      * optional service description forwarded to the output check result, when not set, testsuite.id is used

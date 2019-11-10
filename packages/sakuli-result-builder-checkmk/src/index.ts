@@ -9,6 +9,7 @@ import {
     TestContextOutputBuilder
 } from "@sakuli/result-builder-commons";
 import {oneLine, stripIndents} from "common-tags";
+import { CheckMkForwarderProperties } from "../../sakuli-forwarder-check_mk/src/checkmk-forwarder-properties.class";
 
 
 export class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder {
@@ -27,7 +28,7 @@ export class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder 
         ${renderShortSummary(testContextEntity)}
         ${props.outputDetails ? renderDetailedSummary(testContextEntity) : ""}
         `;
-        const sectionName = (props && props.sectionName) ? props.sectionName : "local";
+        const sectionName = CheckMkTestResultOutputBuilder.getSectionName(props);
 
         if (props.piggybackHostname && props.piggybackHostname.length) {
             return stripIndents`<<<<${props.piggybackHostname}>>>>
@@ -40,5 +41,9 @@ export class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder 
                 ${data}
                 `;
         }
+    }
+
+    private static getSectionName(props: any) {
+        return (props && props.sectionName) ? props.sectionName : CheckMkForwarderProperties.SECTION_NAME_DEFAULT;
     }
 }
