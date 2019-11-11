@@ -1,17 +1,18 @@
-import {Forwarder, Project, TestExecutionContext} from "@sakuli/core";
-import {createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger} from "@sakuli/commons";
-import {CheckMkForwarderProperties} from "./checkmk-forwarder-properties.class";
-import {promises as fs} from 'fs';
-import {dirExists} from "./dir-exists.function";
-import {join, resolve} from "path";
-import {CheckMkTestResultOutputBuilder} from "@sakuli/result-builder-checkmk";
-import {createSpoolFileName} from "./create-spool-file.function";
-import {validateProps} from "@sakuli/result-builder-commons";
+import { Forwarder, Project, TestExecutionContext } from "@sakuli/core";
+import { createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger } from "@sakuli/commons";
+import { CheckMkForwarderProperties } from "./checkmk-forwarder-properties.class";
+import { promises as fs } from 'fs';
+import { dirExists } from "./dir-exists.function";
+import { join, resolve } from "path";
+import { CheckMkResultBuilderProperties, CheckMkTestResultOutputBuilder } from "@sakuli/result-builder-checkmk";
+import { createSpoolFileName } from "./create-spool-file.function";
+import { validateProps } from "@sakuli/result-builder-commons";
 
 export class CheckMkForwarder implements Forwarder {
 
     private properties: Maybe<CheckMkForwarderProperties>;
     private logger: Maybe<SimpleLogger>;
+    private builderProperties : Maybe<CheckMkResultBuilderProperties>;
 
     constructor(
         private outputBuilder = new CheckMkTestResultOutputBuilder()
@@ -34,6 +35,9 @@ export class CheckMkForwarder implements Forwarder {
     async setup(project: Project, logger: SimpleLogger): Promise<void> {
         this.properties = createPropertyObjectFactory(project)(CheckMkForwarderProperties);
         await validateProps(this.properties);
+
+        this.builderProperties = createPropertyObjectFactory(project)(CheckMkResultBuilderProperties);
+        await validateProps(this.builderProperties);
         this.logger = logger;
     }
 
@@ -43,7 +47,7 @@ export class CheckMkForwarder implements Forwarder {
                     for (const testContextEntity of ctx.testSuites) {
                         const renderedTemplate = this.outputBuilder.render(testContextEntity, {
                             currentSuite: testContextEntity,
-                            props
+                            props: this.builderProperties
                         });
                         const fileName = createSpoolFileName(testContextEntity, props);
                         const path = props.spoolDir;

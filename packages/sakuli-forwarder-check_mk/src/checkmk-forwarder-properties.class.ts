@@ -1,5 +1,5 @@
-import {BooleanProperty, Maybe, NumberProperty, StringProperty} from '@sakuli/commons'
-import {IsBoolean, IsNotEmpty, IsNumber, IsString} from 'class-validator'
+import { BooleanProperty, NumberProperty, StringProperty } from '@sakuli/commons'
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator'
 
 export class CheckMkForwarderProperties {
 
@@ -34,35 +34,4 @@ export class CheckMkForwarderProperties {
      */
     @StringProperty("sakuli.forwarder.check_mk.spoolfile_prefix")
     spoolfilePrefix: string = "sakuli_suite";
-
-    /**
-     * Hostname for piggyback check results (<<<<YOUR_HOSTNAME_HERE>>>>)
-     */
-    @StringProperty("sakuli.forwarder.check_mk.piggyback_hostname")
-    @IsString()
-    piggybackHostname: Maybe<string>;
-
-    /**
-     * Name of the reported section (<<<YOUR_SECTION_NAME>>>)
-     * DEFAULT: local
-     */
-    @StringProperty("sakuli.forwarder.check_mk.section_name")
-    @IsString()
-    sectionName: string = CheckMkForwarderProperties.SECTION_NAME_DEFAULT;
-    static readonly SECTION_NAME_DEFAULT: string = "local";
-
-    /**
-     * optional service description forwarded to the output check result, when not set, testsuite.id is used
-     */
-    @StringProperty("sakuli.forwarder.check_mk.service_description")
-    @IsString()
-    serviceDescription: string = "";
-
-    /**
-     * Boolean property to disable detailed summary in check results
-     * DEFAULT: true
-     */
-    @BooleanProperty("sakuli.forwarder.check_mk.output.details")
-    @IsBoolean()
-    outputDetails: boolean = true;
 }

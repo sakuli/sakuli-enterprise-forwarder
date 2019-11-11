@@ -1,14 +1,14 @@
-import {readFileSync} from 'fs';
-import {join} from "path";
-import {TestCaseContext, TestContextEntity, TestExecutionContext, TestSuiteContext} from "@sakuli/core";
-import {SimpleLogger} from "@sakuli/commons";
-import {TestSuites} from './__mocks__';
-import {CheckMkTestResultOutputBuilder} from "./index";
-import {TestSuite_OK} from "./__mocks__/test-suite-ok.entity";
-import {TestCase_OK} from "./__mocks__/test-case-ok.entity";
-import {TestSuite_ERRORS} from "./__mocks__/test-suite-error.entity";
-import {stripIndents} from "common-tags";
-import { CheckMkForwarderProperties } from "../../sakuli-forwarder-check_mk/src/checkmk-forwarder-properties.class";
+import { readFileSync } from 'fs';
+import { join } from "path";
+import { TestCaseContext, TestContextEntity, TestExecutionContext, TestSuiteContext } from "@sakuli/core";
+import { SimpleLogger } from "@sakuli/commons";
+import { TestSuites } from './__mocks__';
+import { CheckMkTestResultOutputBuilder } from "./index";
+import { TestSuite_OK } from "./__mocks__/test-suite-ok.entity";
+import { TestCase_OK } from "./__mocks__/test-case-ok.entity";
+import { TestSuite_ERRORS } from "./__mocks__/test-suite-error.entity";
+import { stripIndents } from "common-tags";
+import { CheckMkResultBuilderProperties } from "./checkmk-result-builder-properties.class";
 
 describe('checkmk result builder', () =>{
     let ctx: TestExecutionContext;
@@ -26,7 +26,7 @@ describe('checkmk result builder', () =>{
             let properties: any;
             let expected: string;
             beforeEach(() => {
-                properties = new CheckMkForwarderProperties({
+                properties = new CheckMkResultBuilderProperties({
                     serviceDescription: "service_description",
                     outputDetails: true,
                 });
@@ -46,7 +46,7 @@ describe('checkmk result builder', () =>{
         describe('render error', () => {
             it('should match static file', () => {
                 //GIVEN
-                const properties = new CheckMkForwarderProperties({
+                const properties = new CheckMkResultBuilderProperties({
                     serviceDescription: "service_description",
                     outputDetails: true,
                 });
@@ -67,7 +67,7 @@ describe('checkmk result builder', () =>{
         describe('render error without details', () => {
             it('should match static file', () => {
                 //GIVEN
-                const properties = new CheckMkForwarderProperties({
+                const properties = new CheckMkResultBuilderProperties({
                     serviceDescription: "service_description",
                     outputDetails: false,
                 });
@@ -92,7 +92,7 @@ describe('checkmk result builder', () =>{
             let properties: any;
             let expected: string;
             beforeEach(() => {
-                properties = new CheckMkForwarderProperties({
+                properties = new CheckMkResultBuilderProperties({
                     serviceDescription: "service_description",
                     outputDetails: true,
                     piggybackHostname: "piggyback_host"
@@ -117,7 +117,7 @@ describe('checkmk result builder', () =>{
         describe('render error', () => {
             it('should match static file', () => {
                 //GIVEN
-                const properties = new CheckMkForwarderProperties({
+                const properties = new CheckMkResultBuilderProperties({
                     serviceDescription: "service_description",
                     outputDetails: true,
                     piggybackHostname: "piggyback_host"
@@ -143,7 +143,7 @@ describe('checkmk result builder', () =>{
         describe('render error without details', () => {
              it('should match static file', () => {
                 //GIVEN
-                const properties = new CheckMkForwarderProperties({
+                const properties = new CheckMkResultBuilderProperties({
                     serviceDescription: "service_description",
                     outputDetails: false,
                     piggybackHostname: "piggyback_host"
@@ -172,7 +172,7 @@ describe('checkmk result builder', () =>{
             let properties: any;
             let expected: string;
             beforeEach(() => {
-                properties = new CheckMkForwarderProperties({
+                properties = new CheckMkResultBuilderProperties({
                     serviceDescription: "service_description",
                     outputDetails: true,
                     piggybackHostname: ""
@@ -193,7 +193,7 @@ describe('checkmk result builder', () =>{
         describe('render error with piggybackHostname null', () => {
             it('should not render piggyback router', () => {
                 //GIVEN
-                const properties = new CheckMkForwarderProperties({
+                const properties = new CheckMkResultBuilderProperties({
                     serviceDescription: "service_description",
                     outputDetails: true,
                     piggybackHostname: null
@@ -215,7 +215,7 @@ describe('checkmk result builder', () =>{
         describe('render error without details and undefined piggyback hostname', () => {
             it('should not render piggyback router', () => {
                 //GIVEN
-                const properties = new CheckMkForwarderProperties({
+                const properties = new CheckMkResultBuilderProperties({
                     serviceDescription: "service_description",
                     outputDetails: false,
                     piggybackHostname: undefined
@@ -244,7 +244,7 @@ describe('checkmk result builder', () =>{
 
         it('should print section name', () => {
             //GIVEN
-            const properties = new CheckMkForwarderProperties({
+            const properties = new CheckMkResultBuilderProperties({
                 serviceDescription: "service_description",
                 outputDetails: true,
                 sectionName: "Isengard"
@@ -263,49 +263,9 @@ describe('checkmk result builder', () =>{
 
         it('should print section name default if not configured', () => {
             //GIVEN
-            const properties = new CheckMkForwarderProperties({
+            const properties = new CheckMkResultBuilderProperties({
                 serviceDescription: "service_description",
                 outputDetails: true,
-            });
-
-            //WHEN
-            const rendered = renderer.render(TestSuite_OK, {
-                currentSuite: TestSuite_OK as TestSuiteContext,
-                currentCase: TestCase_OK as TestCaseContext,
-                props: properties
-            });
-
-            //THEN
-            expect(rendered).toContain(testSuiteWithDefaultSection);
-        });
-
-        it('should print section name default if property is undefined', () => {
-            //GIVEN
-            const properties =  new CheckMkForwarderProperties({
-                serviceDescription: "service_description",
-                outputDetails: true,
-                sectionName: undefined
-            });
-
-            //WHEN
-            const rendered = renderer.render(TestSuite_OK, {
-                currentSuite: TestSuite_OK as TestSuiteContext,
-                currentCase: TestCase_OK as TestCaseContext,
-                props: properties
-            });
-
-            //THEN
-            expect(rendered).toContain(testSuiteWithDefaultSection);
-        });
-
-
-        it('should print section name default if property is empty', () => {
-            //GIVEN
-
-            const properties = new CheckMkForwarderProperties({
-                serviceDescription: "service_description",
-                outputDetails: true,
-                sectionName: ""
             });
 
             //WHEN
@@ -321,7 +281,7 @@ describe('checkmk result builder', () =>{
 
         it('should print section name in combination with piggyback host', () => {
             //GIVEN
-            const properties = new CheckMkForwarderProperties({
+            const properties = new CheckMkResultBuilderProperties({
                 serviceDescription: "service_description",
                 outputDetails: true,
                 sectionName: "Isengard",
