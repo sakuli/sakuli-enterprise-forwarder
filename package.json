@@ -2,6 +2,8 @@
   "name": "root",
   "private": true,
   "scripts": {
+    "rebuild": "npm run clean && npm install && npm run build",
+    "clean": "lerna clean -y",
     "postinstall": "lerna bootstrap",
     "build": "lerna run build",
     "test": "jest",
