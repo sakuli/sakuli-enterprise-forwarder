@@ -1,5 +1,5 @@
-import {TestContextEntity} from "@sakuli/core";
-import {renderPerformanceData} from "./templates/performance_data";
+import { TestContextEntity } from "@sakuli/core";
+import { renderPerformanceData } from "./templates/performance_data";
 import {
     getEntityId,
     getNagiosResultState,
@@ -8,16 +8,21 @@ import {
     renderShortSummary,
     TestContextOutputBuilder
 } from "@sakuli/result-builder-commons";
-import {oneLine, stripIndents} from "common-tags";
+import { oneLine, stripIndents } from "common-tags";
+import { CheckMkResultBuilderProperties } from "./checkmk-result-builder-properties.class";
 
+export {
+    CheckMkResultBuilderProperties,
+    CheckMkTestResultOutputBuilder
+}
 
-export class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder {
+class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder {
     public render(testContextEntity: TestContextEntity, params: OutputResultParameters): string {
-        const {currentSuite, currentCase, props} = params;
+        const props = params.props as CheckMkResultBuilderProperties;
 
         const current = {
-            suiteId: getEntityId(currentSuite),
-            caseId: getEntityId(currentCase)
+            suiteId: getEntityId(params.currentSuite),
+            caseId: getEntityId(params.currentCase)
         };
         const serviceDescription = (props && props.serviceDescription) || current.suiteId;
         const data = oneLine`
@@ -27,15 +32,15 @@ export class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder 
         ${renderShortSummary(testContextEntity)}
         ${props.outputDetails ? renderDetailedSummary(testContextEntity) : ""}
         `;
+
         if (props.piggybackHostname && props.piggybackHostname.length) {
             return stripIndents`<<<<${props.piggybackHostname}>>>>
-                <<<local>>>
+                <<<${props.sectionName}>>>
                 ${data}
                 <<<<>>>>
-
                 `;
         } else {
-            return stripIndents`<<<local>>>
+            return stripIndents`<<<${props.sectionName}>>>
                 ${data}
                 `;
         }
