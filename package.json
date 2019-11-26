@@ -2,6 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
+    "audit": "lerna-audit",
     "rebuild": "npm run clean && npm install && npm run build",
     "clean": "lerna clean -y",
     "postinstall": "lerna bootstrap",
@@ -12,11 +13,12 @@
   },
   "devDependencies": {
     "@types/jest": "24.0.17",
-    "fs-extra": "8.1.0",
     "@types/node": "12.7.1",
+    "fs-extra": "8.1.0",
     "jest": "24.8.0",
     "lerna": "3.16.4",
     "ts-jest": "24.0.2",
-    "typescript": "3.5.3"
+    "typescript": "3.5.3",
+    "lerna-audit": "1.0.1"
   }
 }
