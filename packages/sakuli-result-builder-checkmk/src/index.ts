@@ -1,5 +1,5 @@
-import { TestContextEntity } from "@sakuli/core";
-import { renderPerformanceData } from "./templates/performance_data";
+import {TestContextEntity} from "@sakuli/core";
+import {renderPerformanceData} from "./templates/performance_data";
 import {
     getEntityId,
     getNagiosResultState,
@@ -8,17 +8,11 @@ import {
     renderShortSummary,
     TestContextOutputBuilder
 } from "@sakuli/result-builder-commons";
-import { oneLine, stripIndents } from "common-tags";
-import { CheckMkResultBuilderProperties } from "./checkmk-result-builder-properties.class";
+import {oneLine, stripIndents} from "common-tags";
 
-export {
-    CheckMkResultBuilderProperties,
-    CheckMkTestResultOutputBuilder
-}
-
-class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder {
+export class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder {
     public render(testContextEntity: TestContextEntity, params: OutputResultParameters): string {
-        const props = params.props as CheckMkResultBuilderProperties;
+        const props = params.props;
 
         const current = {
             suiteId: getEntityId(params.currentSuite),
