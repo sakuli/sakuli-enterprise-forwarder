@@ -35,7 +35,6 @@ export class CheckMkForwarder implements Forwarder {
     async setup(project: Project, logger: SimpleLogger): Promise<void> {
         this.properties = createPropertyObjectFactory(project)(CheckMkForwarderProperties);
         await validateProps(this.properties);
-
         this.builderProperties = createPropertyObjectFactory(project)(CheckMkResultBuilderProperties);
         await validateProps(this.builderProperties);
         this.logger = logger;
