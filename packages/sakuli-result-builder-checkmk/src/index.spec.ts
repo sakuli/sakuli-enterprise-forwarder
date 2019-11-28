@@ -183,13 +183,13 @@ describe('checkmk result builder', () => {
             })
         });
 
-        describe('render error with piggybackHostname null', () => {
+        describe('render error with empty piggybackHostname', () => {
             it('should not render piggyback router', () => {
                 //GIVEN
                 const properties = new CheckMkResultBuilderProperties();
                 properties.serviceDescription = "service_description";
                 properties.outputDetails = true;
-                properties.piggybackHostname = null;
+                properties.piggybackHostname = "";
 
                 //WHEN
                 const rendered = renderer.render(TestSuite_ERRORS, {
@@ -201,27 +201,6 @@ describe('checkmk result builder', () => {
                 //THEN
                 expect(rendered).toContain(errorTestSuite);
                 expect(rendered).toContain(errorScreenshot);
-            })
-        });
-
-        describe('render error without details and undefined piggyback hostname', () => {
-            it('should not render piggyback router', () => {
-                //GIVEN
-                const properties = new CheckMkResultBuilderProperties();
-                properties.serviceDescription = "service_description";
-                properties.outputDetails = false;
-                properties.piggybackHostname = undefined;
-
-                //WHEN
-                const rendered = renderer.render(TestSuite_ERRORS, {
-                    currentSuite: TestSuite_ERRORS as TestSuiteContext,
-                    currentCase: undefined,
-                    props: properties
-                });
-
-                //THEN
-                expect(rendered).toContain(errorTestSuite);
-                expect(rendered).not.toContain(errorScreenshot);
             })
         });
     });

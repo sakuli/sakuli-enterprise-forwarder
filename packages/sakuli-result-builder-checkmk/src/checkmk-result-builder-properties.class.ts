@@ -1,4 +1,4 @@
-import { BooleanProperty, Maybe, StringProperty } from '@sakuli/commons'
+import { BooleanProperty, StringProperty } from '@sakuli/commons'
 import { IsBoolean, IsString } from 'class-validator'
 
 export class CheckMkResultBuilderProperties {
@@ -8,7 +8,7 @@ export class CheckMkResultBuilderProperties {
      */
     @StringProperty("sakuli.forwarder.check_mk.piggyback_hostname")
     @IsString()
-    piggybackHostname: Maybe<string>;
+    piggybackHostname: string = "";
 
     /**
      * Name of the reported section (<<<YOUR_SECTION_NAME>>>)
