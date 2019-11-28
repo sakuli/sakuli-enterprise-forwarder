@@ -218,6 +218,51 @@ describe('checkmk result builder', () => {
                 expect(rendered).toContain(errorScreenshot);
             })
         });
+
+        describe('render error with piggybackHostname null', () => {
+            it('should not render piggyback router', () => {
+                //GIVEN
+                const properties = {
+                    serviceDescription: "service_description",
+                    sectionName: "local",
+                    outputDetails: true,
+                    piggybackHostname: null
+                };
+
+                //WHEN
+                const rendered = renderer.render(TestSuite_ERRORS, {
+                    currentSuite: TestSuite_ERRORS as TestSuiteContext,
+                    currentCase: undefined,
+                    props: properties
+                });
+
+                //THEN
+                expect(rendered).toContain(errorTestSuite);
+                expect(rendered).toContain(errorScreenshot);
+            })
+        });
+
+        describe('render error without details and undefined piggyback hostname', () => {
+            it('should not render piggyback router', () => {
+                //GIVEN
+                const properties = {
+                    serviceDescription: "service_description",
+                    sectionName: "local",
+                    outputDetails: false,
+                    piggybackHostname: undefined
+                };
+                //WHEN
+                const rendered = renderer.render(TestSuite_ERRORS, {
+                    currentSuite: TestSuite_ERRORS as TestSuiteContext,
+                    currentCase: undefined,
+                    props: properties
+                });
+
+                //THEN
+                expect(rendered).toContain(errorTestSuite);
+                expect(rendered).not.toContain(errorScreenshot);
+            })
+        });
     });
 
     describe('with section name configuration', () => {
