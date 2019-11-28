@@ -3,10 +3,6 @@ import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator'
 
 export class CheckMkForwarderProperties {
 
-    public constructor(init?:Partial<CheckMkForwarderProperties>) {
-        Object.assign(this, init);
-    }
-
     /**
      * Send results to a CheckMK-enabled monitoring system, using the parameters below in your 'sakuli.properties' to activate the forwarder.
      */

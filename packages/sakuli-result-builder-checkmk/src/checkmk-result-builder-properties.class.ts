@@ -3,10 +3,6 @@ import { IsBoolean, IsString } from 'class-validator'
 
 export class CheckMkResultBuilderProperties {
 
-    public constructor(init?:Partial<CheckMkResultBuilderProperties>) {
-        Object.assign(this, init);
-    }
-
     /**
      * Hostname for piggyback check results (<<<<YOUR_HOSTNAME_HERE>>>>)
      */
