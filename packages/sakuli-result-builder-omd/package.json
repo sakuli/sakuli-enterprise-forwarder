@@ -12,7 +12,7 @@
   "dependencies": {
     "@sakuli/commons": "2.2.0",
     "@sakuli/core": "2.2.0",
-    "@sakuli/result-builder-commons": "^2.2.0",
+    "@sakuli/result-builder-commons": "2.2.0",
     "common-tags": "1.8.0",
     "dateformat": "3.0.3",
     "sneer": "1.0.1",
