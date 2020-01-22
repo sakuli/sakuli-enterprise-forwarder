@@ -1,5 +1,5 @@
-import {TestContextEntity} from "@sakuli/core";
-import {renderPerformanceData} from "./templates/performance_data";
+import { TestContextEntity } from "@sakuli/core";
+import { renderPerformanceData } from "./templates/performance_data";
 import {
     getEntityId,
     getNagiosResultState,
@@ -8,7 +8,7 @@ import {
     renderShortSummary,
     TestContextOutputBuilder
 } from "@sakuli/result-builder-commons";
-import {oneLine, stripIndents} from "common-tags";
+import { oneLine, stripIndents } from "common-tags";
 
 export class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder {
     public render(testContextEntity: TestContextEntity, params: OutputResultParameters): string {
@@ -28,15 +28,15 @@ export class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder 
         `;
 
         if (props.piggybackHostname && props.piggybackHostname.length) {
-            return stripIndents`<<<<${props.piggybackHostname}>>>>
+            return `${stripIndents`<<<<${props.piggybackHostname}>>>>
                 <<<${props.sectionName}>>>
                 ${data}
                 <<<<>>>>
-                `;
+                `}\n`;
         } else {
-            return stripIndents`<<<${props.sectionName}>>>
+            return `${stripIndents`<<<${props.sectionName}>>>
                 ${data}
-                `;
+                `}\n`;
         }
     }
 }
