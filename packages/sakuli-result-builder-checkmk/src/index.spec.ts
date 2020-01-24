@@ -1,13 +1,13 @@
-import {readFileSync} from 'fs';
-import {join} from "path";
-import {TestCaseContext, TestContextEntity, TestExecutionContext, TestSuiteContext} from "@sakuli/core";
-import {SimpleLogger} from "@sakuli/commons";
-import {TestSuites} from './__mocks__';
-import {CheckMkTestResultOutputBuilder} from "./index";
-import {TestSuite_OK} from "./__mocks__/test-suite-ok.entity";
-import {TestCase_OK} from "./__mocks__/test-case-ok.entity";
-import {TestSuite_ERRORS} from "./__mocks__/test-suite-error.entity";
-import {stripIndents} from "common-tags";
+import { readFileSync } from 'fs';
+import { join } from "path";
+import { TestCaseContext, TestContextEntity, TestExecutionContext, TestSuiteContext } from "@sakuli/core";
+import { SimpleLogger } from "@sakuli/commons";
+import { TestSuites } from './__mocks__';
+import { CheckMkTestResultOutputBuilder } from "./index";
+import { TestSuite_OK } from "./__mocks__/test-suite-ok.entity";
+import { TestCase_OK } from "./__mocks__/test-case-ok.entity";
+import { TestSuite_ERRORS } from "./__mocks__/test-suite-error.entity";
+import { stripIndents } from "common-tags";
 
 describe('checkmk result builder', () => {
     let ctx: TestExecutionContext;
@@ -100,11 +100,11 @@ describe('checkmk result builder', () => {
                     outputDetails: true,
                     piggybackHostname: "piggyback_host",
                 };
-                const content = readFileSync(join(__dirname, '__snapshots__', 'suites', key + '.txt')).toString();
-                expected = stripIndents`<<<<${properties.piggybackHostname}>>>>
+                const content = stripIndents`${readFileSync(join(__dirname, '__snapshots__', 'suites', key + '.txt')).toString()}`;
+                expected = `${stripIndents`<<<<${properties.piggybackHostname}>>>>
                 ${content}
                 <<<<>>>>
-                `
+                `}\n`
             });
 
             it('should match static file', () => {
