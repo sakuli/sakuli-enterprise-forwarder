@@ -11,7 +11,7 @@
     "copy": "node ../../scripts/move-files.js ./out .",
     "build": "tsc",
     "build:release": "tsc && npm run obfuscate && npm run copy",
-    "prepublishOnly": "lerna bootstrap --ignore integration-tests && npm run build:release && npm test"
+    "prepublishOnly": "npm run build:release && npm test"
   },
   "dependencies": {
     "@sakuli/commons": "2.2.0",

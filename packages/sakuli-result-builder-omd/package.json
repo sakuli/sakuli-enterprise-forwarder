@@ -34,6 +34,6 @@
     "build": "tsc",
     "build:release": "tsc && npm run obfuscate && npm run copy",
     "test": "jest",
-    "prepublishOnly": "lerna bootstrap --ignore integration-tests && npm run build:release && npm test"
+    "prepublishOnly": "npm run build:release && npm test"
   }
 }
