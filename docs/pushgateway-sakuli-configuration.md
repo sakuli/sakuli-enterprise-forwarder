@@ -4,7 +4,7 @@
 |---------------------------------------|----------------------------|
 | sakuli.forwarder.prometheus.api.host  | address of prometheus host |
 | sakuli.forwarder.prometheus.api.port  | port of prometheus host    |
-| sakuli.forwarder.prometheus.api.job   | value of the job label     |
+| sakuli.forwarder.prometheus.api.job   | value of the job label, configured in the prometheus scrape configuration   |
 
 
 Source:
