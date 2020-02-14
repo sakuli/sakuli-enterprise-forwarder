@@ -60,4 +60,12 @@ export class CheckMkForwarderProperties {
     @BooleanProperty("sakuli.forwarder.check_mk.output.details")
     @IsBoolean()
     outputDetails: boolean = true;
+
+    @BooleanProperty("sakuli.forwarder.check_mk.url.enabled")
+    @IsBoolean()
+    urlEnabled: boolean = false;
+
+    @StringProperty("sakuli.forwarder.check_mk.url.name")
+    @IsString()
+    url: string = "";
 }
