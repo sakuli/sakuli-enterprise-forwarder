@@ -333,9 +333,9 @@ describe('checkmk result builder', () => {
 
     describe('with url configuration', () => {
 
-        const testSuiteWithUrlConfigured =
+        const testSuiteWithUrl =
             readFileSync(join(__dirname, '__snapshots__', 'suites', 'TestSuite_OK_with_Url.txt')).toString();
-        const testSuiteWithoutUrlConfigured =
+        const testSuiteWithoutUrl =
             readFileSync(join(__dirname, '__snapshots__', 'suites', 'TestSuite_OK_with_Section.txt')).toString();
 
         it('should print url', () => {
@@ -356,7 +356,27 @@ describe('checkmk result builder', () => {
             });
 
             //THEN
-            expect(rendered).toContain(testSuiteWithUrlConfigured);
+            expect(rendered).toContain(testSuiteWithUrl);
+        });
+
+        it('should print empty url', () => {
+            //GIVEN
+            const properties = {
+                serviceDescription: "service_description",
+                outputDetails: true,
+                sectionName: "Isengard",
+                urlEnabled: true
+            };
+
+            //WHEN
+            const rendered = renderer.render(TestSuite_OK, {
+                currentSuite: TestSuite_OK as TestSuiteContext,
+                currentCase: TestCase_OK as TestCaseContext,
+                props: properties
+            });
+
+            //THEN
+            expect(rendered).toContain(testSuiteWithoutUrl);
         });
 
         it('should not print url', () => {
@@ -377,7 +397,7 @@ describe('checkmk result builder', () => {
             });
 
             //THEN
-            expect(rendered).toContain(testSuiteWithoutUrlConfigured);
+            expect(rendered).toContain(testSuiteWithoutUrl);
         });
     });
 });

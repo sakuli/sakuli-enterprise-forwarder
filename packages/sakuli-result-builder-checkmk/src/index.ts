@@ -23,7 +23,7 @@ export class CheckMkTestResultOutputBuilder implements TestContextOutputBuilder 
         ${getNagiosResultState(testContextEntity)}
         ${serviceDescription}
         ${renderPerformanceData(testContextEntity)}
-        ${props && props.urlEnabled ? props.url : ""}
+        ${props.urlEnabled && props.url ? props.url : ""}
         ${renderShortSummary(testContextEntity)}
         ${props.outputDetails ? renderDetailedSummary(testContextEntity) : ""}
         `;
