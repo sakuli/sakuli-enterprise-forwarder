@@ -1,7 +1,7 @@
 import { BooleanProperty, Maybe, NumberProperty, StringProperty } from "@sakuli/commons";
 import { IsBoolean, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
-export class PrometheusProperties {
+export class PrometheusForwarderProperties {
 
     @BooleanProperty("sakuli.forwarder.prometheus.enabled")
     @IsBoolean()
