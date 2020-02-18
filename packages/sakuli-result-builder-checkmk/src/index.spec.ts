@@ -1,7 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from "path";
-import { TestCaseContext, TestContextEntity, TestExecutionContext, TestSuiteContext } from "@sakuli/core";
-import { SimpleLogger } from "@sakuli/commons";
+import { TestCaseContext, TestContextEntity, TestSuiteContext } from "@sakuli/core";
 import { TestSuites } from './__mocks__';
 import { CheckMkTestResultOutputBuilder } from "./index";
 import { TestSuite_OK } from "./__mocks__/test-suite-ok.entity";
@@ -10,13 +9,11 @@ import { TestSuite_ERRORS } from "./__mocks__/test-suite-error.entity";
 import { stripIndents } from "common-tags";
 
 describe('checkmk result builder', () => {
-    let ctx: TestExecutionContext;
     let renderer: CheckMkTestResultOutputBuilder;
     const errorTestSuite = readFileSync(join(__dirname, '__snapshots__', 'suites', 'TestSuite_ERRORS.txt')).toString();
     const errorScreenshot = readFileSync(join(__dirname, '__snapshots__', 'screenshots', 'Screenshot_ERROR.txt')).toString();
 
     beforeEach(() => {
-        ctx = new TestExecutionContext(new SimpleLogger);
         renderer = new CheckMkTestResultOutputBuilder();
     });
 
@@ -331,6 +328,76 @@ describe('checkmk result builder', () => {
             expect(rendered).toContain(stripIndents`<<<<${properties.piggybackHostname}>>>>
                                                     ${testSuiteWithSectionConfigured}
                                                     <<<<>>>>`);
+        });
+    });
+
+    describe('with url configuration', () => {
+
+        const testSuiteWithUrl =
+            readFileSync(join(__dirname, '__snapshots__', 'suites', 'TestSuite_OK_with_Url.txt')).toString();
+        const testSuiteWithoutUrl =
+            readFileSync(join(__dirname, '__snapshots__', 'suites', 'TestSuite_OK_with_Section.txt')).toString();
+
+        it('should print url', () => {
+            //GIVEN
+            const properties = {
+                serviceDescription: "service_description",
+                outputDetails: true,
+                sectionName: "Isengard",
+                urlEnabled: true,
+                url: "https://sakuli.io"
+            };
+
+            //WHEN
+            const rendered = renderer.render(TestSuite_OK, {
+                currentSuite: TestSuite_OK as TestSuiteContext,
+                currentCase: TestCase_OK as TestCaseContext,
+                props: properties
+            });
+
+            //THEN
+            expect(rendered).toContain(testSuiteWithUrl);
+        });
+
+        it('should print empty url', () => {
+            //GIVEN
+            const properties = {
+                serviceDescription: "service_description",
+                outputDetails: true,
+                sectionName: "Isengard",
+                urlEnabled: true
+            };
+
+            //WHEN
+            const rendered = renderer.render(TestSuite_OK, {
+                currentSuite: TestSuite_OK as TestSuiteContext,
+                currentCase: TestCase_OK as TestCaseContext,
+                props: properties
+            });
+
+            //THEN
+            expect(rendered).toContain(testSuiteWithoutUrl);
+        });
+
+        it('should not print url', () => {
+            //GIVEN
+            const properties = {
+                serviceDescription: "service_description",
+                outputDetails: true,
+                sectionName: "Isengard",
+                urlEnabled: false,
+                url: "https://sakuli.io"
+            };
+
+            //WHEN
+            const rendered = renderer.render(TestSuite_OK, {
+                currentSuite: TestSuite_OK as TestSuiteContext,
+                currentCase: TestCase_OK as TestCaseContext,
+                props: properties
+            });
+
+            //THEN
+            expect(rendered).toContain(testSuiteWithoutUrl);
         });
     });
 });
