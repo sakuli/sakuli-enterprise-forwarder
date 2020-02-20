@@ -20,4 +20,8 @@ export class PrometheusForwarderProperties {
     @IsString()
     @IsNotEmpty()
     apiJob: string = "";
+
+    @BooleanProperty("sakuli.forwarder.prometheus.push.immediately")
+    @IsBoolean()
+    pushImmediately: Maybe<boolean> = false;
 }
