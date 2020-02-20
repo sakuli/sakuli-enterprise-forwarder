@@ -1,6 +1,6 @@
 module.exports = {
     preset: 'ts-jest',
-    name: 'sakuli-forwarder-icinga2',
-    displayName: 'Sakuli Forwarder Icinga2',
+    name: 'sakuli-forwarder-prometheus',
+    displayName: 'Sakuli Forwarder Prometheus',
     rootDir: './src'
   };
