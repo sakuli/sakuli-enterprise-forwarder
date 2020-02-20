@@ -10,22 +10,12 @@ jest.mock('prom-client');
 describe("prometheus forwarder", () => {
 
     let prometheusForwarder: PrometheusForwarder;
+    const context = createTestExecutionContextMock();
 
     const logger = mockPartial<SimpleLogger>({
         info: jest.fn(),
         debug: jest.fn()
     });
-
-    function getProjectWithProps(props: any){
-        return mockPartial<Project>({
-            has(key: string): boolean {
-                return props[key] !== undefined;
-            },
-            get(key: string): any {
-                return props[key];
-            }
-        })
-    }
 
     beforeEach(() => {
        prometheusForwarder = new PrometheusForwarder();
@@ -47,12 +37,14 @@ describe("prometheus forwarder", () => {
     it("should fallback to default if port is not set", async () =>{
         //GIVEN
         const project = getProjectWithProps({
+            "sakuli.forwarder.prometheus.enabled": true,
             "sakuli.forwarder.prometheus.api.host": 'localhost',
             "sakuli.forwarder.prometheus.api.job": 'foo'
         });
+        await prometheusForwarder.setup(project, logger);
 
         //WHEN
-        await prometheusForwarder.setup(project, logger);
+        await prometheusForwarder.forward(context);
 
         //THEN
         expect(Pushgateway).toHaveBeenCalledWith("http://localhost:9091")
@@ -79,10 +71,21 @@ describe("prometheus forwarder", () => {
         await prometheusForwarder.setup(project, logger);
 
         //WHEN
-        let forward = prometheusForwarder.forward(createTestExecutionContextMock());
+        let forward = prometheusForwarder.forward(context);
 
         //THEN
         await expect(forward).resolves.toBeUndefined();
         expect(logger.info).toBeCalledWith("Prometheus forwarding disabled via properties.");
-    })
+    });
+
+    function getProjectWithProps(props: any){
+        return mockPartial<Project>({
+            has(key: string): boolean {
+                return props[key] !== undefined;
+            },
+            get(key: string): any {
+                return props[key];
+            }
+        })
+    }
 });

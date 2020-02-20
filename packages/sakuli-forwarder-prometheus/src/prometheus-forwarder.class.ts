@@ -1,29 +1,18 @@
-import {
-    FinishedMeasurable,
-    Forwarder,
-    Project,
-    TestActionContext,
-    TestCaseContext,
-    TestExecutionContext,
-    TestStepContext,
-    TestSuiteContext
-} from "@sakuli/core";
+import { Forwarder, Project, TestExecutionContext } from "@sakuli/core";
 import { validateProps } from "@sakuli/result-builder-commons";
 import { createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger } from "@sakuli/commons";
 import { PrometheusForwarderProperties } from "./prometheus-properties.class";
-import { Pushgateway } from 'prom-client'
+import { Gauge, Pushgateway } from 'prom-client'
 
 export class PrometheusForwarder implements Forwarder {
 
     private properties: Maybe<PrometheusForwarderProperties>;
     private logger: Maybe<SimpleLogger>;
-    private gateway: Maybe<Pushgateway>;
 
     async setup(project: Project, logger: SimpleLogger): Promise<void> {
         this.properties = createPropertyObjectFactory(project)(PrometheusForwarderProperties);
         await validateProps(this.properties);
         this.logger = logger;
-        this.gateway = new Pushgateway(`http://${this.properties.apiHost}:${this.properties.apiPort}`);
     }
 
     logDebug(message: string, ...data: any[]) {
@@ -46,7 +35,7 @@ export class PrometheusForwarder implements Forwarder {
         return ifPresent(this.properties, properties => {
             if(properties.enabled){
                 this.logInfo(`Forwarding check result to Prometheus.`);
-                return this.send(properties);
+                return this.send(ctx, properties);
             }
             this.logInfo(`Prometheus forwarding disabled via properties.`);
             return Promise.resolve();
@@ -54,23 +43,13 @@ export class PrometheusForwarder implements Forwarder {
             () => Promise.reject('Could not obtain project object'));
     }
 
-    forwardActionResult(entity: TestActionContext & FinishedMeasurable, ctx: TestExecutionContext): Promise<void> {
-        return Promise.resolve();
+    private addGaugeMetric(name: string, help: string, time: number, labels: Record<string, string>) {
+        const gauge = new Gauge({name, help, labelNames: Object.keys(labels)});
+        gauge.labels(...Object.values(labels)).set(time);
     }
 
-    forwardStepResult(entity: TestStepContext & FinishedMeasurable, ctx: TestExecutionContext): Promise<void> {
-        return Promise.resolve();
-    }
-
-    forwardCaseResult(entity: TestCaseContext & FinishedMeasurable, ctx: TestExecutionContext): Promise<void> {
-        return Promise.resolve();
-    }
-
-    forwardSuiteResult(entity: TestSuiteContext & FinishedMeasurable, ctx: TestExecutionContext): Promise<void> {
-        return Promise.resolve();
-    }
-
-    private send(properties: PrometheusForwarderProperties) {
+    private send(ctx: TestExecutionContext, properties: PrometheusForwarderProperties) {
+        const gateway = new Pushgateway(`http://${properties.apiHost}:${properties.apiPort}`);
         return Promise.resolve();
     }
 }
