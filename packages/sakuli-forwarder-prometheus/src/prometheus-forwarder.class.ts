@@ -2,7 +2,7 @@ import { Forwarder, Project, TestExecutionContext } from "@sakuli/core";
 import { validateProps } from "@sakuli/result-builder-commons";
 import { createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger } from "@sakuli/commons";
 import { PrometheusForwarderProperties } from "./prometheus-properties.class";
-import { Gauge, Pushgateway } from 'prom-client'
+import { Pushgateway } from 'prom-client'
 
 export class PrometheusForwarder implements Forwarder {
 
@@ -43,13 +43,12 @@ export class PrometheusForwarder implements Forwarder {
             () => Promise.reject('Could not obtain project object'));
     }
 
-    private addGaugeMetric(name: string, help: string, time: number, labels: Record<string, string>) {
-        const gauge = new Gauge({name, help, labelNames: Object.keys(labels)});
-        gauge.labels(...Object.values(labels)).set(time);
-    }
 
-    private send(ctx: TestExecutionContext, properties: PrometheusForwarderProperties) {
+    private async send(ctx: TestExecutionContext, properties: PrometheusForwarderProperties) {
         const gateway = new Pushgateway(`http://${properties.apiHost}:${properties.apiPort}`);
-        return Promise.resolve();
+
+        ctx.testSuites.forEach((testSuiteContext, index) => {
+            this.logDebug(`Adding suite ${testSuiteContext.id} to gauges.`);
+        });
     }
 }

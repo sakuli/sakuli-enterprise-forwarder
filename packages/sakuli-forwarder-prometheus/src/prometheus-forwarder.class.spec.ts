@@ -1,16 +1,15 @@
 import { PrometheusForwarder } from "./prometheus-forwarder.class";
 import { mockPartial } from "sneer";
-import { Project } from "@sakuli/core";
+import { Project, TestExecutionContext } from "@sakuli/core";
 import { SimpleLogger } from "@sakuli/commons";
 import { Pushgateway } from "prom-client";
-import { createTestExecutionContextMock } from "./__mocks__";
 
 jest.mock('prom-client');
 
 describe("prometheus forwarder", () => {
 
     let prometheusForwarder: PrometheusForwarder;
-    const context = createTestExecutionContextMock();
+    let context: TestExecutionContext;
 
     const logger = mockPartial<SimpleLogger>({
         info: jest.fn(),
@@ -18,7 +17,24 @@ describe("prometheus forwarder", () => {
     });
 
     beforeEach(() => {
-       prometheusForwarder = new PrometheusForwarder();
+        prometheusForwarder = new PrometheusForwarder();
+        context = new TestExecutionContext(logger);
+        context.startExecution();
+        context.startTestSuite({id: 'Suite1'});
+        context.startTestCase({id: 'Suite1Case1'});
+        context.endTestCase();
+        context.startTestCase({id: 'Suite1Case2'});
+        context.endTestCase();
+        context.endTestSuite();
+        context.endExecution();
+        context.startExecution();
+        context.startTestSuite({id: 'Suite2'});
+        context.startTestCase({id: 'Suite2Case1'});
+        context.endTestCase();
+        context.startTestCase({id: 'Suite2Case2'});
+        context.endTestCase();
+        context.endTestSuite();
+        context.endExecution();
     });
 
     it.skip("should throw in case host is not set", async () =>{
