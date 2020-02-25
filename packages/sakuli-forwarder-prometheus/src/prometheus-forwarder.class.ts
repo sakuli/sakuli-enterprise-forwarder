@@ -2,7 +2,7 @@ import { Forwarder, Project, TestExecutionContext } from "@sakuli/core";
 import { validateProps } from "@sakuli/result-builder-commons";
 import { createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger } from "@sakuli/commons";
 import { PrometheusForwarderProperties } from "./prometheus-properties.class";
-import { Pushgateway } from 'prom-client'
+import { pushgatewayService } from "./pushgateway.service";
 
 export class PrometheusForwarder implements Forwarder {
 
@@ -45,10 +45,9 @@ export class PrometheusForwarder implements Forwarder {
 
 
     private async send(ctx: TestExecutionContext, properties: PrometheusForwarderProperties) {
-        const gateway = new Pushgateway(`http://${properties.apiHost}:${properties.apiPort}`);
-
         ctx.testSuites.forEach((testSuiteContext, index) => {
             this.logDebug(`Adding suite ${testSuiteContext.id} to gauges.`);
         });
+        return await pushgatewayService().push(properties);
     }
 }

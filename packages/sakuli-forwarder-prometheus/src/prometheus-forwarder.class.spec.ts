@@ -1,15 +1,16 @@
+jest.mock('prom-client');
+jest.mock('./pushgateway.service');
 import { PrometheusForwarder } from "./prometheus-forwarder.class";
 import { mockPartial } from "sneer";
 import { Project, TestExecutionContext } from "@sakuli/core";
 import { SimpleLogger } from "@sakuli/commons";
-import { Pushgateway } from "prom-client";
-
-jest.mock('prom-client');
+import { PrometheusForwarderProperties } from "./prometheus-properties.class";
 
 describe("prometheus forwarder", () => {
 
     let prometheusForwarder: PrometheusForwarder;
     let context: TestExecutionContext;
+    const {pushgatewayService} = require('./pushgateway.service');
 
     const logger = mockPartial<SimpleLogger>({
         info: jest.fn(),
@@ -35,10 +36,15 @@ describe("prometheus forwarder", () => {
         context.endTestCase();
         context.endTestSuite();
         context.endExecution();
+
+        jest.resetAllMocks();
+        pushgatewayService.mockReturnValue(mockPartial({
+            push: jest.fn().mockResolvedValue({})
+        }));
     });
 
     it.skip("should throw in case host is not set", async () =>{
-        //TODO: fix after https://github.com/sakuli/sakuli/issues/350
+        //TODO: enable after https://github.com/sakuli/sakuli/issues/350
         //GIVEN
         const project = getProjectWithProps({
             "sakuli.forwarder.prometheus.api.job": 'foo'
@@ -63,11 +69,15 @@ describe("prometheus forwarder", () => {
         await prometheusForwarder.forward(context);
 
         //THEN
-        expect(Pushgateway).toHaveBeenCalledWith("http://localhost:9091")
+        expect(pushgatewayService().push)
+            .toHaveBeenCalledWith(
+                expect.objectContaining({
+                    apiPort: 9091
+                }))
     });
 
     it.skip("should throw in case job is not set", async () =>{
-        //TODO: fix after https://github.com/sakuli/sakuli/issues/350
+        //TODO: enable after https://github.com/sakuli/sakuli/issues/350
         //GIVEN
         const project = getProjectWithProps({
             "sakuli.forwarder.prometheus.api.host": 'localhost'
@@ -92,6 +102,26 @@ describe("prometheus forwarder", () => {
         //THEN
         await expect(forward).resolves.toBeUndefined();
         expect(logger.info).toBeCalledWith("Prometheus forwarding disabled via properties.");
+    });
+
+    it("should send metrics to prometheus", async () =>{
+
+        //GIVEN
+        const project = getProjectWithProps({
+            "sakuli.forwarder.prometheus.enabled": true,
+            "sakuli.forwarder.prometheus.api.host": 'localhost',
+            "sakuli.forwarder.prometheus.api.job": 'foo'
+        });
+
+        await prometheusForwarder.setup(project, logger);
+
+        //WHEN
+        await prometheusForwarder.forward(context);
+
+        //THEN
+        expect(pushgatewayService().push)
+            .toHaveBeenCalledWith(
+                expect.any(PrometheusForwarderProperties));
     });
 
     function getProjectWithProps(props: any){
