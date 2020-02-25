@@ -1,4 +1,3 @@
-jest.mock('prom-client');
 jest.mock('./pushgateway.service');
 import { PrometheusForwarder } from "./prometheus-forwarder.class";
 import { mockPartial } from "sneer";
@@ -37,9 +36,9 @@ describe("prometheus forwarder", () => {
         context.endTestSuite();
         context.endExecution();
 
-        jest.resetAllMocks();
+        jest.clearAllMocks();
         pushgatewayService.mockReturnValue(mockPartial({
-            push: jest.fn().mockResolvedValue({})
+            push: jest.fn().mockResolvedValue("success")
         }));
     });
 
@@ -125,12 +124,13 @@ describe("prometheus forwarder", () => {
         await prometheusForwarder.setup(project, logger);
 
         //WHEN
-        await prometheusForwarder.forward(context);
+        const forwardResult = await prometheusForwarder.forward(context);
 
         //THEN
         expect(pushgatewayService().push)
             .toHaveBeenCalledWith(
                 expect.any(PrometheusForwarderProperties));
+        expect(forwardResult).toBe("success");
     });
 
     function getProjectWithProps(props: any){
