@@ -104,6 +104,15 @@ describe("prometheus forwarder", () => {
         expect(logger.info).toBeCalledWith("Prometheus forwarding disabled via properties.");
     });
 
+    it("should reject in case setup was not called", async () =>{
+
+        //WHEN
+        let forward = prometheusForwarder.forward(context);
+
+        //THEN
+        await expect(forward).rejects.toBe("Could not obtain project object");
+    });
+
     it("should send metrics to prometheus", async () =>{
 
         //GIVEN
