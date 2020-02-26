@@ -1,15 +1,24 @@
-jest.mock('./pushgateway.service');
+import { createGauge } from "./gauge-utils";
 import { PrometheusForwarder } from "./prometheus-forwarder.class";
 import { mockPartial } from "sneer";
 import { Project, TestExecutionContext } from "@sakuli/core";
 import { SimpleLogger } from "@sakuli/commons";
 import { PrometheusForwarderProperties } from "./prometheus-properties.class";
 
+jest.mock('./pushgateway.service');
+jest.mock('./gauge-utils');
+
 describe("prometheus forwarder", () => {
 
     let prometheusForwarder: PrometheusForwarder;
     let context: TestExecutionContext;
     const {pushgatewayService} = require('./pushgateway.service');
+
+    const defaultProject = getProjectWithProps({
+        "sakuli.forwarder.prometheus.enabled": true,
+        "sakuli.forwarder.prometheus.api.host": 'localhost',
+        "sakuli.forwarder.prometheus.api.job": 'foo'
+    });
 
     const logger = mockPartial<SimpleLogger>({
         info: jest.fn(),
@@ -57,12 +66,7 @@ describe("prometheus forwarder", () => {
 
     it("should fallback to default if port is not set", async () =>{
         //GIVEN
-        const project = getProjectWithProps({
-            "sakuli.forwarder.prometheus.enabled": true,
-            "sakuli.forwarder.prometheus.api.host": 'localhost',
-            "sakuli.forwarder.prometheus.api.job": 'foo'
-        });
-        await prometheusForwarder.setup(project, logger);
+        await prometheusForwarder.setup(defaultProject, logger);
 
         //WHEN
         await prometheusForwarder.forward(context);
@@ -115,13 +119,7 @@ describe("prometheus forwarder", () => {
     it("should send metrics to prometheus", async () =>{
 
         //GIVEN
-        const project = getProjectWithProps({
-            "sakuli.forwarder.prometheus.enabled": true,
-            "sakuli.forwarder.prometheus.api.host": 'localhost',
-            "sakuli.forwarder.prometheus.api.job": 'foo'
-        });
-
-        await prometheusForwarder.setup(project, logger);
+        await prometheusForwarder.setup(defaultProject, logger);
 
         //WHEN
         const forwardResult = await prometheusForwarder.forward(context);
@@ -131,6 +129,47 @@ describe("prometheus forwarder", () => {
             .toHaveBeenCalledWith(
                 expect.any(PrometheusForwarderProperties));
         expect(forwardResult).toBe("success");
+    });
+
+    it("should create gauges for suites", async () => {
+
+        //GIVEN
+        await prometheusForwarder.setup(defaultProject, logger);
+
+        //WHEN
+        await prometheusForwarder.forward(context);
+
+        //THEN
+        expect(createGauge).toHaveBeenCalledTimes(4);
+        expect(createGauge).toHaveBeenNthCalledWith(1, {
+            name: "Suite1_suite_duration_seconds",
+            labels: {
+                "case": "000_Suite1Case1"
+            },
+            measurement: expect.any(Number)
+        });
+        expect(createGauge).toHaveBeenNthCalledWith(2, {
+            name: "Suite1_suite_duration_seconds",
+            labels: {
+                "case": "001_Suite1Case2"
+            },
+            measurement: expect.any(Number)
+        });
+        expect(createGauge).toHaveBeenNthCalledWith(3, {
+            name: "Suite2_suite_duration_seconds",
+            labels: {
+                "case": "000_Suite2Case1"
+            },
+            measurement: expect.any(Number)
+        });
+        expect(createGauge).toHaveBeenNthCalledWith(4, {
+            name: "Suite2_suite_duration_seconds",
+            labels: {
+                "case": "001_Suite2Case2"
+            },
+            measurement: expect.any(Number)
+        });
+
     });
 
     function getProjectWithProps(props: any){

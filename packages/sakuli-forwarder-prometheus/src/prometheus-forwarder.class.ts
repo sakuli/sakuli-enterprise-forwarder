@@ -3,6 +3,7 @@ import { validateProps } from "@sakuli/result-builder-commons";
 import { createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger } from "@sakuli/commons";
 import { PrometheusForwarderProperties } from "./prometheus-properties.class";
 import { pushgatewayService } from "./pushgateway.service";
+import { createGauge } from "./gauge-utils";
 
 export class PrometheusForwarder implements Forwarder {
 
@@ -45,8 +46,18 @@ export class PrometheusForwarder implements Forwarder {
 
 
     private async send(ctx: TestExecutionContext, properties: PrometheusForwarderProperties) {
-        ctx.testSuites.forEach((testSuiteContext, index) => {
+        ctx.testSuites.forEach((testSuiteContext) => {
             this.logDebug(`Adding suite ${testSuiteContext.id} to gauges.`);
+            const testCases = testSuiteContext.getChildren();
+            testCases.forEach((testCaseContext, index) => {
+                createGauge({
+                    name: `${testSuiteContext.id}_suite_duration_seconds`,
+                    labels: {
+                        "case": `${index.toString().padStart(3, '0')}_${testCaseContext.id}`
+                    },
+                    measurement: testCaseContext.duration
+                });
+            });
         });
         return await pushgatewayService().push(properties);
     }
