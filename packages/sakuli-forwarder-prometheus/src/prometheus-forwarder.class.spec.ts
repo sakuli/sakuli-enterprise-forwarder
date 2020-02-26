@@ -1,4 +1,4 @@
-import { createGauge } from "./gauge-utils";
+import { createGauge } from "./create-gauge.function";
 import { PrometheusForwarder } from "./prometheus-forwarder.class";
 import { mockPartial } from "sneer";
 import { Project, TestExecutionContext } from "@sakuli/core";
@@ -6,7 +6,7 @@ import { SimpleLogger } from "@sakuli/commons";
 import { PrometheusForwarderProperties } from "./prometheus-properties.class";
 
 jest.mock('./pushgateway.service');
-jest.mock('./gauge-utils');
+jest.mock('./create-gauge.function');
 
 describe("prometheus forwarder", () => {
 
@@ -28,23 +28,6 @@ describe("prometheus forwarder", () => {
     beforeEach(() => {
         prometheusForwarder = new PrometheusForwarder();
         context = new TestExecutionContext(logger);
-        context.startExecution();
-        context.startTestSuite({id: 'Suite1'});
-        context.startTestCase({id: 'Suite1Case1'});
-        context.endTestCase();
-        context.startTestCase({id: 'Suite1Case2'});
-        context.endTestCase();
-        context.endTestSuite();
-        context.endExecution();
-        context.startExecution();
-        context.startTestSuite({id: 'Suite2'});
-        context.startTestCase({id: 'Suite2Case1'});
-        context.endTestCase();
-        context.startTestCase({id: 'Suite2Case2'});
-        context.endTestCase();
-        context.endTestSuite();
-        context.endExecution();
-
         jest.clearAllMocks();
         pushgatewayService.mockReturnValue(mockPartial({
             push: jest.fn().mockResolvedValue("success")
@@ -134,6 +117,23 @@ describe("prometheus forwarder", () => {
     it("should create gauges for suites", async () => {
 
         //GIVEN
+        context = new TestExecutionContext(logger);
+        context.startExecution();
+        context.startTestSuite({id: 'Suite1'});
+        context.startTestCase({id: 'Suite1Case1'});
+        context.endTestCase();
+        context.startTestCase({id: 'Suite1Case2'});
+        context.endTestCase();
+        context.endTestSuite();
+        context.endExecution();
+        context.startExecution();
+        context.startTestSuite({id: 'Suite2'});
+        context.startTestCase({id: 'Suite2Case1'});
+        context.endTestCase();
+        context.startTestCase({id: 'Suite2Case2'});
+        context.endTestCase();
+        context.endTestSuite();
+        context.endExecution();
         await prometheusForwarder.setup(defaultProject, logger);
 
         //WHEN
@@ -169,7 +169,50 @@ describe("prometheus forwarder", () => {
             },
             measurement: expect.any(Number)
         });
+    });
 
+    it("should create gauges for cases", async () => {
+
+        //GIVEN
+        context = new TestExecutionContext(logger);
+        context.startExecution();
+        context.startTestSuite({id: 'Suite1'});
+        context.startTestCase({id: 'Suite1Case1'});
+        context.startTestStep({id: 'Suite1Case1Step1'});
+        context.endTestStep();
+        context.startTestStep({id: 'Suite1Case1Step2'});
+        context.endTestStep();
+        context.endTestCase();
+        context.endTestSuite();
+        context.endExecution();
+        await prometheusForwarder.setup(defaultProject, logger);
+
+        //WHEN
+        await prometheusForwarder.forward(context);
+
+        //THEN
+        expect(createGauge).toHaveBeenCalledTimes(3);
+        expect(createGauge).toHaveBeenNthCalledWith(1, {
+            name: "Suite1_suite_duration_seconds",
+            labels: {
+                "case": "000_Suite1Case1"
+            },
+            measurement: expect.any(Number)
+        });
+        expect(createGauge).toHaveBeenNthCalledWith(2, {
+            name: "000_Suite1Case1_case_duration_seconds",
+            labels: {
+                "step": "000_Suite1Case1Step1"
+            },
+            measurement: expect.any(Number)
+        });
+        expect(createGauge).toHaveBeenNthCalledWith(3, {
+            name: "000_Suite1Case1_case_duration_seconds",
+            labels: {
+                "step": "001_Suite1Case1Step2"
+            },
+            measurement: expect.any(Number)
+        });
     });
 
     function getProjectWithProps(props: any){
