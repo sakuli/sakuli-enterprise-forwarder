@@ -48,17 +48,37 @@ export class PrometheusForwarder implements Forwarder {
     private async send(ctx: TestExecutionContext, properties: PrometheusForwarderProperties) {
         ctx.testSuites.forEach((testSuiteContext) => {
             this.logDebug(`Adding suite ${testSuiteContext.id} to gauges.`);
+            this.addSuiteWarningGauge(testSuiteContext);
             testSuiteContext.getChildren().forEach((testCaseContext, testCaseIndex) => {
-                this.addTestSuiteDurationGauge(testSuiteContext, testCaseIndex, testCaseContext);
+                this.addCaseWarningThresholdGauge(testCaseIndex, testCaseContext);
+                this.addSuiteDurationGauge(testSuiteContext, testCaseIndex, testCaseContext);
                 testCaseContext.getChildren().forEach((testStepContext, testStepIndex) => {
-                    this.addTestStepDurationGauge(testCaseIndex, testCaseContext, testStepIndex, testStepContext);
+                    createGauge({
+                        name: `${this.addPaddingZeroes(testStepIndex)}_${testStepContext.id}_step_warning_thresholds_seconds`,
+                        measurement: testStepContext.warningTime
+                    });
+                    this.addStepDurationGauge(testCaseIndex, testCaseContext, testStepIndex, testStepContext);
                 });
             });
         });
         return await pushgatewayService().push(properties);
     }
 
-    private addTestSuiteDurationGauge(testSuiteContext: TestSuiteContext,
+    private addSuiteWarningGauge(testSuiteContext: TestSuiteContext) {
+        createGauge({
+            name: `${testSuiteContext.id}_suite_warning_thresholds_seconds`,
+            measurement: testSuiteContext.warningTime
+        });
+    }
+
+    private addCaseWarningThresholdGauge(testCaseIndex: number, testCaseContext: TestContextEntity) {
+        createGauge({
+            name: `${this.addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}_case_warning_thresholds_seconds`,
+            measurement: testCaseContext.warningTime
+        });
+    }
+
+    private addSuiteDurationGauge(testSuiteContext: TestSuiteContext,
                                       testCaseIndex: number,
                                       testCaseContext: TestContextEntity) {
         createGauge({
@@ -70,7 +90,7 @@ export class PrometheusForwarder implements Forwarder {
         });
     }
 
-    private addTestStepDurationGauge(testCaseIndex: number,
+    private addStepDurationGauge(testCaseIndex: number,
                                      testCaseContext: TestContextEntity,
                                      testStepIndex: number,
                                      testStepContext: TestContextEntity) {

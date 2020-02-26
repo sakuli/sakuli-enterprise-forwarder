@@ -215,6 +215,39 @@ describe("prometheus forwarder", () => {
         });
     });
 
+    it("should add warning threshold gauges", async () => {
+
+        //GIVEN
+        context = new TestExecutionContext(logger);
+        context.startExecution();
+        context.startTestSuite({id: 'Suite1', warningTime: 42});
+        context.startTestCase({id: 'Suite1Case1', warningTime: 21});
+        context.startTestStep({id: 'Suite1Case1Step1', warningTime: 10});
+        context.endTestStep();
+        context.endTestCase();
+        context.endTestSuite();
+        context.endExecution();
+        await prometheusForwarder.setup(defaultProject, logger);
+
+        //WHEN
+        await prometheusForwarder.forward(context);
+
+        //THEN
+        expect(createGauge).toHaveBeenCalledTimes(5);
+        expect(createGauge).toHaveBeenNthCalledWith(1, {
+            name: "Suite1_suite_warning_thresholds_seconds",
+            measurement: 42
+        });
+        expect(createGauge).toHaveBeenNthCalledWith(2, {
+            name: "000_Suite1Case1_case_warning_thresholds_seconds",
+            measurement: 21
+        });
+        expect(createGauge).toHaveBeenNthCalledWith(4, {
+            name: "000_Suite1Case1Step1_step_warning_thresholds_seconds",
+            measurement: 10
+        });
+    });
+
     function getProjectWithProps(props: any){
         return mockPartial<Project>({
             has(key: string): boolean {
