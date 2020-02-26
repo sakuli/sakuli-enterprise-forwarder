@@ -11,7 +11,6 @@ describe("push gateway service", () => {
         apiJob: "sameJobDifferentDay"
     };
 
-    const {Pushgateway} = require("prom-client");
     const pushAddMock = jest.fn();
 
     beforeEach(() =>{
