@@ -1,4 +1,9 @@
-import { createGauge } from "./create-gauge.function";
+import {
+    addCaseWarningThresholdGauge,
+    addStepDurationGauge,
+    addSuiteDurationGauge,
+    addSuiteWarningGauge
+} from "./gauge.utils";
 import { PrometheusForwarder } from "./prometheus-forwarder.class";
 import { mockPartial } from "sneer";
 import { Project, TestExecutionContext } from "@sakuli/core";
@@ -6,7 +11,7 @@ import { SimpleLogger } from "@sakuli/commons";
 import { PrometheusForwarderProperties } from "./prometheus-properties.class";
 
 jest.mock('./pushgateway.service');
-jest.mock('./create-gauge.function');
+jest.mock('./gauge.utils');
 
 describe("prometheus forwarder", () => {
 
@@ -140,35 +145,7 @@ describe("prometheus forwarder", () => {
         await prometheusForwarder.forward(context);
 
         //THEN
-        expect(createGauge).toHaveBeenCalledTimes(4);
-        expect(createGauge).toHaveBeenNthCalledWith(1, {
-            name: "Suite1_suite_duration_seconds",
-            labels: {
-                "case": "000_Suite1Case1"
-            },
-            measurement: expect.any(Number)
-        });
-        expect(createGauge).toHaveBeenNthCalledWith(2, {
-            name: "Suite1_suite_duration_seconds",
-            labels: {
-                "case": "001_Suite1Case2"
-            },
-            measurement: expect.any(Number)
-        });
-        expect(createGauge).toHaveBeenNthCalledWith(3, {
-            name: "Suite2_suite_duration_seconds",
-            labels: {
-                "case": "000_Suite2Case1"
-            },
-            measurement: expect.any(Number)
-        });
-        expect(createGauge).toHaveBeenNthCalledWith(4, {
-            name: "Suite2_suite_duration_seconds",
-            labels: {
-                "case": "001_Suite2Case2"
-            },
-            measurement: expect.any(Number)
-        });
+        expect(addSuiteDurationGauge).toHaveBeenCalledTimes(4);
     });
 
     it("should create gauges for cases", async () => {
@@ -191,28 +168,7 @@ describe("prometheus forwarder", () => {
         await prometheusForwarder.forward(context);
 
         //THEN
-        expect(createGauge).toHaveBeenCalledTimes(3);
-        expect(createGauge).toHaveBeenNthCalledWith(1, {
-            name: "Suite1_suite_duration_seconds",
-            labels: {
-                "case": "000_Suite1Case1"
-            },
-            measurement: expect.any(Number)
-        });
-        expect(createGauge).toHaveBeenNthCalledWith(2, {
-            name: "000_Suite1Case1_case_duration_seconds",
-            labels: {
-                "step": "000_Suite1Case1Step1"
-            },
-            measurement: expect.any(Number)
-        });
-        expect(createGauge).toHaveBeenNthCalledWith(3, {
-            name: "000_Suite1Case1_case_duration_seconds",
-            labels: {
-                "step": "001_Suite1Case1Step2"
-            },
-            measurement: expect.any(Number)
-        });
+        expect(addStepDurationGauge).toHaveBeenCalledTimes(2);
     });
 
     it("should add warning threshold gauges", async () => {
@@ -233,19 +189,9 @@ describe("prometheus forwarder", () => {
         await prometheusForwarder.forward(context);
 
         //THEN
-        expect(createGauge).toHaveBeenCalledTimes(5);
-        expect(createGauge).toHaveBeenNthCalledWith(1, {
-            name: "Suite1_suite_warning_thresholds_seconds",
-            measurement: 42
-        });
-        expect(createGauge).toHaveBeenNthCalledWith(2, {
-            name: "000_Suite1Case1_case_warning_thresholds_seconds",
-            measurement: 21
-        });
-        expect(createGauge).toHaveBeenNthCalledWith(4, {
-            name: "000_Suite1Case1Step1_step_warning_thresholds_seconds",
-            measurement: 10
-        });
+        expect(addSuiteWarningGauge).toHaveBeenCalledTimes(1);
+        expect(addCaseWarningThresholdGauge).toHaveBeenCalledTimes(1);
+        expect(addStepDurationGauge).toHaveBeenCalledTimes(1);
     });
 
     function getProjectWithProps(props: any){
