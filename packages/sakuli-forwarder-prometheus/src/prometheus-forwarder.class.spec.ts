@@ -165,10 +165,7 @@ describe("prometheus forwarder", () => {
         context.startTestStep({id: 'Suite1Case1Step1'});
         context.endTestStep();
         context.startTestStep({id: 'Suite1Case1Step2'});
-        context.endTestStep();
-        context.endTestCase();
-        context.endTestSuite();
-        context.endExecution();
+        endContext(context);
         await prometheusForwarder.setup(defaultProject, logger);
 
         //WHEN
@@ -186,10 +183,7 @@ describe("prometheus forwarder", () => {
         context.startTestSuite({id: 'Suite1', warningTime: 42});
         context.startTestCase({id: 'Suite1Case1', warningTime: 21});
         context.startTestStep({id: 'Suite1Case1Step1', warningTime: 10});
-        context.endTestStep();
-        context.endTestCase();
-        context.endTestSuite();
-        context.endExecution();
+        endContext(context);
         await prometheusForwarder.setup(defaultProject, logger);
 
         //WHEN
@@ -210,10 +204,7 @@ describe("prometheus forwarder", () => {
         context.startTestSuite({id: 'Suite1', criticalTime: 84});
         context.startTestCase({id: 'Suite1Case1', criticalTime: 42});
         context.startTestStep({id: 'Suite1Case1Step1', criticalTime: 21});
-        context.endTestStep();
-        context.endTestCase();
-        context.endTestSuite();
-        context.endExecution();
+        endContext(context);
         await prometheusForwarder.setup(defaultProject, logger);
 
         //WHEN
@@ -233,10 +224,7 @@ describe("prometheus forwarder", () => {
         context.startTestSuite({id: 'Suite1', error: Error("nonono!")});
         context.startTestCase({id: 'Suite1Case1'});
         context.startTestStep({id: 'Suite1Case1Step1'});
-        context.endTestStep();
-        context.endTestCase();
-        context.endTestSuite();
-        context.endExecution();
+        endContext(context);
         await prometheusForwarder.setup(defaultProject, logger);
 
         //WHEN
@@ -256,10 +244,7 @@ describe("prometheus forwarder", () => {
         context.startTestSuite({id: 'Suite1'});
         context.startTestCase({id: 'Suite1Case1', error: Error("nonono!")});
         context.startTestStep({id: 'Suite1Case1Step1'});
-        context.endTestStep();
-        context.endTestCase();
-        context.endTestSuite();
-        context.endExecution();
+        endContext(context);
         await prometheusForwarder.setup(defaultProject, logger);
 
         //WHEN
@@ -279,10 +264,7 @@ describe("prometheus forwarder", () => {
         context.startTestSuite({id: 'Suite1'});
         context.startTestCase({id: 'Suite1Case1'});
         context.startTestStep({id: 'Suite1Case1Step1', error: Error("nonono!")});
-        context.endTestStep();
-        context.endTestCase();
-        context.endTestSuite();
-        context.endExecution();
+        endContext(context);
         await prometheusForwarder.setup(defaultProject, logger);
 
         //WHEN
@@ -293,6 +275,13 @@ describe("prometheus forwarder", () => {
         expect(addCaseError).not.toHaveBeenCalled();
         expect(addStepError).toHaveBeenCalledTimes(1);
     });
+
+    function endContext(ctx: TestExecutionContext){
+        ctx.endTestStep();
+        ctx.endTestCase();
+        ctx.endTestSuite();
+        ctx.endExecution();
+    }
 
     function getProjectWithProps(props: any){
         return mockPartial<Project>({
