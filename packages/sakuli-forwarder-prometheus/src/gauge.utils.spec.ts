@@ -1,8 +1,12 @@
 jest.mock('prom-client');
 import { Gauge } from "prom-client";
 import { mockPartial } from "sneer";
-import { TestCaseContext, TestSuiteContext } from "@sakuli/core";
-import { addCaseWarningThresholdGauge, addSuiteWarningThresholdGauge } from "./gauge.utils";
+import { TestCaseContext, TestStepContext, TestSuiteContext } from "@sakuli/core";
+import {
+    addCaseWarningThresholdGauge,
+    addStepWarningThresholdGauge,
+    addSuiteWarningThresholdGauge
+} from "./gauge.utils";
 
 describe("gauge utils", () => {
 
@@ -49,5 +53,24 @@ describe("gauge utils", () => {
             help: "Warning threshold for case '001_caseContextMock'"
         });
         expect(setMock).toHaveBeenCalledWith(84);
+    });
+
+    it("should register step warning threshold gauge", () =>{
+
+        //GIVEN
+        const contextMock = mockPartial<TestStepContext>({
+            id: "stepContextMock",
+            warningTime: 12
+        });
+
+        //WHEN
+        addStepWarningThresholdGauge(0, contextMock);
+
+        //THEN
+        expect(Gauge).toHaveBeenCalledWith({
+            name: "000_stepContextMock_step_warning_thresholds_seconds",
+            help: "Warning threshold for step '000_stepContextMock'"
+        });
+        expect(setMock).toHaveBeenCalledWith(12);
     })
 });

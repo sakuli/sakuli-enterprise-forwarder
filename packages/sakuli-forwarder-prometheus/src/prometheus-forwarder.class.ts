@@ -81,9 +81,9 @@ export class PrometheusForwarder implements Forwarder {
         addCaseCriticalThresholdGauge(testCaseIndex, testCaseContext);
         ifPresent(testCaseContext.error, () => addCaseError(testCaseIndex, testCaseContext));
         testCaseContext.getChildren().forEach((testStepContext, testStepIndex) => {
-            ifPresent(testStepContext.error, () => addStepError(testCaseIndex, testStepContext, testStepIndex));
-            addStepWarningThresholdGauge(testCaseIndex, testStepContext, testStepIndex);
-            addStepCriticalThresholdGauge(testCaseIndex, testStepContext, testStepIndex);
+            ifPresent(testStepContext.error, () => addStepError(testStepIndex, testStepContext));
+            addStepWarningThresholdGauge(testStepIndex, testStepContext);
+            addStepCriticalThresholdGauge(testStepIndex, testStepContext);
             addStepDurationGauge(testCaseIndex, testCaseContext, testStepIndex, testStepContext);
         });
     }

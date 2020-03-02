@@ -32,12 +32,10 @@ export function  addCaseWarningThresholdGauge(testCaseIndex: number, testCaseCon
     });
 }
 
-export function  addStepWarningThresholdGauge(testCaseIndex: number,
-                                              testStepContext: TestContextEntity,
-                                              testStepIndex: number) {
+export function  addStepWarningThresholdGauge(testStepIndex: number, testStepContext: TestContextEntity) {
     createGauge({
         name: `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}_step_warning_thresholds_seconds`,
-        help: `Warning threshold for step ${addPaddingZeroes(testStepIndex)}_${testStepContext.id}`,
+        help: `Warning threshold for step '${addPaddingZeroes(testStepIndex)}_${testStepContext.id}'`,
         measurement: testStepContext.warningTime
     });
 }
@@ -77,9 +75,7 @@ export function addCaseCriticalThresholdGauge(testCaseIndex: number, testCaseCon
 
 }
 
-export function addStepCriticalThresholdGauge(testCaseIndex: number,
-                                              testStepContext: TestContextEntity,
-                                              testStepIndex: number) {
+export function addStepCriticalThresholdGauge(testStepIndex: number, testStepContext: TestContextEntity) {
 
 }
 
@@ -91,9 +87,7 @@ export function addCaseError(testCaseIndex: number, testCaseContext: TestContext
 
 }
 
-export function addStepError(testCaseIndex: number,
-                                              testStepContext: TestContextEntity,
-                                              testStepIndex: number) {
+export function addStepError(testStepIndex: number, testStepContext: TestContextEntity) {
 
 }
 
