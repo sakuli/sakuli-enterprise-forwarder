@@ -1,8 +1,9 @@
 import {
     addCaseWarningThresholdGauge,
     addStepDurationGauge,
+    addStepWarningThresholdGauge,
     addSuiteDurationGauge,
-    addSuiteWarningGauge
+    addSuiteWarningThresholdGauge
 } from "./gauge.utils";
 import { PrometheusForwarder } from "./prometheus-forwarder.class";
 import { mockPartial } from "sneer";
@@ -189,9 +190,9 @@ describe("prometheus forwarder", () => {
         await prometheusForwarder.forward(context);
 
         //THEN
-        expect(addSuiteWarningGauge).toHaveBeenCalledTimes(1);
+        expect(addSuiteWarningThresholdGauge).toHaveBeenCalledTimes(1);
         expect(addCaseWarningThresholdGauge).toHaveBeenCalledTimes(1);
-        expect(addStepDurationGauge).toHaveBeenCalledTimes(1);
+        expect(addStepWarningThresholdGauge).toHaveBeenCalledTimes(1);
     });
 
     function getProjectWithProps(props: any){

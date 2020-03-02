@@ -9,7 +9,7 @@ function createGauge(gaugeDefinition: GaugeDefinition){
 
 }
 
-export function  addSuiteWarningGauge(testSuiteContext: TestSuiteContext) {
+export function  addSuiteWarningThresholdGauge(testSuiteContext: TestSuiteContext) {
     createGauge({
         name: `${testSuiteContext.id}_suite_warning_thresholds_seconds`,
         measurement: testSuiteContext.warningTime
