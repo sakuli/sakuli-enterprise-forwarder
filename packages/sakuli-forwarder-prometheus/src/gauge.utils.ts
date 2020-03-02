@@ -71,6 +71,20 @@ export function addStepCriticalThresholdGauge(testCaseIndex: number,
 
 }
 
+export function addSuiteError(testSuiteContext: TestSuiteContext) {
+
+}
+
+export function addCaseError(testCaseIndex: number, testCaseContext: TestContextEntity) {
+
+}
+
+export function addStepError(testCaseIndex: number,
+                                              testStepContext: TestContextEntity,
+                                              testStepIndex: number) {
+
+}
+
 function  addPaddingZeroes(number: number){
     return number.toString().padStart(3, '0');
 }

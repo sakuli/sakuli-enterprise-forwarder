@@ -11,6 +11,7 @@ import {
     addStepWarningThresholdGauge,
     addSuiteCriticalThresholdGauge,
     addSuiteDurationGauge,
+    addSuiteError,
     addSuiteWarningThresholdGauge
 } from "./gauge.utils";
 
@@ -66,6 +67,7 @@ export class PrometheusForwarder implements Forwarder {
     private registerSuites(testSuiteContext: TestSuiteContext) {
         addSuiteWarningThresholdGauge(testSuiteContext);
         addSuiteCriticalThresholdGauge(testSuiteContext);
+        ifPresent(testSuiteContext.error, () => addSuiteError(testSuiteContext));
         testSuiteContext.getChildren().forEach((testCaseContext, testCaseIndex) => {
             addSuiteDurationGauge(testSuiteContext, testCaseIndex, testCaseContext);
             this.registerCase(testCaseContext, testCaseIndex);

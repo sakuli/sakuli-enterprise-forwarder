@@ -1,11 +1,14 @@
 import {
     addCaseCriticalThresholdGauge,
+    addCaseError,
     addCaseWarningThresholdGauge,
     addStepCriticalThresholdGauge,
     addStepDurationGauge,
+    addStepError,
     addStepWarningThresholdGauge,
     addSuiteCriticalThresholdGauge,
     addSuiteDurationGauge,
+    addSuiteError,
     addSuiteWarningThresholdGauge
 } from "./gauge.utils";
 import { PrometheusForwarder } from "./prometheus-forwarder.class";
@@ -220,6 +223,29 @@ describe("prometheus forwarder", () => {
         expect(addSuiteCriticalThresholdGauge).toHaveBeenCalledTimes(1);
         expect(addCaseCriticalThresholdGauge).toHaveBeenCalledTimes(1);
         expect(addStepCriticalThresholdGauge).toHaveBeenCalledTimes(1);
+    });
+
+    it("should add error gauge on suite", async () => {
+
+        //GIVEN
+        context = new TestExecutionContext(logger);
+        context.startExecution();
+        context.startTestSuite({id: 'Suite1', error: Error("nonono!")});
+        context.startTestCase({id: 'Suite1Case1'});
+        context.startTestStep({id: 'Suite1Case1Step1'});
+        context.endTestStep();
+        context.endTestCase();
+        context.endTestSuite();
+        context.endExecution();
+        await prometheusForwarder.setup(defaultProject, logger);
+
+        //WHEN
+        await prometheusForwarder.forward(context);
+
+        //THEN
+        expect(addSuiteError).toHaveBeenCalledTimes(1);
+        expect(addCaseError).not.toHaveBeenCalled();
+        expect(addStepError).not.toHaveBeenCalled();
     });
 
     function getProjectWithProps(props: any){
