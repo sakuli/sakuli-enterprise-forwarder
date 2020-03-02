@@ -1,5 +1,6 @@
-import { TestContextEntity, TestSuiteContext } from "@sakuli/core";
+import { TestActionContext, TestContextEntity, TestSuiteContext } from "@sakuli/core";
 import { Gauge, GaugeConfiguration } from "prom-client";
+import { oneLineTrim } from 'common-tags';
 
 interface GaugeDefinition {
     name: string,
@@ -109,15 +110,29 @@ export function addStepCriticalThresholdGauge(testStepIndex: number, testStepCon
     });
 }
 
-export function addSuiteError(testSuiteContext: TestSuiteContext) {
+export function addCaseError(testSuiteContext: TestSuiteContext,
+                             testCaseIndex: number,
+                             testCaseContext: TestContextEntity) {
+    const caseIdentifier = `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`;
+    createGauge({
+        name: `${testSuiteContext.id}_suite_error`,
+        help: oneLineTrim`Error state for suite '${testSuiteContext.id}' in case 
+                          '${caseIdentifier}'`,
+        labels: {
+            "case": `${caseIdentifier}`
+        },
+        measurement: 1
+    });
+}
+
+export function addStepError(testCaseIndex: number, testCaseContext: TestContextEntity) {
 
 }
 
-export function addCaseError(testCaseIndex: number, testCaseContext: TestContextEntity) {
-
-}
-
-export function addStepError(testStepIndex: number, testStepContext: TestContextEntity) {
+export function addActionError(testStepIndex: number,
+                               testStepContext: TestContextEntity,
+                               testActionIndex: number,
+                               testActionContext: TestActionContext) {
 
 }
 

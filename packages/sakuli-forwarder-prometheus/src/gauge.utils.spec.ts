@@ -5,6 +5,7 @@ import { TestCaseContext, TestStepContext, TestSuiteContext } from "@sakuli/core
 import {
     addCaseCriticalThresholdGauge,
     addCaseDurationGauge,
+    addCaseError,
     addCaseWarningThresholdGauge,
     addStepCriticalThresholdGauge,
     addStepDurationGauge,
@@ -180,5 +181,28 @@ describe("gauge utils", () => {
             help: "Critical threshold for step '123_stepContextMock'"
         });
         expect(setMock).toHaveBeenCalledWith(0);
+    });
+
+    it("should register case error", () =>{
+
+        //GIVEN
+        const suiteContextMock = mockPartial<TestSuiteContext>({
+            id: "suiteContextMock",
+        });
+        const caseContextMock = mockPartial<TestCaseContext>({
+            id: "caseContextMock",
+            error: Error("oh noes!")
+        });
+
+        //WHEN
+        addCaseError(suiteContextMock, 1, caseContextMock);
+
+        //THEN
+        expect(Gauge).toHaveBeenCalledWith({
+            name: "suiteContextMock_suite_error",
+            help: "Error state for suite 'suiteContextMock' in case '001_caseContextMock'",
+            labelNames: ["case"]
+        });
+        expect(setMock).toHaveBeenCalledWith({case: "001_caseContextMock"}, 1);
     });
 });

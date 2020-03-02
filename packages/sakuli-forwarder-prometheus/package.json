@@ -20,8 +20,10 @@
     "@sakuli/commons": "2.2.0",
     "@sakuli/core": "2.2.0",
     "@sakuli/result-builder-commons": "2.2.0",
+    "@types/common-tags": "^1.8.0",
     "axios": "0.19.0",
     "class-validator": "0.9.1",
+    "common-tags": "^1.8.0",
     "prom-client": "^11.5.3"
   },
   "devDependencies": {

@@ -1,9 +1,10 @@
 import { Forwarder, Project, TestContextEntity, TestExecutionContext, TestSuiteContext } from "@sakuli/core";
-import { validateProps } from "@sakuli/result-builder-commons";
+import { ifError, validateProps } from "@sakuli/result-builder-commons";
 import { createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger } from "@sakuli/commons";
 import { PrometheusForwarderProperties } from "./prometheus-properties.class";
 import { pushgatewayService } from "./pushgateway.service";
 import {
+    addActionError,
     addCaseCriticalThresholdGauge,
     addCaseDurationGauge,
     addCaseError,
@@ -13,7 +14,6 @@ import {
     addStepError,
     addStepWarningThresholdGauge,
     addSuiteCriticalThresholdGauge,
-    addSuiteError,
     addSuiteWarningThresholdGauge
 } from "./gauge.utils";
 
@@ -69,8 +69,8 @@ export class PrometheusForwarder implements Forwarder {
     private registerSuites(testSuiteContext: TestSuiteContext) {
         addSuiteWarningThresholdGauge(testSuiteContext);
         addSuiteCriticalThresholdGauge(testSuiteContext);
-        ifPresent(testSuiteContext.error, () => addSuiteError(testSuiteContext));
         testSuiteContext.getChildren().forEach((testCaseContext, testCaseIndex) => {
+            ifError(testCaseContext, () => addCaseError(testSuiteContext, testCaseIndex, testCaseContext));
             addCaseDurationGauge(testSuiteContext, testCaseIndex, testCaseContext);
             this.registerCase(testCaseContext, testCaseIndex);
         });
@@ -79,12 +79,22 @@ export class PrometheusForwarder implements Forwarder {
     private registerCase(testCaseContext: TestContextEntity, testCaseIndex: number) {
         addCaseWarningThresholdGauge(testCaseIndex, testCaseContext);
         addCaseCriticalThresholdGauge(testCaseIndex, testCaseContext);
-        ifPresent(testCaseContext.error, () => addCaseError(testCaseIndex, testCaseContext));
         testCaseContext.getChildren().forEach((testStepContext, testStepIndex) => {
-            ifPresent(testStepContext.error, () => addStepError(testStepIndex, testStepContext));
+            ifError(testStepContext, () => addStepError(testCaseIndex, testCaseContext));
             addStepWarningThresholdGauge(testStepIndex, testStepContext);
             addStepCriticalThresholdGauge(testStepIndex, testStepContext);
             addStepDurationGauge(testCaseIndex, testCaseContext, testStepIndex, testStepContext);
+            this.registerSteps(testStepContext, testStepIndex);
         });
+    }
+
+    private registerSteps(testStepContext: TestContextEntity, testStepIndex: number) {
+        testStepContext.getChildren().forEach((testActionContext, testActionIndex) =>{
+            ifError(testActionContext, () => addActionError(
+                testStepIndex,
+                testStepContext,
+                testActionIndex,
+                testActionContext));
+        })
     }
 }

@@ -1,4 +1,5 @@
 import {
+    addActionError,
     addCaseCriticalThresholdGauge,
     addCaseDurationGauge,
     addCaseError,
@@ -8,7 +9,6 @@ import {
     addStepError,
     addStepWarningThresholdGauge,
     addSuiteCriticalThresholdGauge,
-    addSuiteError,
     addSuiteWarningThresholdGauge
 } from "./gauge.utils";
 import { PrometheusForwarder } from "./prometheus-forwarder.class";
@@ -216,33 +216,14 @@ describe("prometheus forwarder", () => {
         expect(addStepCriticalThresholdGauge).toHaveBeenCalledTimes(1);
     });
 
-    it("should add error gauge on suite", async () => {
-
-        //GIVEN
-        context = new TestExecutionContext(logger);
-        context.startExecution();
-        context.startTestSuite({id: 'Suite1', error: Error("nonono!")});
-        context.startTestCase({id: 'Suite1Case1'});
-        context.startTestStep({id: 'Suite1Case1Step1'});
-        endContext(context);
-        await prometheusForwarder.setup(defaultProject, logger);
-
-        //WHEN
-        await prometheusForwarder.forward(context);
-
-        //THEN
-        expect(addSuiteError).toHaveBeenCalledTimes(1);
-        expect(addCaseError).not.toHaveBeenCalled();
-        expect(addStepError).not.toHaveBeenCalled();
-    });
-
     it("should add error gauge on case", async () => {
 
         //GIVEN
         context = new TestExecutionContext(logger);
         context.startExecution();
         context.startTestSuite({id: 'Suite1'});
-        context.startTestCase({id: 'Suite1Case1', error: Error("nonono!")});
+        context.startTestCase({id: 'Suite1Case1'});
+        context.updateCurrentTestCase({error: Error('stop it... NOW!!!')});
         context.startTestStep({id: 'Suite1Case1Step1'});
         endContext(context);
         await prometheusForwarder.setup(defaultProject, logger);
@@ -251,9 +232,9 @@ describe("prometheus forwarder", () => {
         await prometheusForwarder.forward(context);
 
         //THEN
-        expect(addSuiteError).not.toHaveBeenCalled();
         expect(addCaseError).toHaveBeenCalledTimes(1);
         expect(addStepError).not.toHaveBeenCalled();
+        expect(addActionError).not.toHaveBeenCalled();
     });
 
     it("should add error gauge on step", async () => {
@@ -263,7 +244,8 @@ describe("prometheus forwarder", () => {
         context.startExecution();
         context.startTestSuite({id: 'Suite1'});
         context.startTestCase({id: 'Suite1Case1'});
-        context.startTestStep({id: 'Suite1Case1Step1', error: Error("nonono!")});
+        context.startTestStep({id: 'Suite1Case1Step1'});
+        context.updateCurrentTestStep({error: Error('stop it... NOW!!!')});
         endContext(context);
         await prometheusForwarder.setup(defaultProject, logger);
 
@@ -271,9 +253,31 @@ describe("prometheus forwarder", () => {
         await prometheusForwarder.forward(context);
 
         //THEN
-        expect(addSuiteError).not.toHaveBeenCalled();
-        expect(addCaseError).not.toHaveBeenCalled();
+        expect(addCaseError).toHaveBeenCalledTimes(1);
         expect(addStepError).toHaveBeenCalledTimes(1);
+        expect(addActionError).not.toHaveBeenCalled();
+    });
+
+    it("should add error gauge on action", async () => {
+
+        //GIVEN
+        context = new TestExecutionContext(logger);
+        context.startExecution();
+        context.startTestSuite({id: 'Suite1'});
+        context.startTestCase({id: 'Suite1Case1'});
+        context.startTestStep({id: 'Suite1Case1Step1'});
+        context.startTestAction({id: 'Suite1Case1Step1Action1'});
+        context.updateCurrentTestAction({error: Error('stop it... NOW!!!')});
+        endContext(context);
+        await prometheusForwarder.setup(defaultProject, logger);
+
+        //WHEN
+        await prometheusForwarder.forward(context);
+
+        //THEN
+        expect(addCaseError).toHaveBeenCalledTimes(1);
+        expect(addStepError).toHaveBeenCalledTimes(1);
+        expect(addActionError).toHaveBeenCalledTimes(1);
     });
 
     function endContext(ctx: TestExecutionContext){
