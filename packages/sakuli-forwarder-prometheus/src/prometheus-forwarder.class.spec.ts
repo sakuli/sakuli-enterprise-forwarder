@@ -248,6 +248,29 @@ describe("prometheus forwarder", () => {
         expect(addStepError).not.toHaveBeenCalled();
     });
 
+    it("should add error gauge on case", async () => {
+
+        //GIVEN
+        context = new TestExecutionContext(logger);
+        context.startExecution();
+        context.startTestSuite({id: 'Suite1'});
+        context.startTestCase({id: 'Suite1Case1', error: Error("nonono!")});
+        context.startTestStep({id: 'Suite1Case1Step1'});
+        context.endTestStep();
+        context.endTestCase();
+        context.endTestSuite();
+        context.endExecution();
+        await prometheusForwarder.setup(defaultProject, logger);
+
+        //WHEN
+        await prometheusForwarder.forward(context);
+
+        //THEN
+        expect(addSuiteError).not.toHaveBeenCalled();
+        expect(addCaseError).toHaveBeenCalledTimes(1);
+        expect(addStepError).not.toHaveBeenCalled();
+    });
+
     function getProjectWithProps(props: any){
         return mockPartial<Project>({
             has(key: string): boolean {
