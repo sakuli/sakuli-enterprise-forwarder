@@ -37,17 +37,19 @@ export function  addSuiteWarningThresholdGauge(testSuiteContext: TestSuiteContex
 }
 
 export function  addCaseWarningThresholdGauge(testCaseIndex: number, testCaseContext: TestContextEntity) {
+    const caseIdentifier = `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`;
     createGauge({
-        name: `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}_case_warning_thresholds_seconds`,
-        help: `Warning threshold for case '${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}'`,
+        name: `${caseIdentifier}_case_warning_thresholds_seconds`,
+        help: `Warning threshold for case '${caseIdentifier}'`,
         measurement: testCaseContext.warningTime
     });
 }
 
 export function  addStepWarningThresholdGauge(testStepIndex: number, testStepContext: TestContextEntity) {
+    const stepIdentifier = `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}`;
     createGauge({
-        name: `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}_step_warning_thresholds_seconds`,
-        help: `Warning threshold for step '${addPaddingZeroes(testStepIndex)}_${testStepContext.id}'`,
+        name: `${stepIdentifier}_step_warning_thresholds_seconds`,
+        help: `Warning threshold for step '${stepIdentifier}'`,
         measurement: testStepContext.warningTime
     });
 }
@@ -69,11 +71,13 @@ export function  addStepDurationGauge(testCaseIndex: number,
                                       testCaseContext: TestContextEntity,
                                       testStepIndex: number,
                                       testStepContext: TestContextEntity) {
+    const caseIdentifier = `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`;
+    const stepIdentifier = `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}`;
     createGauge({
-        name: `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}_case_duration_seconds`,
-        help: `Duration in seconds of case '${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}' on step '${addPaddingZeroes(testStepIndex)}_${testStepContext.id}'`,
+        name: `${caseIdentifier}_case_duration_seconds`,
+        help: `Duration in seconds of case '${caseIdentifier}' on step '${stepIdentifier}'`,
         labels: {
-            "step": `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}`
+            "step": `${stepIdentifier}`
         },
         measurement: testStepContext.duration
     });
