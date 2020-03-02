@@ -3,6 +3,7 @@ import { Gauge } from "prom-client";
 import { mockPartial } from "sneer";
 import { TestCaseContext, TestStepContext, TestSuiteContext } from "@sakuli/core";
 import {
+    addCaseDurationGauge,
     addCaseWarningThresholdGauge,
     addStepWarningThresholdGauge,
     addSuiteWarningThresholdGauge
@@ -72,5 +73,28 @@ describe("gauge utils", () => {
             help: "Warning threshold for step '000_stepContextMock'"
         });
         expect(setMock).toHaveBeenCalledWith(12);
+    });
+
+    it("should register case duration gauge", () =>{
+
+        //GIVEN
+        const suiteContextMock = mockPartial<TestSuiteContext>({
+            id: "suiteContextMock"
+        });
+        const caseContextMock = mockPartial<TestSuiteContext>({
+            id: "caseContextMock",
+            duration: 33
+        });
+
+        //WHEN
+        addCaseDurationGauge(suiteContextMock, 4, caseContextMock);
+
+        //THEN
+        expect(Gauge).toHaveBeenCalledWith({
+            name: "suiteContextMock_suite_duration_seconds",
+            help: "Duration in seconds of suite 'suiteContextMock' on case 'caseContextMock'",
+            labelNames: ["case"]
+        });
+        expect(setMock).toHaveBeenCalledWith({ case: '004_caseContextMock'}, 33);
     })
 });

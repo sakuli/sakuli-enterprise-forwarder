@@ -1,5 +1,5 @@
 import { TestContextEntity, TestSuiteContext } from "@sakuli/core";
-import { Gauge } from "prom-client";
+import { Gauge, GaugeConfiguration } from "prom-client";
 
 interface GaugeDefinition {
     name: string,
@@ -8,12 +8,24 @@ interface GaugeDefinition {
     measurement: number
 }
 function createGauge(gaugeDefinition: GaugeDefinition){
-    const gauge = new Gauge({
+    let gaugeConfiguration: GaugeConfiguration = {
         name: gaugeDefinition.name,
         help: gaugeDefinition.help
-    });
+    };
 
-    gauge.set(gaugeDefinition.measurement);
+    if(gaugeDefinition.labels){
+        gaugeConfiguration = {...gaugeConfiguration,
+            labelNames: Object.keys(gaugeDefinition.labels)
+        };
+    }
+
+    const gauge = new Gauge(gaugeConfiguration);
+
+    if(gaugeDefinition.labels){
+        gauge.set(gaugeDefinition.labels, gaugeDefinition.measurement);
+    }else{
+        gauge.set(gaugeDefinition.measurement);
+    }
 }
 
 export function  addSuiteWarningThresholdGauge(testSuiteContext: TestSuiteContext) {
@@ -45,7 +57,7 @@ export function  addCaseDurationGauge(testSuiteContext: TestSuiteContext,
                                       testCaseContext: TestContextEntity) {
     createGauge({
         name: `${testSuiteContext.id}_suite_duration_seconds`,
-        help: `Duration in seconds of suite ${testSuiteContext.id}`,
+        help: `Duration in seconds of suite '${testSuiteContext.id}' on case '${testCaseContext.id}'`,
         labels: {
             "case": `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`
         },
