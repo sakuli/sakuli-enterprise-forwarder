@@ -1,7 +1,10 @@
 import {
+    addCaseCriticalThresholdGauge,
     addCaseWarningThresholdGauge,
+    addStepCriticalThresholdGauge,
     addStepDurationGauge,
     addStepWarningThresholdGauge,
+    addSuiteCriticalThresholdGauge,
     addSuiteDurationGauge,
     addSuiteWarningThresholdGauge
 } from "./gauge.utils";
@@ -193,6 +196,30 @@ describe("prometheus forwarder", () => {
         expect(addSuiteWarningThresholdGauge).toHaveBeenCalledTimes(1);
         expect(addCaseWarningThresholdGauge).toHaveBeenCalledTimes(1);
         expect(addStepWarningThresholdGauge).toHaveBeenCalledTimes(1);
+    });
+
+
+    it("should add critical threshold gauges", async () => {
+
+        //GIVEN
+        context = new TestExecutionContext(logger);
+        context.startExecution();
+        context.startTestSuite({id: 'Suite1', criticalTime: 84});
+        context.startTestCase({id: 'Suite1Case1', criticalTime: 42});
+        context.startTestStep({id: 'Suite1Case1Step1', criticalTime: 21});
+        context.endTestStep();
+        context.endTestCase();
+        context.endTestSuite();
+        context.endExecution();
+        await prometheusForwarder.setup(defaultProject, logger);
+
+        //WHEN
+        await prometheusForwarder.forward(context);
+
+        //THEN
+        expect(addSuiteCriticalThresholdGauge).toHaveBeenCalledTimes(1);
+        expect(addCaseCriticalThresholdGauge).toHaveBeenCalledTimes(1);
+        expect(addStepCriticalThresholdGauge).toHaveBeenCalledTimes(1);
     });
 
     function getProjectWithProps(props: any){

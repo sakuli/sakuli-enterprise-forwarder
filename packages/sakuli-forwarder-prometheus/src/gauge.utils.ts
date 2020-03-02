@@ -57,6 +57,20 @@ export function  addStepDurationGauge(testCaseIndex: number,
     });
 }
 
+export function addSuiteCriticalThresholdGauge(testSuiteContext: TestSuiteContext) {
+
+}
+
+export function addCaseCriticalThresholdGauge(testCaseIndex: number, testCaseContext: TestContextEntity) {
+
+}
+
+export function addStepCriticalThresholdGauge(testCaseIndex: number,
+                                              testStepContext: TestContextEntity,
+                                              testStepIndex: number) {
+
+}
+
 function  addPaddingZeroes(number: number){
     return number.toString().padStart(3, '0');
 }
