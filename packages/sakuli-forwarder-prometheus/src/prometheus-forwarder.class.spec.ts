@@ -1,5 +1,6 @@
 import {
     addCaseCriticalThresholdGauge,
+    addCaseDurationGauge,
     addCaseError,
     addCaseWarningThresholdGauge,
     addStepCriticalThresholdGauge,
@@ -7,7 +8,6 @@ import {
     addStepError,
     addStepWarningThresholdGauge,
     addSuiteCriticalThresholdGauge,
-    addSuiteDurationGauge,
     addSuiteError,
     addSuiteWarningThresholdGauge
 } from "./gauge.utils";
@@ -152,7 +152,7 @@ describe("prometheus forwarder", () => {
         await prometheusForwarder.forward(context);
 
         //THEN
-        expect(addSuiteDurationGauge).toHaveBeenCalledTimes(4);
+        expect(addCaseDurationGauge).toHaveBeenCalledTimes(4);
     });
 
     it("should create gauges for cases", async () => {

@@ -42,9 +42,9 @@ export function  addStepWarningThresholdGauge(testCaseIndex: number,
     });
 }
 
-export function  addSuiteDurationGauge(testSuiteContext: TestSuiteContext,
-                                       testCaseIndex: number,
-                                       testCaseContext: TestContextEntity) {
+export function  addCaseDurationGauge(testSuiteContext: TestSuiteContext,
+                                      testCaseIndex: number,
+                                      testCaseContext: TestContextEntity) {
     createGauge({
         name: `${testSuiteContext.id}_suite_duration_seconds`,
         help: `Duration in seconds of suite ${testSuiteContext.id}`,

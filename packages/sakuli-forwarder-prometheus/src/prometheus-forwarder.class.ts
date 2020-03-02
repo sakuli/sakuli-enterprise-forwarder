@@ -5,6 +5,7 @@ import { PrometheusForwarderProperties } from "./prometheus-properties.class";
 import { pushgatewayService } from "./pushgateway.service";
 import {
     addCaseCriticalThresholdGauge,
+    addCaseDurationGauge,
     addCaseError,
     addCaseWarningThresholdGauge,
     addStepCriticalThresholdGauge,
@@ -12,7 +13,6 @@ import {
     addStepError,
     addStepWarningThresholdGauge,
     addSuiteCriticalThresholdGauge,
-    addSuiteDurationGauge,
     addSuiteError,
     addSuiteWarningThresholdGauge
 } from "./gauge.utils";
@@ -71,7 +71,7 @@ export class PrometheusForwarder implements Forwarder {
         addSuiteCriticalThresholdGauge(testSuiteContext);
         ifPresent(testSuiteContext.error, () => addSuiteError(testSuiteContext));
         testSuiteContext.getChildren().forEach((testCaseContext, testCaseIndex) => {
-            addSuiteDurationGauge(testSuiteContext, testCaseIndex, testCaseContext);
+            addCaseDurationGauge(testSuiteContext, testCaseIndex, testCaseContext);
             this.registerCase(testCaseContext, testCaseIndex);
         });
     }
