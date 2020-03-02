@@ -71,11 +71,11 @@ export function  addStepDurationGauge(testCaseIndex: number,
                                       testStepContext: TestContextEntity) {
     createGauge({
         name: `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}_case_duration_seconds`,
-        help: `Duration in seconds of step ${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`,
+        help: `Duration in seconds of case '${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}' on step '${addPaddingZeroes(testStepIndex)}_${testStepContext.id}'`,
         labels: {
             "step": `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}`
         },
-        measurement: testCaseContext.duration
+        measurement: testStepContext.duration
     });
 }
 

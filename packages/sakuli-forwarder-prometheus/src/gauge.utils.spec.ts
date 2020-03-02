@@ -5,6 +5,7 @@ import { TestCaseContext, TestStepContext, TestSuiteContext } from "@sakuli/core
 import {
     addCaseDurationGauge,
     addCaseWarningThresholdGauge,
+    addStepDurationGauge,
     addStepWarningThresholdGauge,
     addSuiteWarningThresholdGauge
 } from "./gauge.utils";
@@ -96,5 +97,28 @@ describe("gauge utils", () => {
             labelNames: ["case"]
         });
         expect(setMock).toHaveBeenCalledWith({ case: '004_caseContextMock'}, 33);
+    });
+
+    it("should register step duration gauge", () =>{
+
+        //GIVEN
+        const caseContextMock = mockPartial<TestSuiteContext>({
+            id: "caseContextMock"
+        });
+        const stepContextMock = mockPartial<TestSuiteContext>({
+            id: "stepContextMock",
+            duration: 66
+        });
+
+        //WHEN
+        addStepDurationGauge(2,caseContextMock, 12, stepContextMock);
+
+        //THEN
+        expect(Gauge).toHaveBeenCalledWith({
+            name: "002_caseContextMock_case_duration_seconds",
+            help: "Duration in seconds of case '002_caseContextMock' on step '012_stepContextMock'",
+            labelNames: ["step"]
+        });
+        expect(setMock).toHaveBeenCalledWith({ step: '012_stepContextMock'}, 66);
     })
 });
