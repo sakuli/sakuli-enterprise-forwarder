@@ -27,7 +27,7 @@ export function  addSuiteWarningThresholdGauge(testSuiteContext: TestSuiteContex
 export function  addCaseWarningThresholdGauge(testCaseIndex: number, testCaseContext: TestContextEntity) {
     createGauge({
         name: `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}_case_warning_thresholds_seconds`,
-        help: `Warning threshold for case ${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`,
+        help: `Warning threshold for case '${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}'`,
         measurement: testCaseContext.warningTime
     });
 }

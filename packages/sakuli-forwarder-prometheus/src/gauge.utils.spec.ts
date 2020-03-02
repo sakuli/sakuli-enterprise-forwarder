@@ -1,8 +1,8 @@
 jest.mock('prom-client');
 import { Gauge } from "prom-client";
 import { mockPartial } from "sneer";
-import { TestSuiteContext } from "@sakuli/core";
-import { addSuiteWarningThresholdGauge } from "./gauge.utils";
+import { TestCaseContext, TestSuiteContext } from "@sakuli/core";
+import { addCaseWarningThresholdGauge, addSuiteWarningThresholdGauge } from "./gauge.utils";
 
 describe("gauge utils", () => {
 
@@ -17,7 +17,7 @@ describe("gauge utils", () => {
 
         //GIVEN
         const contextMock = mockPartial<TestSuiteContext>({
-            id: "contextMock",
+            id: "suiteContextMock",
             warningTime: 42
         });
 
@@ -26,9 +26,28 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "contextMock_suite_warning_thresholds_seconds",
-            help: "Warning threshold for suite 'contextMock'"
+            name: "suiteContextMock_suite_warning_thresholds_seconds",
+            help: "Warning threshold for suite 'suiteContextMock'"
         });
         expect(setMock).toHaveBeenCalledWith(42);
+    });
+
+    it("should register case warning threshold gauge", () =>{
+
+        //GIVEN
+        const contextMock = mockPartial<TestCaseContext>({
+            id: "caseContextMock",
+            warningTime: 84
+        });
+
+        //WHEN
+        addCaseWarningThresholdGauge(1, contextMock);
+
+        //THEN
+        expect(Gauge).toHaveBeenCalledWith({
+            name: "001_caseContextMock_case_warning_thresholds_seconds",
+            help: "Warning threshold for case '001_caseContextMock'"
+        });
+        expect(setMock).toHaveBeenCalledWith(84);
     })
 });
