@@ -84,15 +84,29 @@ export function  addStepDurationGauge(testCaseIndex: number,
 }
 
 export function addSuiteCriticalThresholdGauge(testSuiteContext: TestSuiteContext) {
-
+    createGauge({
+        name: `${testSuiteContext.id}_suite_critical_thresholds_seconds`,
+        help: `Critical threshold for suite '${testSuiteContext.id}'`,
+        measurement: testSuiteContext.criticalTime
+    });
 }
 
 export function addCaseCriticalThresholdGauge(testCaseIndex: number, testCaseContext: TestContextEntity) {
-
+    const caseIdentifier = `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`;
+    createGauge({
+        name: `${caseIdentifier}_case_critical_thresholds_seconds`,
+        help: `Critical threshold for case '${caseIdentifier}'`,
+        measurement: testCaseContext.criticalTime
+    });
 }
 
 export function addStepCriticalThresholdGauge(testStepIndex: number, testStepContext: TestContextEntity) {
-
+    const stepIdentifier = `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}`;
+    createGauge({
+        name: `${stepIdentifier}_step_critical_thresholds_seconds`,
+        help: `Critical threshold for step '${stepIdentifier}'`,
+        measurement: testStepContext.criticalTime
+    });
 }
 
 export function addSuiteError(testSuiteContext: TestSuiteContext) {

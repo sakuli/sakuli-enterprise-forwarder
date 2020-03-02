@@ -3,10 +3,13 @@ import { Gauge } from "prom-client";
 import { mockPartial } from "sneer";
 import { TestCaseContext, TestStepContext, TestSuiteContext } from "@sakuli/core";
 import {
+    addCaseCriticalThresholdGauge,
     addCaseDurationGauge,
     addCaseWarningThresholdGauge,
+    addStepCriticalThresholdGauge,
     addStepDurationGauge,
     addStepWarningThresholdGauge,
+    addSuiteCriticalThresholdGauge,
     addSuiteWarningThresholdGauge
 } from "./gauge.utils";
 
@@ -120,5 +123,62 @@ describe("gauge utils", () => {
             labelNames: ["step"]
         });
         expect(setMock).toHaveBeenCalledWith({ step: '012_stepContextMock'}, 66);
-    })
+    });
+
+    it("should register suite critical threshold gauge", () =>{
+
+        //GIVEN
+        const contextMock = mockPartial<TestSuiteContext>({
+            id: "suiteContextMock",
+            criticalTime: 99
+        });
+
+        //WHEN
+        addSuiteCriticalThresholdGauge(contextMock);
+
+        //THEN
+        expect(Gauge).toHaveBeenCalledWith({
+            name: "suiteContextMock_suite_critical_thresholds_seconds",
+            help: "Critical threshold for suite 'suiteContextMock'"
+        });
+        expect(setMock).toHaveBeenCalledWith(99);
+    });
+
+    it("should register case critical threshold gauge", () =>{
+
+        //GIVEN
+        const contextMock = mockPartial<TestCaseContext>({
+            id: "caseContextMock",
+            criticalTime: 45
+        });
+
+        //WHEN
+        addCaseCriticalThresholdGauge(999, contextMock);
+
+        //THEN
+        expect(Gauge).toHaveBeenCalledWith({
+            name: "999_caseContextMock_case_critical_thresholds_seconds",
+            help: "Critical threshold for case '999_caseContextMock'"
+        });
+        expect(setMock).toHaveBeenCalledWith(45);
+    });
+
+    it("should register step critical threshold gauge", () =>{
+
+        //GIVEN
+        const contextMock = mockPartial<TestStepContext>({
+            id: "stepContextMock",
+            criticalTime: 0
+        });
+
+        //WHEN
+        addStepCriticalThresholdGauge(123, contextMock);
+
+        //THEN
+        expect(Gauge).toHaveBeenCalledWith({
+            name: "123_stepContextMock_step_critical_thresholds_seconds",
+            help: "Critical threshold for step '123_stepContextMock'"
+        });
+        expect(setMock).toHaveBeenCalledWith(0);
+    });
 });
