@@ -192,8 +192,7 @@ describe("gauge utils", () => {
             id: "suiteContextMock",
         });
         const caseContextMock = mockPartial<TestCaseContext>({
-            id: "caseContextMock",
-            error: Error("oh noes!")
+            id: "caseContextMock"
         });
 
         //WHEN
@@ -215,8 +214,7 @@ describe("gauge utils", () => {
             id: "caseContextMock"
         });
         const stepContextMock = mockPartial<TestStepContext>({
-            id: "stepContextMock",
-            error: Error("oh noes!")
+            id: "stepContextMock"
         });
 
         //WHEN
