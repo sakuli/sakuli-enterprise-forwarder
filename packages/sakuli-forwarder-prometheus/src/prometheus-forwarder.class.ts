@@ -80,21 +80,27 @@ export class PrometheusForwarder implements Forwarder {
         addCaseWarningThresholdGauge(testCaseIndex, testCaseContext);
         addCaseCriticalThresholdGauge(testCaseIndex, testCaseContext);
         testCaseContext.getChildren().forEach((testStepContext, testStepIndex) => {
-            ifError(testStepContext, () => addStepError(testCaseIndex, testCaseContext));
-            addStepWarningThresholdGauge(testStepIndex, testStepContext);
-            addStepCriticalThresholdGauge(testStepIndex, testStepContext);
-            addStepDurationGauge(testCaseIndex, testCaseContext, testStepIndex, testStepContext);
+            this.addCaseGauges(testStepContext, testCaseIndex, testCaseContext, testStepIndex);
             this.registerSteps(testStepContext, testStepIndex);
         });
     }
 
     private registerSteps(testStepContext: TestContextEntity, testStepIndex: number) {
         testStepContext.getChildren().forEach((testActionContext, testActionIndex) =>{
-            ifError(testActionContext, () => addActionError(
-                testStepIndex,
-                testStepContext,
-                testActionIndex,
-                testActionContext));
+            ifError(testActionContext, () => addActionError(testStepIndex,
+                                                            testStepContext,
+                                                            testActionIndex,
+                                                            testActionContext));
         })
+    }
+
+    private addCaseGauges(testStepContext: TestContextEntity,
+                          testCaseIndex: number,
+                          testCaseContext: TestContextEntity,
+                          testStepIndex: number) {
+        ifError(testStepContext, () => addStepError(testCaseIndex, testCaseContext, testStepIndex, testStepContext));
+        addStepWarningThresholdGauge(testStepIndex, testStepContext);
+        addStepCriticalThresholdGauge(testStepIndex, testStepContext);
+        addStepDurationGauge(testCaseIndex, testCaseContext, testStepIndex, testStepContext);
     }
 }
