@@ -125,8 +125,20 @@ export function addCaseError(testSuiteContext: TestSuiteContext,
     });
 }
 
-export function addStepError(testCaseIndex: number, testCaseContext: TestContextEntity) {
-
+export function addStepError(testCaseIndex: number,
+                             testCaseContext: TestContextEntity,
+                             testStepIndex: number,
+                             testStepContext: TestContextEntity,) {
+    const caseIdentifier = `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`;
+    const stepIdentifier = `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}`;
+    createGauge({
+        name: `${caseIdentifier}_case_error`,
+        help: `Error state for case '${caseIdentifier}' in step '${stepIdentifier}'`,
+        labels: {
+            "step": `${stepIdentifier}`
+        },
+        measurement: 1
+    });
 }
 
 export function addActionError(testStepIndex: number,

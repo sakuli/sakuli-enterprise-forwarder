@@ -9,6 +9,7 @@ import {
     addCaseWarningThresholdGauge,
     addStepCriticalThresholdGauge,
     addStepDurationGauge,
+    addStepError,
     addStepWarningThresholdGauge,
     addSuiteCriticalThresholdGauge,
     addSuiteWarningThresholdGauge
@@ -204,5 +205,28 @@ describe("gauge utils", () => {
             labelNames: ["case"]
         });
         expect(setMock).toHaveBeenCalledWith({case: "001_caseContextMock"}, 1);
+    });
+
+    it("should register step error", () =>{
+
+        //GIVEN
+        const caseContextMock = mockPartial<TestCaseContext>({
+            id: "caseContextMock"
+        });
+        const stepContextMock = mockPartial<TestStepContext>({
+            id: "stepContextMock",
+            error: Error("oh noes!")
+        });
+
+        //WHEN
+        addStepError(42, caseContextMock, 84, stepContextMock);
+
+        //THEN
+        expect(Gauge).toHaveBeenCalledWith({
+            name: "042_caseContextMock_case_error",
+            help: "Error state for case '042_caseContextMock' in step '084_stepContextMock'",
+            labelNames: ["step"]
+        });
+        expect(setMock).toHaveBeenCalledWith({step: "084_stepContextMock"}, 1);
     });
 });
