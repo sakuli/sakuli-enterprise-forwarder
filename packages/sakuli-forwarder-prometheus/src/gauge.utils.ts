@@ -145,7 +145,16 @@ export function addActionError(testStepIndex: number,
                                testStepContext: TestContextEntity,
                                testActionIndex: number,
                                testActionContext: TestActionContext) {
-
+    const stepIdentifier = `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}`;
+    const actionIdentifier = `${addPaddingZeroes(testActionIndex)}_${testActionContext.id}`;
+    createGauge({
+        name: `${stepIdentifier}_step_error`,
+        help: `Error state for step '${stepIdentifier}' in action '${actionIdentifier}'`,
+        labels: {
+            "action": `${actionIdentifier}`
+        },
+        measurement: 1
+    });
 }
 
 function  addPaddingZeroes(number: number){

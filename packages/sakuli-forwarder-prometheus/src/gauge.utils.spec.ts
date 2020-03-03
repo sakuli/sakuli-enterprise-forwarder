@@ -1,8 +1,9 @@
 jest.mock('prom-client');
 import { Gauge } from "prom-client";
 import { mockPartial } from "sneer";
-import { TestCaseContext, TestStepContext, TestSuiteContext } from "@sakuli/core";
+import { TestActionContext, TestCaseContext, TestStepContext, TestSuiteContext } from "@sakuli/core";
 import {
+    addActionError,
     addCaseCriticalThresholdGauge,
     addCaseDurationGauge,
     addCaseError,
@@ -228,5 +229,27 @@ describe("gauge utils", () => {
             labelNames: ["step"]
         });
         expect(setMock).toHaveBeenCalledWith({step: "084_stepContextMock"}, 1);
+    });
+
+    it("should register action error", () =>{
+
+        //GIVEN
+        const stepContextMock = mockPartial<TestStepContext>({
+            id: "stepContextMock"
+        });
+        const actionContextMock = mockPartial<TestActionContext>({
+            id: "actionContextMock"
+        });
+
+        //WHEN
+        addActionError(999, stepContextMock, 321, actionContextMock);
+
+        //THEN
+        expect(Gauge).toHaveBeenCalledWith({
+            name: "999_stepContextMock_step_error",
+            help: "Error state for step '999_stepContextMock' in action '321_actionContextMock'",
+            labelNames: ["action"]
+        });
+        expect(setMock).toHaveBeenCalledWith({action: "321_actionContextMock"}, 1);
     });
 });
