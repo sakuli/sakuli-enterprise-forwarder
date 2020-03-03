@@ -38,7 +38,7 @@ export function  addSuiteWarningThresholdGauge(testSuiteContext: TestSuiteContex
 }
 
 export function  addCaseWarningThresholdGauge(testCaseIndex: number, testCaseContext: TestContextEntity) {
-    const caseIdentifier = `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`;
+    const caseIdentifier = createCaseIdentifier(testCaseIndex, testCaseContext);
     createGauge({
         name: `${caseIdentifier}_case_warning_thresholds_seconds`,
         help: `Warning threshold for case '${caseIdentifier}'`,
@@ -47,7 +47,7 @@ export function  addCaseWarningThresholdGauge(testCaseIndex: number, testCaseCon
 }
 
 export function  addStepWarningThresholdGauge(testStepIndex: number, testStepContext: TestContextEntity) {
-    const stepIdentifier = `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}`;
+    const stepIdentifier = createStepIdentifier(testStepIndex, testStepContext);
     createGauge({
         name: `${stepIdentifier}_step_warning_thresholds_seconds`,
         help: `Warning threshold for step '${stepIdentifier}'`,
@@ -72,8 +72,8 @@ export function  addStepDurationGauge(testCaseIndex: number,
                                       testCaseContext: TestContextEntity,
                                       testStepIndex: number,
                                       testStepContext: TestContextEntity) {
-    const caseIdentifier = `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`;
-    const stepIdentifier = `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}`;
+    const caseIdentifier = createCaseIdentifier(testCaseIndex, testCaseContext);
+    const stepIdentifier = createStepIdentifier(testStepIndex, testStepContext);
     createGauge({
         name: `${caseIdentifier}_case_duration_seconds`,
         help: `Duration in seconds of case '${caseIdentifier}' on step '${stepIdentifier}'`,
@@ -93,7 +93,7 @@ export function addSuiteCriticalThresholdGauge(testSuiteContext: TestSuiteContex
 }
 
 export function addCaseCriticalThresholdGauge(testCaseIndex: number, testCaseContext: TestContextEntity) {
-    const caseIdentifier = `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`;
+    const caseIdentifier = createCaseIdentifier(testCaseIndex, testCaseContext);
     createGauge({
         name: `${caseIdentifier}_case_critical_thresholds_seconds`,
         help: `Critical threshold for case '${caseIdentifier}'`,
@@ -102,7 +102,7 @@ export function addCaseCriticalThresholdGauge(testCaseIndex: number, testCaseCon
 }
 
 export function addStepCriticalThresholdGauge(testStepIndex: number, testStepContext: TestContextEntity) {
-    const stepIdentifier = `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}`;
+    const stepIdentifier = createStepIdentifier(testStepIndex, testStepContext);
     createGauge({
         name: `${stepIdentifier}_step_critical_thresholds_seconds`,
         help: `Critical threshold for step '${stepIdentifier}'`,
@@ -113,7 +113,7 @@ export function addStepCriticalThresholdGauge(testStepIndex: number, testStepCon
 export function addCaseError(testSuiteContext: TestSuiteContext,
                              testCaseIndex: number,
                              testCaseContext: TestContextEntity) {
-    const caseIdentifier = `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`;
+    const caseIdentifier = createCaseIdentifier(testCaseIndex, testCaseContext);
     createGauge({
         name: `${testSuiteContext.id}_suite_error`,
         help: oneLineTrim`Error state for suite '${testSuiteContext.id}' in case 
@@ -129,8 +129,8 @@ export function addStepError(testCaseIndex: number,
                              testCaseContext: TestContextEntity,
                              testStepIndex: number,
                              testStepContext: TestContextEntity,) {
-    const caseIdentifier = `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`;
-    const stepIdentifier = `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}`;
+    const caseIdentifier = createCaseIdentifier(testCaseIndex, testCaseContext);
+    const stepIdentifier = createStepIdentifier(testStepIndex, testStepContext);
     createGauge({
         name: `${caseIdentifier}_case_error`,
         help: `Error state for case '${caseIdentifier}' in step '${stepIdentifier}'`,
@@ -145,7 +145,7 @@ export function addActionError(testStepIndex: number,
                                testStepContext: TestContextEntity,
                                testActionIndex: number,
                                testActionContext: TestActionContext) {
-    const stepIdentifier = `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}`;
+    const stepIdentifier = createStepIdentifier(testStepIndex, testStepContext);
     const actionIdentifier = `${addPaddingZeroes(testActionIndex)}_${testActionContext.id}`;
     createGauge({
         name: `${stepIdentifier}_step_error`,
@@ -155,6 +155,14 @@ export function addActionError(testStepIndex: number,
         },
         measurement: 1
     });
+}
+
+function createStepIdentifier(testStepIndex: number, testStepContext: TestContextEntity){
+    return `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}`
+}
+
+function createCaseIdentifier(testCaseIndex: number, testCaseContext: TestContextEntity){
+    return `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`;
 }
 
 function  addPaddingZeroes(number: number){
