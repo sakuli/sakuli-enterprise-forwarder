@@ -1,6 +1,7 @@
 import { TestActionContext, TestContextEntity, TestSuiteContext } from "@sakuli/core";
 import { Gauge, GaugeConfiguration } from "prom-client";
 import { oneLineTrim } from 'common-tags';
+import { getEntityId } from "@sakuli/result-builder-commons";
 
 interface GaugeDefinition {
     name: string,
@@ -30,9 +31,10 @@ function createGauge(gaugeDefinition: GaugeDefinition){
 }
 
 export function  addSuiteWarningThresholdGauge(testSuiteContext: TestSuiteContext) {
+    const suiteIdentifier = createSuiteIdentifier(testSuiteContext);
     createGauge({
-        name: `${testSuiteContext.id}_suite_warning_thresholds_seconds`,
-        help: `Warning threshold for suite '${testSuiteContext.id}'`,
+        name: `${suiteIdentifier}_suite_warning_thresholds_seconds`,
+        help: `Warning threshold for suite '${suiteIdentifier}'`,
         measurement: testSuiteContext.warningTime
     });
 }
@@ -58,11 +60,13 @@ export function  addStepWarningThresholdGauge(testStepIndex: number, testStepCon
 export function  addCaseDurationGauge(testSuiteContext: TestSuiteContext,
                                       testCaseIndex: number,
                                       testCaseContext: TestContextEntity) {
+    const suiteIdentifier = createSuiteIdentifier(testSuiteContext);
+    const testCaseIdentifier = createCaseIdentifier(testCaseIndex, testCaseContext);
     createGauge({
-        name: `${testSuiteContext.id}_suite_duration_seconds`,
-        help: `Duration in seconds of suite '${testSuiteContext.id}' on case '${testCaseContext.id}'`,
+        name: `${suiteIdentifier}_suite_duration_seconds`,
+        help: `Duration in seconds of suite '${suiteIdentifier}' on case '${testCaseIdentifier}'`,
         labels: {
-            "case": `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`
+            "case": `${testCaseIdentifier}`
         },
         measurement: testCaseContext.duration
     });
@@ -85,9 +89,10 @@ export function  addStepDurationGauge(testCaseIndex: number,
 }
 
 export function addSuiteCriticalThresholdGauge(testSuiteContext: TestSuiteContext) {
+    const suiteIdentifier = createSuiteIdentifier(testSuiteContext);
     createGauge({
-        name: `${testSuiteContext.id}_suite_critical_thresholds_seconds`,
-        help: `Critical threshold for suite '${testSuiteContext.id}'`,
+        name: `${suiteIdentifier}_suite_critical_thresholds_seconds`,
+        help: `Critical threshold for suite '${suiteIdentifier}'`,
         measurement: testSuiteContext.criticalTime
     });
 }
@@ -113,10 +118,11 @@ export function addStepCriticalThresholdGauge(testStepIndex: number, testStepCon
 export function addCaseError(testSuiteContext: TestSuiteContext,
                              testCaseIndex: number,
                              testCaseContext: TestContextEntity) {
+    const suiteIdentifier = createSuiteIdentifier(testSuiteContext);
     const caseIdentifier = createCaseIdentifier(testCaseIndex, testCaseContext);
     createGauge({
-        name: `${testSuiteContext.id}_suite_error`,
-        help: oneLineTrim`Error state for suite '${testSuiteContext.id}' in case 
+        name: `${suiteIdentifier}_suite_error`,
+        help: oneLineTrim`Error state for suite '${suiteIdentifier}' in case 
                           '${caseIdentifier}'`,
         labels: {
             "case": `${caseIdentifier}`
@@ -146,7 +152,7 @@ export function addActionError(testStepIndex: number,
                                testActionIndex: number,
                                testActionContext: TestActionContext) {
     const stepIdentifier = createStepIdentifier(testStepIndex, testStepContext);
-    const actionIdentifier = `${addPaddingZeroes(testActionIndex)}_${testActionContext.id}`;
+    const actionIdentifier = createActionIdentifier(testActionIndex, testActionContext);
     createGauge({
         name: `${stepIdentifier}_step_error`,
         help: `Error state for step '${stepIdentifier}' in action '${actionIdentifier}'`,
@@ -157,12 +163,20 @@ export function addActionError(testStepIndex: number,
     });
 }
 
-function createStepIdentifier(testStepIndex: number, testStepContext: TestContextEntity){
-    return `${addPaddingZeroes(testStepIndex)}_${testStepContext.id}`
+function createSuiteIdentifier(testSuiteContext: TestSuiteContext) {
+    return getEntityId(testSuiteContext);
 }
 
 function createCaseIdentifier(testCaseIndex: number, testCaseContext: TestContextEntity){
-    return `${addPaddingZeroes(testCaseIndex)}_${testCaseContext.id}`;
+    return `${addPaddingZeroes(testCaseIndex)}_${getEntityId(testCaseContext)}`;
+}
+
+function createStepIdentifier(testStepIndex: number, testStepContext: TestContextEntity){
+    return `${addPaddingZeroes(testStepIndex)}_${getEntityId(testStepContext)}`
+}
+
+function createActionIdentifier(testActionIndex: number, testActionContext: TestContextEntity) {
+    return `${addPaddingZeroes(testActionIndex)}_${getEntityId(testActionContext)}`;
 }
 
 function  addPaddingZeroes(number: number){

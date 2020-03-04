@@ -1,5 +1,5 @@
 import { Forwarder, Project, TestContextEntity, TestExecutionContext, TestSuiteContext } from "@sakuli/core";
-import { ifError, validateProps } from "@sakuli/result-builder-commons";
+import { getEntityId, ifError, validateProps } from "@sakuli/result-builder-commons";
 import { createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger } from "@sakuli/commons";
 import { PrometheusForwarderProperties } from "./prometheus-properties.class";
 import { pushgatewayService } from "./pushgateway.service";
@@ -61,7 +61,7 @@ export class PrometheusForwarder implements Forwarder {
 
     private async send(ctx: TestExecutionContext, properties: PrometheusForwarderProperties) {
         ctx.testSuites.forEach((testSuiteContext) => {
-            this.logDebug(`Adding suite ${testSuiteContext.id} to gauges.`);
+            this.logDebug(`Adding suite ${getEntityId(testSuiteContext)} to gauges.`);
             this.registerSuites(testSuiteContext);
         });
         this.logInfo('Pushing results to prometheus push gateway.');
@@ -74,7 +74,7 @@ export class PrometheusForwarder implements Forwarder {
         addSuiteWarningThresholdGauge(testSuiteContext);
         addSuiteCriticalThresholdGauge(testSuiteContext);
         testSuiteContext.getChildren().forEach((testCaseContext, testCaseIndex) => {
-            this.logDebug(`Adding case ${testCaseContext.id} to gauges.`);
+            this.logDebug(`Adding case ${getEntityId(testCaseContext)} to gauges.`);
             ifError(testCaseContext, () => addCaseError(testSuiteContext, testCaseIndex, testCaseContext));
             addCaseDurationGauge(testSuiteContext, testCaseIndex, testCaseContext);
             this.registerCase(testCaseContext, testCaseIndex);
@@ -85,7 +85,7 @@ export class PrometheusForwarder implements Forwarder {
         addCaseWarningThresholdGauge(testCaseIndex, testCaseContext);
         addCaseCriticalThresholdGauge(testCaseIndex, testCaseContext);
         testCaseContext.getChildren().forEach((testStepContext, testStepIndex) => {
-            this.logDebug(`Adding step ${testStepContext.id} to gauges.`);
+            this.logDebug(`Adding step ${getEntityId(testStepContext)} to gauges.`);
             this.addCaseGauges(testStepContext, testCaseIndex, testCaseContext, testStepIndex);
             this.registerSteps(testStepContext, testStepIndex);
         });
@@ -93,7 +93,7 @@ export class PrometheusForwarder implements Forwarder {
 
     private registerSteps(testStepContext: TestContextEntity, testStepIndex: number) {
         testStepContext.getChildren().forEach((testActionContext, testActionIndex) =>{
-            this.logDebug(`Adding action ${testActionContext.id} to gauges.`);
+            this.logDebug(`Adding action ${getEntityId(testActionContext)} to gauges.`);
             ifError(testActionContext, () => addActionError(testStepIndex,
                                                             testStepContext,
                                                             testActionIndex,
