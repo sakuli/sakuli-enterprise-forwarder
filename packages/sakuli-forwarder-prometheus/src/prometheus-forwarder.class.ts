@@ -44,19 +44,18 @@ export class PrometheusForwarder implements Forwarder {
         ifPresent(this.logger, log => log.error(message, ...data));
     }
 
-    forward(ctx: TestExecutionContext): Promise<any> {
-        return ifPresent(this.properties, properties => {
+    async forward(ctx: TestExecutionContext): Promise<any> {
+        return ifPresent(this.properties, async properties => {
             if(properties.enabled){
                 this.logInfo(`Forwarding check result to Prometheus.`);
-                return this.send(ctx, properties);
+                await this.send(ctx, properties);
             }
             this.logInfo(`Prometheus forwarding disabled via properties.`);
-            return Promise.resolve();
         },
-            () => {
-                this.logError('Could not obtain project object');
-                return Promise.reject('Could not obtain project object')
-            });
+        () => {
+            this.logError('Could not obtain project object');
+            Promise.reject('Could not obtain project object')
+        });
     }
 
 
@@ -67,7 +66,7 @@ export class PrometheusForwarder implements Forwarder {
         });
         this.logInfo('Pushing results to prometheus push gateway.');
         this.logDebug(`Pushing with config: ${JSON.stringify(properties)}`);
-        return await pushgatewayService().push(properties);
+        await pushgatewayService().push(properties);
     }
 
 
