@@ -5,7 +5,7 @@
 In order to test a forwarder in a local development setup, several steps are required:
 
 1. On package root level in sakuli-enterprise-forwarder, run `npm link`
-1. On the required result builder also run `npm link`
+1. (Optional) On the required result builder also run `npm link`
 1. To make forwarders usable in a test setup, run e.g. `npm link @sakuli/forwarder-checkmk` inside the sakuli-cli package
 1. Configure your forwarder in the integration-test package
 1. Run a test, verify the output
