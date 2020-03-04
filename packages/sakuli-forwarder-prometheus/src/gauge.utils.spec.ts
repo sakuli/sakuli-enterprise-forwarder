@@ -266,4 +266,20 @@ describe("gauge utils", () => {
         });
         expect(setMock).toHaveBeenCalledWith({action: "321_action_Context_Mock"}, 1);
     });
+
+    it("it should throw in case the gauge name is invalid", () =>{
+
+        //GIVEN
+        const contextMock = mockPartial<TestSuiteContext>({
+            id: "suite Context Mock.",
+            kind: "suite",
+            warningTime: 42
+        });
+
+        //WHEN
+        const gaugeCreation = () => addSuiteWarningThresholdGauge(contextMock);
+
+        //THEN
+        expect(gaugeCreation).toThrowError();
+    });
 });

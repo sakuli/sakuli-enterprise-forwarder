@@ -9,9 +9,18 @@ interface GaugeDefinition {
     labels?: Record<string, string>,
     measurement: number
 }
+
+const GAUGE_REGEX=/^[a-zA-Z_:][a-zA-Z0-9_:]*$/;
+function verifyGaugeName(gaugeName: string){
+    if(GAUGE_REGEX.test(gaugeName)){
+        return gaugeName;
+    }
+    throw Error(`Gauge name '${gaugeName}' does not match required regex '${GAUGE_REGEX}'`)
+}
+
 function createGauge(gaugeDefinition: GaugeDefinition){
     let gaugeConfiguration: GaugeConfiguration = {
-        name: gaugeDefinition.name,
+        name: verifyGaugeName(gaugeDefinition.name),
         help: gaugeDefinition.help
     };
 
