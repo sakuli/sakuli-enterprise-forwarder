@@ -39,7 +39,7 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "suite_Context_Mock_suite_warning_thresholds_seconds",
+            name: "_suite_Context_Mock_suite_warning_thresholds_seconds",
             help: "Warning threshold for suite 'suite_Context_Mock'"
         });
         expect(setMock).toHaveBeenCalledWith(42);
@@ -59,7 +59,7 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "001_case_Context_Mock_case_warning_thresholds_seconds",
+            name: "_001_case_Context_Mock_case_warning_thresholds_seconds",
             help: "Warning threshold for case '001_case_Context_Mock'"
         });
         expect(setMock).toHaveBeenCalledWith(84);
@@ -79,7 +79,7 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "000_step_Context_Mock_step_warning_thresholds_seconds",
+            name: "_000_step_Context_Mock_step_warning_thresholds_seconds",
             help: "Warning threshold for step '000_step_Context_Mock'"
         });
         expect(setMock).toHaveBeenCalledWith(12);
@@ -103,7 +103,7 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "suite_Context_Mock_suite_duration_seconds",
+            name: "_suite_Context_Mock_suite_duration_seconds",
             help: "Duration in seconds of suite 'suite_Context_Mock' on case '004_case_Context_Mock'",
             labelNames: ["case"]
         });
@@ -128,7 +128,7 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "002_case_Context_Mock_case_duration_seconds",
+            name: "_002_case_Context_Mock_case_duration_seconds",
             help: "Duration in seconds of case '002_case_Context_Mock' on step '012_step_Context_Mock'",
             labelNames: ["step"]
         });
@@ -149,7 +149,7 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "suite_Context_Mock_suite_critical_thresholds_seconds",
+            name: "_suite_Context_Mock_suite_critical_thresholds_seconds",
             help: "Critical threshold for suite 'suite_Context_Mock'"
         });
         expect(setMock).toHaveBeenCalledWith(99);
@@ -169,7 +169,7 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "999_case_Context_Mock_case_critical_thresholds_seconds",
+            name: "_999_case_Context_Mock_case_critical_thresholds_seconds",
             help: "Critical threshold for case '999_case_Context_Mock'"
         });
         expect(setMock).toHaveBeenCalledWith(45);
@@ -189,7 +189,7 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "123_step_Context_Mock_step_critical_thresholds_seconds",
+            name: "_123_step_Context_Mock_step_critical_thresholds_seconds",
             help: "Critical threshold for step '123_step_Context_Mock'"
         });
         expect(setMock).toHaveBeenCalledWith(0);
@@ -212,7 +212,7 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "suite_Context_Mock_suite_error",
+            name: "_suite_Context_Mock_suite_error",
             help: "Error state for suite 'suite_Context_Mock' in case '001_case_Context_Mock'",
             labelNames: ["case"]
         });
@@ -236,7 +236,7 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "042_case_Context_Mock_case_error",
+            name: "_042_case_Context_Mock_case_error",
             help: "Error state for case '042_case_Context_Mock' in step '084_step_Context_Mock'",
             labelNames: ["step"]
         });
@@ -260,7 +260,7 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "999_step_Context_Mock_step_error",
+            name: "_999_step_Context_Mock_step_error",
             help: "Error state for step '999_step_Context_Mock' in action '321_action_Context_Mock'",
             labelNames: ["action"]
         });
