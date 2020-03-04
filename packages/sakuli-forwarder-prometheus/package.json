@@ -7,7 +7,7 @@
     "e2e"
   ],
   "author": "Sven Hettwer <sven.hettwer@consol.de>",
-  "main": "dist/index.js",
+  "main": "dist/index.d.js",
   "scripts": {
     "obfuscate": "javascript-obfuscator ./dist --output ./out --config ../../scripts/obfuscate.js",
     "copy": "node ../../scripts/move-files.js ./out .",
