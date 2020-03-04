@@ -60,13 +60,19 @@ export class PrometheusForwarder implements Forwarder {
 
 
     private async send(ctx: TestExecutionContext, properties: PrometheusForwarderProperties) {
-        ctx.testSuites.forEach((testSuiteContext) => {
-            this.logDebug(`Adding suite ${getEntityId(testSuiteContext)} to gauges.`);
-            this.registerSuites(testSuiteContext);
-        });
-        this.logInfo('Pushing results to prometheus push gateway.');
-        this.logDebug(`Pushing with config: ${JSON.stringify(properties)}`);
-        await pushgatewayService().push(properties);
+        try {
+            ctx.testSuites.forEach((testSuiteContext) => {
+                this.logDebug(`Adding suite ${getEntityId(testSuiteContext)} to gauges.`);
+                this.registerSuites(testSuiteContext);
+            });
+            this.logInfo('Pushing results to prometheus push gateway.');
+            this.logDebug(`Pushing with config: ${JSON.stringify(properties)}`);
+            await pushgatewayService().push(properties);
+        }catch (e) {
+            this.logError(`Error while forwarding to prometheus: ${e}`);
+            throw e;
+        }
+
     }
 
 
