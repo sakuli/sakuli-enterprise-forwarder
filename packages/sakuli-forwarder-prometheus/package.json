@@ -21,17 +21,17 @@
     "@sakuli/commons": "2.2.0",
     "@sakuli/core": "2.2.0",
     "@sakuli/result-builder-commons": "2.2.0",
-    "@types/common-tags": "^1.8.0",
     "axios": "0.19.0",
     "class-validator": "0.9.1",
-    "common-tags": "^1.8.0",
-    "prom-client": "^11.5.3"
+    "common-tags": "1.8.0",
+    "prom-client": "11.5.3"
   },
   "devDependencies": {
+    "@types/common-tags": "1.8.0",
     "@types/jest": "24.0.17",
-    "@types/node": "12.6.9",
+    "@types/node": "12.7.1",
     "javascript-obfuscator": "0.18.1",
-    "jest": "24.5.0",
+    "jest": "24.8.0",
     "sneer": "1.0.1",
     "ts-jest": "24.0.2",
     "typescript": "3.5.3"
