@@ -33,7 +33,7 @@ describe("gauge utils", () => {
         const contextMock = mockPartial<TestSuiteContext>({
             id: "Suite Context Mock",
             kind: "suite",
-            warningTime: 42000
+            warningTime: 42
         });
 
         //WHEN
@@ -53,7 +53,7 @@ describe("gauge utils", () => {
         const contextMock = mockPartial<TestCaseContext>({
             id: "Case_Context_Mock",
             kind: "case",
-            warningTime: 84000
+            warningTime: 84
         });
 
         //WHEN
@@ -73,7 +73,7 @@ describe("gauge utils", () => {
         const contextMock = mockPartial<TestStepContext>({
             id: "Step Context Mock",
             kind: "step",
-            warningTime: 12000
+            warningTime: 12
         });
 
         //WHEN
@@ -141,7 +141,7 @@ describe("gauge utils", () => {
         const contextMock = mockPartial<TestSuiteContext>({
             id: "Suite Context Mock",
             kind: "suite",
-            criticalTime: 99000
+            criticalTime: 99
         });
 
         //WHEN
@@ -161,7 +161,7 @@ describe("gauge utils", () => {
         const contextMock = mockPartial<TestCaseContext>({
             id: "Case_Context_Mock",
             kind: "case",
-            criticalTime: 45000
+            criticalTime: 45
         });
 
         //WHEN

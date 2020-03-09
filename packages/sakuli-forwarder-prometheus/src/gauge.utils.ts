@@ -9,32 +9,7 @@ interface GaugeDefinition {
     measurement: number
 }
 
-function toSeconds(milliseconds: number){
-    return Math.round(milliseconds/1000);
-}
-
 const GAUGE_REGEX=/^[a-zA-Z_:][a-zA-Z0-9_:]*$/;
-function verifyGaugeName(gaugeName: string){
-    if(GAUGE_REGEX.test(gaugeName)){
-        return gaugeName;
-    }
-    throw Error(`Gauge name '${gaugeName}' does not match required regex '${GAUGE_REGEX}'`)
-}
-
-function registerNewGauge (gaugeDefinition: GaugeDefinition) {
-    let gaugeConfiguration: GaugeConfiguration = {
-        name: verifyGaugeName(gaugeDefinition.name),
-        help: gaugeDefinition.help
-    };
-
-    if (gaugeDefinition.labels) {
-        gaugeConfiguration = {
-            ...gaugeConfiguration,
-            labelNames: Object.keys(gaugeDefinition.labels)
-        };
-    }
-    return new Gauge(gaugeConfiguration);
-}
 
 function registerGauge(gaugeDefinition: GaugeDefinition){
     verifyGaugeName(gaugeDefinition.name);
@@ -44,11 +19,10 @@ function registerGauge(gaugeDefinition: GaugeDefinition){
         gauge = registerNewGauge(gaugeDefinition);
     }
 
-    const measurementInSeconds = toSeconds(gaugeDefinition.measurement);
     if(gaugeDefinition.labels){
-        gauge.set(gaugeDefinition.labels, measurementInSeconds);
+        gauge.set(gaugeDefinition.labels, gaugeDefinition.measurement);
     }else{
-        gauge.set(measurementInSeconds);
+        gauge.set(gaugeDefinition.measurement);
     }
 }
 
@@ -90,7 +64,7 @@ export function  addCaseDurationGauge(testSuiteContext: TestSuiteContext,
         labels: {
             "case": `${testCaseIdentifier}`
         },
-        measurement: testCaseContext.duration
+        measurement: toSeconds(testCaseContext.duration)
     });
 }
 
@@ -106,7 +80,7 @@ export function  addStepDurationGauge(testCaseIndex: number,
         labels: {
             "step": `${stepIdentifier}`
         },
-        measurement: testStepContext.duration
+        measurement: toSeconds(testStepContext.duration)
     });
 }
 
@@ -182,6 +156,33 @@ export function addActionError(testStepIndex: number,
         },
         measurement: 1
     });
+}
+
+function verifyGaugeName(gaugeName: string){
+    if(GAUGE_REGEX.test(gaugeName)){
+        return gaugeName;
+    }
+    throw Error(`Gauge name '${gaugeName}' does not match required regex '${GAUGE_REGEX}'`)
+}
+
+function registerNewGauge (gaugeDefinition: GaugeDefinition) {
+    let gaugeConfiguration: GaugeConfiguration = {
+        name: verifyGaugeName(gaugeDefinition.name),
+        help: gaugeDefinition.help
+    };
+
+    if (gaugeDefinition.labels) {
+        gaugeConfiguration = {
+            ...gaugeConfiguration,
+            labelNames: Object.keys(gaugeDefinition.labels)
+        };
+    }
+    return new Gauge(gaugeConfiguration);
+}
+
+
+function toSeconds(milliseconds: number){
+    return Math.round(milliseconds/1000);
 }
 
 function createSuiteIdentifier(testSuiteContext: TestSuiteContext) {
