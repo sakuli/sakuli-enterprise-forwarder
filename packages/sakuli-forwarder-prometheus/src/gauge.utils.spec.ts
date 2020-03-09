@@ -33,7 +33,7 @@ describe("gauge utils", () => {
         const contextMock = mockPartial<TestSuiteContext>({
             id: "Suite Context Mock",
             kind: "suite",
-            warningTime: 42
+            warningTime: 42000
         });
 
         //WHEN
@@ -53,7 +53,7 @@ describe("gauge utils", () => {
         const contextMock = mockPartial<TestCaseContext>({
             id: "Case_Context_Mock",
             kind: "case",
-            warningTime: 84
+            warningTime: 84000
         });
 
         //WHEN
@@ -73,7 +73,7 @@ describe("gauge utils", () => {
         const contextMock = mockPartial<TestStepContext>({
             id: "Step Context Mock",
             kind: "step",
-            warningTime: 12
+            warningTime: 12000
         });
 
         //WHEN
@@ -96,8 +96,7 @@ describe("gauge utils", () => {
         });
         const caseContextMock = mockPartial<TestCaseContext>({
             id: "Case Context Mock",
-            kind: "case",
-            duration: 33
+            kind: "case"
         });
 
         //WHEN
@@ -109,7 +108,7 @@ describe("gauge utils", () => {
             help: "Duration in seconds of suite 'Suite_Context_Mock'",
             labelNames: ["case"]
         });
-        expect(setMock).toHaveBeenCalledWith({ case: '004_Case_Context_Mock'}, 33);
+        expect(setMock).toHaveBeenCalledWith({ case: '004_Case_Context_Mock'}, expect.any(Number));
     });
 
     it("should register step duration gauge", () =>{
@@ -121,8 +120,7 @@ describe("gauge utils", () => {
         });
         const stepContextMock = mockPartial<TestStepContext>({
             id: "Step Context Mock",
-            kind: "step",
-            duration: 66
+            kind: "step"
         });
 
         //WHEN
@@ -134,7 +132,7 @@ describe("gauge utils", () => {
             help: "Duration in seconds of case '002_Case_Context_Mock'",
             labelNames: ["step"]
         });
-        expect(setMock).toHaveBeenCalledWith({ step: '012_Step_Context_Mock'}, 66);
+        expect(setMock).toHaveBeenCalledWith({ step: '012_Step_Context_Mock'}, expect.any(Number));
     });
 
     it("should register Suite Critical threshold gauge", () =>{
@@ -143,7 +141,7 @@ describe("gauge utils", () => {
         const contextMock = mockPartial<TestSuiteContext>({
             id: "Suite Context Mock",
             kind: "suite",
-            criticalTime: 99
+            criticalTime: 99000
         });
 
         //WHEN
@@ -163,7 +161,7 @@ describe("gauge utils", () => {
         const contextMock = mockPartial<TestCaseContext>({
             id: "Case_Context_Mock",
             kind: "case",
-            criticalTime: 45
+            criticalTime: 45000
         });
 
         //WHEN
@@ -321,5 +319,45 @@ describe("gauge utils", () => {
         expect(setMock).toHaveBeenCalledWith({step: "084_Step_Context_Mock_1"}, expect.any(Number));
         expect(setMock).toHaveBeenCalledWith({step: "085_Step_Context_Mock_2"}, expect.any(Number));
         expect(setMock).toHaveBeenCalledTimes(2);
+    });
+
+    it("it should convert milliseconds to seconds on case", () =>{
+
+        //GIVEN
+        const suiteContextMock = mockPartial<TestSuiteContext>({
+            id: "Suite Context Mock",
+            kind: "suite"
+        });
+        const caseContextMock = mockPartial<TestCaseContext>({
+            id: "Case Context Mock",
+            kind: "case",
+            duration: 123456
+        });
+
+        //WHEN
+        addCaseDurationGauge(suiteContextMock, 4, caseContextMock);
+
+        //THEN
+        expect(setMock).toHaveBeenCalledWith(expect.any(Object), 123);
+    });
+
+    it("it should convert milliseconds to seconds on step", () =>{
+
+        //GIVEN
+        const caseContextMock = mockPartial<TestCaseContext>({
+            id: "Case Context Mock",
+            kind: "case"
+        });
+        const stepContextMock = mockPartial<TestStepContext>({
+            id: "Step Context Mock",
+            kind: "step",
+            duration: 3141.59265359
+        });
+
+        //WHEN
+        addStepDurationGauge(42, caseContextMock, 84, stepContextMock);
+
+        //THEN
+        expect(setMock).toHaveBeenCalledWith(expect.any(Object), 3);
     });
 });

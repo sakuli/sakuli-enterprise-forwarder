@@ -49,12 +49,13 @@ export class PrometheusForwarder implements Forwarder {
             if(properties.enabled){
                 this.logInfo(`Forwarding check result to Prometheus.`);
                 await this.send(ctx, properties);
+            }else{
+                this.logInfo(`Prometheus forwarding disabled via properties.`);
             }
-            this.logInfo(`Prometheus forwarding disabled via properties.`);
         },
         () => {
-            this.logError('Could not obtain project object');
-            Promise.reject('Could not obtain project object')
+            this.logError('Could not obtain PrometheusForwarderProperties object');
+            Promise.reject('Could not obtain PrometheusForwarderProperties object')
         });
     }
 

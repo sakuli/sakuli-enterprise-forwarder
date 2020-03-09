@@ -9,6 +9,10 @@ interface GaugeDefinition {
     measurement: number
 }
 
+function toSeconds(milliseconds: number){
+    return Math.round(milliseconds/1000);
+}
+
 const GAUGE_REGEX=/^[a-zA-Z_:][a-zA-Z0-9_:]*$/;
 function verifyGaugeName(gaugeName: string){
     if(GAUGE_REGEX.test(gaugeName)){
@@ -40,10 +44,11 @@ function registerGauge(gaugeDefinition: GaugeDefinition){
         gauge = registerNewGauge(gaugeDefinition);
     }
 
+    const measurementInSeconds = toSeconds(gaugeDefinition.measurement);
     if(gaugeDefinition.labels){
-        gauge.set(gaugeDefinition.labels, gaugeDefinition.measurement);
+        gauge.set(gaugeDefinition.labels, measurementInSeconds);
     }else{
-        gauge.set(gaugeDefinition.measurement);
+        gauge.set(measurementInSeconds);
     }
 }
 
