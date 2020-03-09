@@ -29,7 +29,7 @@ describe("gauge utils", () => {
 
         //GIVEN
         const contextMock = mockPartial<TestSuiteContext>({
-            id: "suite Context Mock",
+            id: "Suite Context Mock",
             kind: "suite",
             warningTime: 42
         });
@@ -39,8 +39,8 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "_suite_Context_Mock_suite_warning_thresholds_seconds",
-            help: "Warning threshold for suite 'suite_Context_Mock'"
+            name: "suite_Suite_Context_Mock_warning_thresholds_seconds",
+            help: "Warning threshold for suite 'Suite_Context_Mock'"
         });
         expect(setMock).toHaveBeenCalledWith(42);
     });
@@ -49,7 +49,7 @@ describe("gauge utils", () => {
 
         //GIVEN
         const contextMock = mockPartial<TestCaseContext>({
-            id: "case_Context_Mock",
+            id: "Case_Context_Mock",
             kind: "case",
             warningTime: 84
         });
@@ -59,8 +59,8 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "_001_case_Context_Mock_case_warning_thresholds_seconds",
-            help: "Warning threshold for case '001_case_Context_Mock'"
+            name: "case_001_Case_Context_Mock_warning_thresholds_seconds",
+            help: "Warning threshold for case '001_Case_Context_Mock'"
         });
         expect(setMock).toHaveBeenCalledWith(84);
     });
@@ -69,7 +69,7 @@ describe("gauge utils", () => {
 
         //GIVEN
         const contextMock = mockPartial<TestStepContext>({
-            id: "step Context Mock",
+            id: "Step Context Mock",
             kind: "step",
             warningTime: 12
         });
@@ -79,8 +79,8 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "_000_step_Context_Mock_step_warning_thresholds_seconds",
-            help: "Warning threshold for step '000_step_Context_Mock'"
+            name: "step_000_Step_Context_Mock_warning_thresholds_seconds",
+            help: "Warning threshold for step '000_Step_Context_Mock'"
         });
         expect(setMock).toHaveBeenCalledWith(12);
     });
@@ -89,11 +89,11 @@ describe("gauge utils", () => {
 
         //GIVEN
         const suiteContextMock = mockPartial<TestSuiteContext>({
-            id: "suite Context Mock",
+            id: "Suite Context Mock",
             kind: "suite"
         });
         const caseContextMock = mockPartial<TestCaseContext>({
-            id: "case Context Mock",
+            id: "Case Context Mock",
             kind: "case",
             duration: 33
         });
@@ -103,22 +103,22 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "_suite_Context_Mock_suite_duration_seconds",
-            help: "Duration in seconds of suite 'suite_Context_Mock' on case '004_case_Context_Mock'",
+            name: "suite_Suite_Context_Mock_duration_seconds",
+            help: "Duration in seconds of suite 'Suite_Context_Mock' on case '004_Case_Context_Mock'",
             labelNames: ["case"]
         });
-        expect(setMock).toHaveBeenCalledWith({ case: '004_case_Context_Mock'}, 33);
+        expect(setMock).toHaveBeenCalledWith({ case: '004_Case_Context_Mock'}, 33);
     });
 
     it("should register step duration gauge", () =>{
 
         //GIVEN
         const caseContextMock = mockPartial<TestCaseContext>({
-            id: "case Context Mock",
+            id: "Case Context Mock",
             kind: "case"
         });
         const stepContextMock = mockPartial<TestStepContext>({
-            id: "step Context Mock",
+            id: "Step Context Mock",
             kind: "step",
             duration: 66
         });
@@ -128,18 +128,18 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "_002_case_Context_Mock_case_duration_seconds",
-            help: "Duration in seconds of case '002_case_Context_Mock' on step '012_step_Context_Mock'",
+            name: "case_002_Case_Context_Mock_duration_seconds",
+            help: "Duration in seconds of case '002_Case_Context_Mock' on step '012_Step_Context_Mock'",
             labelNames: ["step"]
         });
-        expect(setMock).toHaveBeenCalledWith({ step: '012_step_Context_Mock'}, 66);
+        expect(setMock).toHaveBeenCalledWith({ step: '012_Step_Context_Mock'}, 66);
     });
 
-    it("should register suite critical threshold gauge", () =>{
+    it("should register Suite Critical threshold gauge", () =>{
 
         //GIVEN
         const contextMock = mockPartial<TestSuiteContext>({
-            id: "suite Context Mock",
+            id: "Suite Context Mock",
             kind: "suite",
             criticalTime: 99
         });
@@ -149,8 +149,8 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "_suite_Context_Mock_suite_critical_thresholds_seconds",
-            help: "Critical threshold for suite 'suite_Context_Mock'"
+            name: "suite_Suite_Context_Mock_critical_thresholds_seconds",
+            help: "Critical threshold for suite 'Suite_Context_Mock'"
         });
         expect(setMock).toHaveBeenCalledWith(99);
     });
@@ -159,7 +159,7 @@ describe("gauge utils", () => {
 
         //GIVEN
         const contextMock = mockPartial<TestCaseContext>({
-            id: "case_Context_Mock",
+            id: "Case_Context_Mock",
             kind: "case",
             criticalTime: 45
         });
@@ -169,8 +169,8 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "_999_case_Context_Mock_case_critical_thresholds_seconds",
-            help: "Critical threshold for case '999_case_Context_Mock'"
+            name: "case_999_Case_Context_Mock_critical_thresholds_seconds",
+            help: "Critical threshold for case '999_Case_Context_Mock'"
         });
         expect(setMock).toHaveBeenCalledWith(45);
     });
@@ -179,7 +179,7 @@ describe("gauge utils", () => {
 
         //GIVEN
         const contextMock = mockPartial<TestStepContext>({
-            id: "step Context Mock",
+            id: "Step Context Mock",
             kind: "step",
             criticalTime: 0
         });
@@ -189,8 +189,8 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "_123_step_Context_Mock_step_critical_thresholds_seconds",
-            help: "Critical threshold for step '123_step_Context_Mock'"
+            name: "step_123_Step_Context_Mock_critical_thresholds_seconds",
+            help: "Critical threshold for step '123_Step_Context_Mock'"
         });
         expect(setMock).toHaveBeenCalledWith(0);
     });
@@ -199,11 +199,11 @@ describe("gauge utils", () => {
 
         //GIVEN
         const suiteContextMock = mockPartial<TestSuiteContext>({
-            id: "suite Context Mock",
+            id: "Suite Context Mock",
             kind: "suite"
         });
         const caseContextMock = mockPartial<TestCaseContext>({
-            id: "case Context Mock",
+            id: "Case Context Mock",
             kind: "case"
         });
 
@@ -212,22 +212,22 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "_suite_Context_Mock_suite_error",
-            help: "Error state for suite 'suite_Context_Mock' in case '001_case_Context_Mock'",
+            name: "suite_Suite_Context_Mock_error",
+            help: "Error state for suite 'Suite_Context_Mock' in case '001_Case_Context_Mock'",
             labelNames: ["case"]
         });
-        expect(setMock).toHaveBeenCalledWith({case: "001_case_Context_Mock"}, 1);
+        expect(setMock).toHaveBeenCalledWith({case: "001_Case_Context_Mock"}, 1);
     });
 
     it("should register step error", () =>{
 
         //GIVEN
         const caseContextMock = mockPartial<TestCaseContext>({
-            id: "case Context Mock",
+            id: "Case Context Mock",
             kind: "case"
         });
         const stepContextMock = mockPartial<TestStepContext>({
-            id: "step Context Mock",
+            id: "Step Context Mock",
             kind: "step"
         });
 
@@ -236,22 +236,22 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "_042_case_Context_Mock_case_error",
-            help: "Error state for case '042_case_Context_Mock' in step '084_step_Context_Mock'",
+            name: "case_042_Case_Context_Mock_error",
+            help: "Error state for case '042_Case_Context_Mock' in step '084_Step_Context_Mock'",
             labelNames: ["step"]
         });
-        expect(setMock).toHaveBeenCalledWith({step: "084_step_Context_Mock"}, 1);
+        expect(setMock).toHaveBeenCalledWith({step: "084_Step_Context_Mock"}, 1);
     });
 
     it("should register action error", () =>{
 
         //GIVEN
         const stepContextMock = mockPartial<TestStepContext>({
-            id: "step_Context_Mock",
+            id: "Step_Context_Mock",
             kind: "step"
         });
         const actionContextMock = mockPartial<TestActionContext>({
-            id: "action Context Mock",
+            id: "Action Context Mock",
             kind: "action"
         });
 
@@ -260,18 +260,18 @@ describe("gauge utils", () => {
 
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
-            name: "_999_step_Context_Mock_step_error",
-            help: "Error state for step '999_step_Context_Mock' in action '321_action_Context_Mock'",
+            name: "step_999_Step_Context_Mock_error",
+            help: "Error state for step '999_Step_Context_Mock' in action '321_Action_Context_Mock'",
             labelNames: ["action"]
         });
-        expect(setMock).toHaveBeenCalledWith({action: "321_action_Context_Mock"}, 1);
+        expect(setMock).toHaveBeenCalledWith({action: "321_Action_Context_Mock"}, 1);
     });
 
     it("it should throw in case the gauge name is invalid", () =>{
 
         //GIVEN
         const contextMock = mockPartial<TestSuiteContext>({
-            id: "suite Context Mock.",
+            id: "Suite Context Mock.",
             kind: "suite",
             warningTime: 42
         });

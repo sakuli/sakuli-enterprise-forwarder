@@ -42,7 +42,7 @@ function createGauge(gaugeDefinition: GaugeDefinition){
 export function  addSuiteWarningThresholdGauge(testSuiteContext: TestSuiteContext) {
     const suiteIdentifier = createSuiteIdentifier(testSuiteContext);
     createGauge({
-        name: `_${suiteIdentifier}_suite_warning_thresholds_seconds`,
+        name: `suite_${suiteIdentifier}_warning_thresholds_seconds`,
         help: `Warning threshold for suite '${suiteIdentifier}'`,
         measurement: testSuiteContext.warningTime
     });
@@ -51,7 +51,7 @@ export function  addSuiteWarningThresholdGauge(testSuiteContext: TestSuiteContex
 export function  addCaseWarningThresholdGauge(testCaseIndex: number, testCaseContext: TestContextEntity) {
     const caseIdentifier = createCaseIdentifier(testCaseIndex, testCaseContext);
     createGauge({
-        name: `_${caseIdentifier}_case_warning_thresholds_seconds`,
+        name: `case_${caseIdentifier}_warning_thresholds_seconds`,
         help: `Warning threshold for case '${caseIdentifier}'`,
         measurement: testCaseContext.warningTime
     });
@@ -60,7 +60,7 @@ export function  addCaseWarningThresholdGauge(testCaseIndex: number, testCaseCon
 export function  addStepWarningThresholdGauge(testStepIndex: number, testStepContext: TestContextEntity) {
     const stepIdentifier = createStepIdentifier(testStepIndex, testStepContext);
     createGauge({
-        name: `_${stepIdentifier}_step_warning_thresholds_seconds`,
+        name: `step_${stepIdentifier}_warning_thresholds_seconds`,
         help: `Warning threshold for step '${stepIdentifier}'`,
         measurement: testStepContext.warningTime
     });
@@ -72,7 +72,7 @@ export function  addCaseDurationGauge(testSuiteContext: TestSuiteContext,
     const suiteIdentifier = createSuiteIdentifier(testSuiteContext);
     const testCaseIdentifier = createCaseIdentifier(testCaseIndex, testCaseContext);
     createGauge({
-        name: `_${suiteIdentifier}_suite_duration_seconds`,
+        name: `suite_${suiteIdentifier}_duration_seconds`,
         help: `Duration in seconds of suite '${suiteIdentifier}' on case '${testCaseIdentifier}'`,
         labels: {
             "case": `${testCaseIdentifier}`
@@ -88,7 +88,7 @@ export function  addStepDurationGauge(testCaseIndex: number,
     const caseIdentifier = createCaseIdentifier(testCaseIndex, testCaseContext);
     const stepIdentifier = createStepIdentifier(testStepIndex, testStepContext);
     createGauge({
-        name: `_${caseIdentifier}_case_duration_seconds`,
+        name: `case_${caseIdentifier}_duration_seconds`,
         help: `Duration in seconds of case '${caseIdentifier}' on step '${stepIdentifier}'`,
         labels: {
             "step": `${stepIdentifier}`
@@ -100,7 +100,7 @@ export function  addStepDurationGauge(testCaseIndex: number,
 export function addSuiteCriticalThresholdGauge(testSuiteContext: TestSuiteContext) {
     const suiteIdentifier = createSuiteIdentifier(testSuiteContext);
     createGauge({
-        name: `_${suiteIdentifier}_suite_critical_thresholds_seconds`,
+        name: `suite_${suiteIdentifier}_critical_thresholds_seconds`,
         help: `Critical threshold for suite '${suiteIdentifier}'`,
         measurement: testSuiteContext.criticalTime
     });
@@ -109,7 +109,7 @@ export function addSuiteCriticalThresholdGauge(testSuiteContext: TestSuiteContex
 export function addCaseCriticalThresholdGauge(testCaseIndex: number, testCaseContext: TestContextEntity) {
     const caseIdentifier = createCaseIdentifier(testCaseIndex, testCaseContext);
     createGauge({
-        name: `_${caseIdentifier}_case_critical_thresholds_seconds`,
+        name: `case_${caseIdentifier}_critical_thresholds_seconds`,
         help: `Critical threshold for case '${caseIdentifier}'`,
         measurement: testCaseContext.criticalTime
     });
@@ -118,7 +118,7 @@ export function addCaseCriticalThresholdGauge(testCaseIndex: number, testCaseCon
 export function addStepCriticalThresholdGauge(testStepIndex: number, testStepContext: TestContextEntity) {
     const stepIdentifier = createStepIdentifier(testStepIndex, testStepContext);
     createGauge({
-        name: `_${stepIdentifier}_step_critical_thresholds_seconds`,
+        name: `step_${stepIdentifier}_critical_thresholds_seconds`,
         help: `Critical threshold for step '${stepIdentifier}'`,
         measurement: testStepContext.criticalTime
     });
@@ -130,7 +130,7 @@ export function addCaseError(testSuiteContext: TestSuiteContext,
     const suiteIdentifier = createSuiteIdentifier(testSuiteContext);
     const caseIdentifier = createCaseIdentifier(testCaseIndex, testCaseContext);
     createGauge({
-        name: `_${suiteIdentifier}_suite_error`,
+        name: `suite_${suiteIdentifier}_error`,
         help: oneLineTrim`Error state for suite '${suiteIdentifier}' in case 
                           '${caseIdentifier}'`,
         labels: {
@@ -147,7 +147,7 @@ export function addStepError(testCaseIndex: number,
     const caseIdentifier = createCaseIdentifier(testCaseIndex, testCaseContext);
     const stepIdentifier = createStepIdentifier(testStepIndex, testStepContext);
     createGauge({
-        name: `_${caseIdentifier}_case_error`,
+        name: `case_${caseIdentifier}_error`,
         help: `Error state for case '${caseIdentifier}' in step '${stepIdentifier}'`,
         labels: {
             "step": `${stepIdentifier}`
@@ -163,7 +163,7 @@ export function addActionError(testStepIndex: number,
     const stepIdentifier = createStepIdentifier(testStepIndex, testStepContext);
     const actionIdentifier = createActionIdentifier(testActionIndex, testActionContext);
     createGauge({
-        name: `_${stepIdentifier}_step_error`,
+        name: `step_${stepIdentifier}_error`,
         help: `Error state for step '${stepIdentifier}' in action '${actionIdentifier}'`,
         labels: {
             "action": `${actionIdentifier}`
