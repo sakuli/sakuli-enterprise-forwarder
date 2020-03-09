@@ -1,5 +1,5 @@
 jest.mock('prom-client');
-import { Gauge } from "prom-client";
+import { Gauge, register } from "prom-client";
 import { mockPartial } from "sneer";
 import { TestActionContext, TestCaseContext, TestStepContext, TestSuiteContext } from "@sakuli/core";
 import {
@@ -19,10 +19,12 @@ import {
 describe("gauge utils", () => {
 
     const setMock = jest.fn();
+    const getSingleMetricMock = jest.fn();
 
     beforeEach(() =>{
         jest.clearAllMocks();
         Gauge.prototype.set = setMock;
+        register.getSingleMetric = getSingleMetricMock;
     });
 
     it("should register suite warning threshold gauge", () =>{
@@ -104,7 +106,7 @@ describe("gauge utils", () => {
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
             name: "suite_Suite_Context_Mock_duration_seconds",
-            help: "Duration in seconds of suite 'Suite_Context_Mock' on case '004_Case_Context_Mock'",
+            help: "Duration in seconds of suite 'Suite_Context_Mock'",
             labelNames: ["case"]
         });
         expect(setMock).toHaveBeenCalledWith({ case: '004_Case_Context_Mock'}, 33);
@@ -129,7 +131,7 @@ describe("gauge utils", () => {
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
             name: "case_002_Case_Context_Mock_duration_seconds",
-            help: "Duration in seconds of case '002_Case_Context_Mock' on step '012_Step_Context_Mock'",
+            help: "Duration in seconds of case '002_Case_Context_Mock'",
             labelNames: ["step"]
         });
         expect(setMock).toHaveBeenCalledWith({ step: '012_Step_Context_Mock'}, 66);
@@ -213,10 +215,10 @@ describe("gauge utils", () => {
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
             name: "suite_Suite_Context_Mock_error",
-            help: "Error state for suite 'Suite_Context_Mock' in case '001_Case_Context_Mock'",
+            help: "Error state for suite 'Suite_Context_Mock'",
             labelNames: ["case"]
         });
-        expect(setMock).toHaveBeenCalledWith({case: "001_Case_Context_Mock"}, 1);
+        expect(setMock).toHaveBeenCalledWith({case: "001_Case_Context_Mock"}, expect.any(Number));
     });
 
     it("should register step error", () =>{
@@ -237,10 +239,10 @@ describe("gauge utils", () => {
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
             name: "case_042_Case_Context_Mock_error",
-            help: "Error state for case '042_Case_Context_Mock' in step '084_Step_Context_Mock'",
+            help: "Error state for case '042_Case_Context_Mock'",
             labelNames: ["step"]
         });
-        expect(setMock).toHaveBeenCalledWith({step: "084_Step_Context_Mock"}, 1);
+        expect(setMock).toHaveBeenCalledWith({step: "084_Step_Context_Mock"}, expect.any(Number));
     });
 
     it("should register action error", () =>{
@@ -261,10 +263,10 @@ describe("gauge utils", () => {
         //THEN
         expect(Gauge).toHaveBeenCalledWith({
             name: "step_999_Step_Context_Mock_error",
-            help: "Error state for step '999_Step_Context_Mock' in action '321_Action_Context_Mock'",
+            help: "Error state for step '999_Step_Context_Mock'",
             labelNames: ["action"]
         });
-        expect(setMock).toHaveBeenCalledWith({action: "321_Action_Context_Mock"}, 1);
+        expect(setMock).toHaveBeenCalledWith({action: "321_Action_Context_Mock"}, expect.any(Number));
     });
 
     it("it should throw in case the gauge name is invalid", () =>{
@@ -281,5 +283,43 @@ describe("gauge utils", () => {
 
         //THEN
         expect(gaugeCreation).toThrowError();
+    });
+
+    it("it should add dimension to gauge", () =>{
+
+        //GIVEN
+        const caseContextMock = mockPartial<TestCaseContext>({
+            id: "Case Context Mock",
+            kind: "case"
+        });
+        const firstStepContextMock = mockPartial<TestStepContext>({
+            id: "Step Context Mock 1",
+            kind: "step"
+        });
+        const secondStepContextMock = mockPartial<TestStepContext>({
+            id: "Step Context Mock 2",
+            kind: "step"
+        });
+        getSingleMetricMock
+            .mockReturnValueOnce(undefined)
+            .mockReturnValue(mockPartial({
+                set: setMock
+            }));
+
+        //WHEN
+        addStepError(42, caseContextMock, 84, firstStepContextMock);
+        addStepError(42, caseContextMock, 85, secondStepContextMock);
+
+        //THEN
+        expect(Gauge).toHaveBeenCalledWith({
+            name: "case_042_Case_Context_Mock_error",
+            help: "Error state for case '042_Case_Context_Mock'",
+            labelNames: ["step"]
+        });
+        expect(Gauge).toHaveBeenCalledTimes(1);
+
+        expect(setMock).toHaveBeenCalledWith({step: "084_Step_Context_Mock_1"}, expect.any(Number));
+        expect(setMock).toHaveBeenCalledWith({step: "085_Step_Context_Mock_2"}, expect.any(Number));
+        expect(setMock).toHaveBeenCalledTimes(2);
     });
 });
