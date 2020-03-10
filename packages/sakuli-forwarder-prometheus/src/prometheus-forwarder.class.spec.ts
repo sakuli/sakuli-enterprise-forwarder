@@ -297,6 +297,8 @@ describe("prometheus forwarder", () => {
 
         //THEN
         expect(addStepDurationGauge).toHaveBeenCalledTimes(1);
+        expect(addStepCriticalThresholdGauge).toHaveBeenCalledTimes(1);
+        expect(addStepCriticalThresholdGauge).toHaveBeenCalledTimes(1);
     });
 
     it("should add steps with empty id", async () => {
@@ -317,6 +319,8 @@ describe("prometheus forwarder", () => {
 
         //THEN
         expect(addStepDurationGauge).toHaveBeenCalledTimes(1);
+        expect(addStepCriticalThresholdGauge).toHaveBeenCalledTimes(1);
+        expect(addStepCriticalThresholdGauge).toHaveBeenCalledTimes(1);
     });
 
     function endContext(ctx: TestExecutionContext){
