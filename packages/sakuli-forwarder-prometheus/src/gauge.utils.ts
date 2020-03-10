@@ -49,7 +49,7 @@ export function  addCaseDurationGauge(testSuiteContext: TestSuiteContext,
         labels: {
             "case": `${testCaseIdentifier}`
         },
-        measurement: toSeconds(testCaseContext.duration)
+        measurement: testCaseContext.duration
     });
 }
 
@@ -65,7 +65,7 @@ export function  addStepDurationGauge(testCaseIndex: number,
         labels: {
             "step": `${stepIdentifier}`
         },
-        measurement: toSeconds(testStepContext.duration)
+        measurement: testStepContext.duration
     });
 }
 
@@ -179,10 +179,6 @@ function registerNewGauge (gaugeDefinition: GaugeDefinition) {
         };
     }
     return new Gauge(gaugeConfiguration);
-}
-
-function toSeconds(milliseconds: number){
-    return Math.round(milliseconds/1000);
 }
 
 function createSuiteIdentifier(testSuiteContext: TestSuiteContext) {
