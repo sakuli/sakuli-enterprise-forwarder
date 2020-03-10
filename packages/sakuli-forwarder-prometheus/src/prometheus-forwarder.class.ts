@@ -54,8 +54,8 @@ export class PrometheusForwarder implements Forwarder {
             }
         },
         () => {
-            this.logError('Could not obtain PrometheusForwarderProperties object');
-            Promise.reject('Could not obtain PrometheusForwarderProperties object')
+            this.logError('Could not obtain PrometheusForwarderProperties object.');
+            return Promise.reject('Could not obtain PrometheusForwarderProperties object.')
         });
     }
 

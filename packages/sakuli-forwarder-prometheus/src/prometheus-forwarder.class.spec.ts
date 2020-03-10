@@ -42,7 +42,7 @@ describe("prometheus forwarder", () => {
         context = new TestExecutionContext(logger);
         jest.clearAllMocks();
         pushgatewayService.mockReturnValue(mockPartial({
-            push: jest.fn().mockResolvedValue("success")
+            push: jest.fn()
         }));
     });
 
@@ -108,7 +108,7 @@ describe("prometheus forwarder", () => {
         let forward = prometheusForwarder.forward(context);
 
         //THEN
-        await expect(forward).rejects.toBe("Could not obtain project object");
+        await expect(forward).rejects.toBe("Could not obtain PrometheusForwarderProperties object.");
     });
 
     it("should send metrics to prometheus", async () =>{
@@ -117,13 +117,12 @@ describe("prometheus forwarder", () => {
         await prometheusForwarder.setup(defaultProject, logger);
 
         //WHEN
-        const forwardResult = await prometheusForwarder.forward(context);
+        await prometheusForwarder.forward(context);
 
         //THEN
         expect(pushgatewayService().push)
             .toHaveBeenCalledWith(
                 expect.any(PrometheusForwarderProperties));
-        expect(forwardResult).toBe("success");
     });
 
     it("should create gauges for suites", async () => {
