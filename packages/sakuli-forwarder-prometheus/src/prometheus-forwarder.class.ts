@@ -115,6 +115,14 @@ export class PrometheusForwarder implements Forwarder {
         ifError(testStepContext, () => addStepError(testCaseIndex, testCaseContext, testStepIndex, testStepContext));
         addStepWarningThresholdGauge(testStepIndex, testStepContext);
         addStepCriticalThresholdGauge(testStepIndex, testStepContext);
-        addStepDurationGauge(testCaseIndex, testCaseContext, testStepIndex, testStepContext);
+        if(this.isNotLegacyTestStep(testStepContext,testStepIndex, testCaseContext)){
+            addStepDurationGauge(testCaseIndex, testCaseContext, testStepIndex, testStepContext);
+        }
+    }
+
+    private isNotLegacyTestStep(testStepContext: TestContextEntity,
+                             testStepIndex: number,
+                             testCaseContext: TestContextEntity) {
+        return testStepContext.id || testStepIndex !== testCaseContext.getChildren().length-1;
     }
 }

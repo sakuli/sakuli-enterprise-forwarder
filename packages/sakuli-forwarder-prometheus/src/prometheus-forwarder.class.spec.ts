@@ -280,6 +280,46 @@ describe("prometheus forwarder", () => {
         expect(addActionError).toHaveBeenCalledTimes(1);
     });
 
+    it("should not add the last, implicit test step", async () => {
+
+        //GIVEN
+        context = new TestExecutionContext(logger);
+        context.startExecution();
+        context.startTestSuite({id: 'Suite1'});
+        context.startTestCase({id: 'Suite1Case1'});
+        context.startTestStep({id: 'regular step'});
+        context.endTestStep();
+        context.startTestStep(); //legacy test step - always there, never filled
+        endContext(context);
+        await prometheusForwarder.setup(defaultProject, logger);
+
+        //WHEN
+        await prometheusForwarder.forward(context);
+
+        //THEN
+        expect(addStepDurationGauge).toHaveBeenCalledTimes(1);
+    });
+
+    it("should add steps with empty id", async () => {
+
+        //GIVEN
+        context = new TestExecutionContext(logger);
+        context.startExecution();
+        context.startTestSuite({id: 'Suite1'});
+        context.startTestCase({id: 'Suite1Case1'});
+        context.startTestStep(); //regular test step without ID
+        context.endTestStep();
+        context.startTestStep(); //legacy test step - always there, never filled
+        endContext(context);
+        await prometheusForwarder.setup(defaultProject, logger);
+
+        //WHEN
+        await prometheusForwarder.forward(context);
+
+        //THEN
+        expect(addStepDurationGauge).toHaveBeenCalledTimes(1);
+    });
+
     function endContext(ctx: TestExecutionContext){
         ctx.endTestStep();
         ctx.endTestCase();

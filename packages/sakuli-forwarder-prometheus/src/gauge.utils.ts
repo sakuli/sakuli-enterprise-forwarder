@@ -11,21 +11,6 @@ interface GaugeDefinition {
 
 const GAUGE_REGEX=/^[a-zA-Z_:][a-zA-Z0-9_:]*$/;
 
-function registerGauge(gaugeDefinition: GaugeDefinition){
-    verifyGaugeName(gaugeDefinition.name);
-
-    let gauge = register.getSingleMetric(gaugeDefinition.name) as Gauge;
-    if(!gauge){
-        gauge = registerNewGauge(gaugeDefinition);
-    }
-
-    if(gaugeDefinition.labels){
-        gauge.set(gaugeDefinition.labels, gaugeDefinition.measurement);
-    }else{
-        gauge.set(gaugeDefinition.measurement);
-    }
-}
-
 export function  addSuiteWarningThresholdGauge(testSuiteContext: TestSuiteContext) {
     const suiteIdentifier = createSuiteIdentifier(testSuiteContext);
     registerGauge({
@@ -158,6 +143,22 @@ export function addActionError(testStepIndex: number,
     });
 }
 
+
+function registerGauge(gaugeDefinition: GaugeDefinition){
+    verifyGaugeName(gaugeDefinition.name);
+
+    let gauge = register.getSingleMetric(gaugeDefinition.name) as Gauge;
+    if(!gauge){
+        gauge = registerNewGauge(gaugeDefinition);
+    }
+
+    if(gaugeDefinition.labels){
+        gauge.set(gaugeDefinition.labels, gaugeDefinition.measurement);
+    }else{
+        gauge.set(gaugeDefinition.measurement);
+    }
+}
+
 function verifyGaugeName(gaugeName: string){
     if(GAUGE_REGEX.test(gaugeName)){
         return gaugeName;
@@ -179,7 +180,6 @@ function registerNewGauge (gaugeDefinition: GaugeDefinition) {
     }
     return new Gauge(gaugeConfiguration);
 }
-
 
 function toSeconds(milliseconds: number){
     return Math.round(milliseconds/1000);
