@@ -48,7 +48,7 @@ export class PrometheusForwarder implements Forwarder {
         return ifPresent(this.properties, async properties => {
             if(properties.enabled){
                 this.logInfo(`Forwarding check result to Prometheus.`);
-                await this.send(ctx, properties);
+                await this.push(ctx, properties);
             }else{
                 this.logInfo(`Prometheus forwarding disabled via properties.`);
             }
@@ -59,13 +59,9 @@ export class PrometheusForwarder implements Forwarder {
         });
     }
 
-
-    private async send(ctx: TestExecutionContext, properties: PrometheusForwarderProperties) {
+    private async push(ctx: TestExecutionContext, properties: PrometheusForwarderProperties) {
         try {
-            ctx.testSuites.forEach((testSuiteContext) => {
-                this.logDebug(`Adding suite ${getEntityId(testSuiteContext)} to gauges.`);
-                this.registerSuites(testSuiteContext);
-            });
+            this.registerSuites(ctx);
             this.logInfo('Pushing results to prometheus push gateway.');
             this.logDebug(`Pushing with config: ${JSON.stringify(properties)}`);
             await pushgatewayService().push(properties);
@@ -76,39 +72,55 @@ export class PrometheusForwarder implements Forwarder {
 
     }
 
+    private registerSuites(testExecutionContext: TestExecutionContext) {
+        testExecutionContext.testSuites.forEach((testSuiteContext) => {
+            this.logDebug(`Adding suite ${getEntityId(testSuiteContext)} to gauges.`);
+            this.registerSuite(testSuiteContext);
+        });
+    }
 
-    private registerSuites(testSuiteContext: TestSuiteContext) {
+    private registerSuite(testSuiteContext: TestSuiteContext) {
         addSuiteWarningThresholdGauge(testSuiteContext);
         addSuiteCriticalThresholdGauge(testSuiteContext);
+        this.registerCases(testSuiteContext);
+    }
+
+    private registerCases(testSuiteContext: TestSuiteContext) {
         testSuiteContext.getChildren().forEach((testCaseContext, testCaseIndex) => {
             this.logDebug(`Adding case ${getEntityId(testCaseContext)} to gauges.`);
-            ifError(testCaseContext, () => addCaseError(testSuiteContext, testCaseIndex, testCaseContext));
-            addCaseDurationGauge(testSuiteContext, testCaseIndex, testCaseContext);
-            this.registerCase(testCaseContext, testCaseIndex);
+            this.addCaseGauges(testCaseContext, testSuiteContext, testCaseIndex);
+            this.registerSteps(testCaseContext, testCaseIndex);
         });
     }
 
-    private registerCase(testCaseContext: TestContextEntity, testCaseIndex: number) {
-        addCaseWarningThresholdGauge(testCaseIndex, testCaseContext);
-        addCaseCriticalThresholdGauge(testCaseIndex, testCaseContext);
+    private registerSteps(testCaseContext: TestContextEntity, testCaseIndex: number) {
         testCaseContext.getChildren().forEach((testStepContext, testStepIndex) => {
             this.logDebug(`Adding step ${getEntityId(testStepContext)} to gauges.`);
-            this.addCaseGauges(testStepContext, testCaseIndex, testCaseContext, testStepIndex);
-            this.registerSteps(testStepContext, testStepIndex);
+            this.addStepGauges(testStepContext, testCaseIndex, testCaseContext, testStepIndex);
+            this.registerActions(testStepContext, testStepIndex);
         });
     }
 
-    private registerSteps(testStepContext: TestContextEntity, testStepIndex: number) {
+    private registerActions(testStepContext: TestContextEntity, testStepIndex: number) {
         testStepContext.getChildren().forEach((testActionContext, testActionIndex) =>{
             this.logDebug(`Adding action ${getEntityId(testActionContext)} to gauges.`);
             ifError(testActionContext, () => addActionError(testStepIndex,
-                                                            testStepContext,
-                                                            testActionIndex,
-                                                            testActionContext));
+                testStepContext,
+                testActionIndex,
+                testActionContext));
         })
     }
 
-    private addCaseGauges(testStepContext: TestContextEntity,
+    private addCaseGauges(testCaseContext: TestContextEntity,
+                          testSuiteContext: TestSuiteContext,
+                          testCaseIndex: number) {
+        ifError(testCaseContext, () => addCaseError(testSuiteContext, testCaseIndex, testCaseContext));
+        addCaseDurationGauge(testSuiteContext, testCaseIndex, testCaseContext);
+        addCaseWarningThresholdGauge(testCaseIndex, testCaseContext);
+        addCaseCriticalThresholdGauge(testCaseIndex, testCaseContext);
+    }
+
+    private addStepGauges(testStepContext: TestContextEntity,
                           testCaseIndex: number,
                           testCaseContext: TestContextEntity,
                           testStepIndex: number) {
