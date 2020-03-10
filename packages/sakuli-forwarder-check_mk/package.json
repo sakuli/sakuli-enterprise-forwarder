@@ -1,39 +1,39 @@
 {
-	"name": "@sakuli/forwarder-checkmk",
-	"version": "2.2.0",
-	"description": "check_mk forwarder for Sakuli v2+",
-	"keywords": [
-		"monitoring",
-		"e2e"
-	],
-	"author": "Simon Hofmann <simon.hofmann@consol.de>",
-	"main": "dist/index.js",
-	"typings": "dist/index.d.ts",
-	"scripts": {
-		"obfuscate": "javascript-obfuscator ./dist --output ./out --config ../../scripts/obfuscate.js",
-		"copy": "node ../../scripts/move-files.js ./out .",
-		"build": "tsc",
-		"build:release": "tsc && npm run obfuscate && npm run copy",
-		"test": "jest",
-		"prepublishOnly": "npm run build:release && npm test"
-	},
-	"dependencies": {
-		"@sakuli/commons": "2.2.0",
-		"@sakuli/core": "2.2.0",
-		"@sakuli/result-builder-checkmk": "2.2.0",
-		"@sakuli/result-builder-commons": "2.2.0",
-		"axios": "0.19.0",
-		"class-validator": "0.9.1",
-		"common-tags": "1.8.0"
-	},
-	"devDependencies": {
-		"@types/common-tags": "1.8.0",
-		"@types/jest": "24.0.17",
-		"@types/node": "12.7.1",
-		"javascript-obfuscator": "0.18.1",
-		"jest": "24.8.0",
-		"sneer": "1.0.1",
-		"ts-jest": "24.0.2",
-		"typescript": "3.5.3"
-	}
+  "name": "@sakuli/forwarder-checkmk",
+  "version": "2.2.0",
+  "description": "check_mk forwarder for Sakuli v2+",
+  "keywords": [
+    "monitoring",
+    "e2e"
+  ],
+  "author": "Simon Hofmann <simon.hofmann@consol.de>",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "obfuscate": "javascript-obfuscator ./dist --output ./out --config ../../scripts/obfuscate.js",
+    "copy": "node ../../scripts/move-files.js ./out .",
+    "build": "tsc",
+    "build:release": "tsc && npm run obfuscate && npm run copy",
+    "test": "jest",
+    "prepublishOnly": "npm run build:release && npm test"
+  },
+  "dependencies": {
+    "@sakuli/commons": "2.2.0",
+    "@sakuli/core": "2.2.0",
+    "@sakuli/result-builder-checkmk": "2.2.0",
+    "@sakuli/result-builder-commons": "2.2.0",
+    "axios": "0.19.0",
+    "class-validator": "0.9.1",
+    "common-tags": "1.8.0"
+  },
+  "devDependencies": {
+    "@types/common-tags": "1.8.0",
+    "@types/jest": "24.0.17",
+    "@types/node": "12.7.1",
+    "javascript-obfuscator": "0.18.1",
+    "jest": "24.8.0",
+    "sneer": "1.0.1",
+    "ts-jest": "24.0.2",
+    "typescript": "3.5.3"
+  }
 }
