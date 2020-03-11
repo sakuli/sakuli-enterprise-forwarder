@@ -11,7 +11,7 @@ interface GaugeDefinition {
 
 const GAUGE_REGEX=/^[a-zA-Z_:][a-zA-Z0-9_:]*$/;
 
-export function  addSuiteWarningThresholdGauge(testSuiteContext: TestSuiteContext) {
+export function addSuiteWarningThresholdGauge(testSuiteContext: TestSuiteContext) {
     const suiteIdentifier = createSuiteIdentifier(testSuiteContext);
     registerGauge({
         name: `suite_${suiteIdentifier}_warning_thresholds_seconds`,
@@ -20,7 +20,7 @@ export function  addSuiteWarningThresholdGauge(testSuiteContext: TestSuiteContex
     });
 }
 
-export function  addCaseWarningThresholdGauge(testCaseIndex: number, testCaseContext: TestContextEntity) {
+export function addCaseWarningThresholdGauge(testCaseIndex: number, testCaseContext: TestContextEntity) {
     const caseIdentifier = createCaseIdentifier(testCaseIndex, testCaseContext);
     registerGauge({
         name: `case_${caseIdentifier}_warning_thresholds_seconds`,
@@ -29,7 +29,7 @@ export function  addCaseWarningThresholdGauge(testCaseIndex: number, testCaseCon
     });
 }
 
-export function  addStepWarningThresholdGauge(testStepIndex: number, testStepContext: TestContextEntity) {
+export function addStepWarningThresholdGauge(testStepIndex: number, testStepContext: TestContextEntity) {
     const stepIdentifier = createStepIdentifier(testStepIndex, testStepContext);
     registerGauge({
         name: `step_${stepIdentifier}_warning_thresholds_seconds`,
@@ -38,7 +38,7 @@ export function  addStepWarningThresholdGauge(testStepIndex: number, testStepCon
     });
 }
 
-export function  addCaseDurationGauge(testSuiteContext: TestSuiteContext,
+export function addCaseDurationGauge(testSuiteContext: TestSuiteContext,
                                       testCaseIndex: number,
                                       testCaseContext: TestContextEntity) {
     const suiteIdentifier = createSuiteIdentifier(testSuiteContext);
@@ -53,7 +53,7 @@ export function  addCaseDurationGauge(testSuiteContext: TestSuiteContext,
     });
 }
 
-export function  addStepDurationGauge(testCaseIndex: number,
+export function addStepDurationGauge(testCaseIndex: number,
                                       testCaseContext: TestContextEntity,
                                       testStepIndex: number,
                                       testStepContext: TestContextEntity) {
@@ -166,9 +166,9 @@ function verifyGaugeName(gaugeName: string){
     throw Error(`Gauge name '${gaugeName}' does not match required regex '${GAUGE_REGEX}'`)
 }
 
-function registerNewGauge (gaugeDefinition: GaugeDefinition) {
+function registerNewGauge(gaugeDefinition: GaugeDefinition) {
     let gaugeConfiguration: GaugeConfiguration = {
-        name: verifyGaugeName(gaugeDefinition.name),
+        name: gaugeDefinition.name,
         help: gaugeDefinition.help
     };
 
