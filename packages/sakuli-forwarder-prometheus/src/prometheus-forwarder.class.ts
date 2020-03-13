@@ -96,7 +96,7 @@ export class PrometheusForwarder implements Forwarder {
     private registerSteps(testCaseContext: TestContextEntity, testCaseIndex: number) {
         testCaseContext.getChildren().forEach((testStepContext, testStepIndex) => {
             this.logDebug(`Adding step ${getEntityId(testStepContext)} to gauges.`);
-            this.addStepGauges(testStepContext, testCaseIndex, testCaseContext, testStepIndex);
+            this.addStepGauges(testStepContext, testStepIndex, testCaseContext, testCaseIndex);
             this.registerActions(testStepContext, testStepIndex);
         });
     }
@@ -121,20 +121,21 @@ export class PrometheusForwarder implements Forwarder {
     }
 
     private addStepGauges(testStepContext: TestContextEntity,
-                          testCaseIndex: number,
+                          testStepIndex: number,
                           testCaseContext: TestContextEntity,
-                          testStepIndex: number) {
+                          testCaseIndex: number) {
         ifError(testStepContext, () => addStepError(testCaseIndex, testCaseContext, testStepIndex, testStepContext));
-        if(this.isNotLegacyTestStep(testStepContext,testStepIndex, testCaseContext)){
+        if(this.isNotEmptyTrailingTestStep(testStepContext,testStepIndex, testCaseContext)){
             addStepWarningThresholdGauge(testStepIndex, testStepContext);
             addStepCriticalThresholdGauge(testStepIndex, testStepContext);
             addStepDurationGauge(testCaseIndex, testCaseContext, testStepIndex, testStepContext);
         }
     }
 
-    private isNotLegacyTestStep(testStepContext: TestContextEntity,
+    private isNotEmptyTrailingTestStep(testStepContext: TestContextEntity,
                              testStepIndex: number,
                              testCaseContext: TestContextEntity) {
-        return testStepContext.id || testStepIndex !== testCaseContext.getChildren().length-1;
+        return ifPresent(testStepContext.id, () => !!testStepContext.id, () => false)
+                    || testStepIndex !== testCaseContext.getChildren().length-1;
     }
 }
