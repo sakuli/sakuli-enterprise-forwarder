@@ -1,12 +1,12 @@
 {
-  "name": "@sakuli/forwarder-checkmk",
+  "name": "@sakuli/forwarder-prometheus",
   "version": "2.2.0",
-  "description": "check_mk forwarder for Sakuli v2+",
+  "description": "Prometheus forwarder for Sakuli v2+",
   "keywords": [
     "monitoring",
     "e2e"
   ],
-  "author": "Simon Hofmann <simon.hofmann@consol.de>",
+  "author": "Sven Hettwer <sven.hettwer@consol.de>",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
@@ -20,14 +20,12 @@
   "dependencies": {
     "@sakuli/commons": "2.2.0",
     "@sakuli/core": "2.2.0",
-    "@sakuli/result-builder-checkmk": "2.2.0",
     "@sakuli/result-builder-commons": "2.2.0",
     "axios": "0.19.0",
     "class-validator": "0.9.1",
-    "common-tags": "1.8.0"
+    "prom-client": "11.5.3"
   },
   "devDependencies": {
-    "@types/common-tags": "1.8.0",
     "@types/jest": "24.0.17",
     "@types/node": "12.7.1",
     "javascript-obfuscator": "0.18.1",

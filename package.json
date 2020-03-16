@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "audit": "lerna-audit",
+    "audit": "npm audit fix && lerna-audit",
     "rebuild": "npm run clean && npm install && npm run build",
     "clean": "lerna clean -y",
     "postinstall": "lerna bootstrap",
@@ -19,6 +19,6 @@
     "lerna": "3.16.4",
     "ts-jest": "24.0.2",
     "typescript": "3.5.3",
-    "lerna-audit": "1.0.1"
+    "lerna-audit": "1.1.1"
   }
 }
