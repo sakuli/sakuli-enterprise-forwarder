@@ -344,7 +344,6 @@ describe('checkmk result builder', () => {
                 serviceDescription: "service_description",
                 outputDetails: true,
                 sectionName: "Isengard",
-                urlEnabled: true,
                 url: "https://sakuli.io"
             };
 
@@ -359,34 +358,17 @@ describe('checkmk result builder', () => {
             expect(rendered).toContain(testSuiteWithUrl);
         });
 
-        it('should print empty url', () => {
+        it.each<any>([
+            undefined,
+            null,
+            ""
+            ])("should print empty url for '%s'", (url: any) => {
             //GIVEN
             const properties = {
                 serviceDescription: "service_description",
                 outputDetails: true,
                 sectionName: "Isengard",
-                urlEnabled: true
-            };
-
-            //WHEN
-            const rendered = renderer.render(TestSuite_OK, {
-                currentSuite: TestSuite_OK as TestSuiteContext,
-                currentCase: TestCase_OK as TestCaseContext,
-                props: properties
-            });
-
-            //THEN
-            expect(rendered).toContain(testSuiteWithoutUrl);
-        });
-
-        it('should not print url', () => {
-            //GIVEN
-            const properties = {
-                serviceDescription: "service_description",
-                outputDetails: true,
-                sectionName: "Isengard",
-                urlEnabled: false,
-                url: "https://sakuli.io"
+                url
             };
 
             //WHEN
