@@ -1,6 +1,6 @@
 {
   "name": "@sakuli/result-builder-checkmk",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "checkmk check result builder for Sakuli v2+",
   "keywords": [
     "monitoring",
@@ -9,9 +9,9 @@
   "author": "Simon Hofmann <simon.hofmann@consol.de>",
   "main": "dist/index.js",
   "dependencies": {
-    "@sakuli/commons": "2.2.0",
-    "@sakuli/core": "2.2.0",
-    "@sakuli/result-builder-commons": "2.2.0",
+    "@sakuli/commons": "2.3.0",
+    "@sakuli/core": "2.3.0",
+    "@sakuli/result-builder-commons": "2.3.0",
     "common-tags": "1.8.0",
     "dateformat": "3.0.3",
     "sneer": "1.0.1",
