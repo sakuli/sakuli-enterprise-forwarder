@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@types/jest": "25.2.1",
-    "@types/node": "12.7.1",
+    "@types/node": "12.12.34",
     "javascript-obfuscator": "0.18.1",
     "jest": "25.2.7",
     "sneer": "1.0.1",

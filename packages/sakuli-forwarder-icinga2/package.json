@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@types/jest": "25.2.1",
-    "@types/node": "12.6.9",
+    "@types/node": "12.12.34",
     "@types/twig": "1.12.2",
     "javascript-obfuscator": "0.18.1",
     "jest": "25.2.7",
