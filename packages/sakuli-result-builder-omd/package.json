@@ -10,8 +10,8 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "dependencies": {
-    "@sakuli/commons": "2.3.0",
-    "@sakuli/core": "2.3.0",
+    "@sakuli/commons": "2.3.1-next.62",
+    "@sakuli/core": "2.3.1-next.62",
     "@sakuli/result-builder-commons": "2.3.0",
     "common-tags": "1.8.0",
     "dateformat": "3.0.3",
