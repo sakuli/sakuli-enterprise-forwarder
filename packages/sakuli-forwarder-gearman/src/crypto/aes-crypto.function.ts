@@ -1,5 +1,5 @@
-import { createCipheriv, createCipher, randomBytes, createHash, createDecipheriv } from "crypto";
-import { secret, Algorithm } from '@nut-tree/secrets';
+import {randomBytes} from "crypto";
+import {Algorithm, secret} from '@nut-tree/secrets';
 
 export const generateRandom = (params: { byteLength: number } = {
     byteLength: 16,
@@ -24,11 +24,3 @@ export async function encrypt(text: string, password: string, size:number = 32, 
         algorithm,
     )
 }
-
-/*
-export async function decrypt(text: string, password: string, size:number = 32, algorithm: Algorithm = Algorithm.AES256ECB): Promise<string> {
-    return secret.decrypt(
-        text, password, Algorithm.AES256ECB
-    )
-}
-*/
