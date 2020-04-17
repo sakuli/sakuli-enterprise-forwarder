@@ -18,8 +18,8 @@
     "prepublishOnly": "npm run build:release && npm test"
   },
   "dependencies": {
-    "@sakuli/commons": "2.3.0",
-    "@sakuli/core": "2.3.0",
+    "@sakuli/commons": "2.3.1-next.62",
+    "@sakuli/core": "2.3.1-next.62",
     "@sakuli/result-builder-checkmk": "2.3.0",
     "@sakuli/result-builder-commons": "2.3.0",
     "axios": "0.19.0",
@@ -28,13 +28,12 @@
   },
   "devDependencies": {
     "@types/common-tags": "1.8.0",
-    "@types/jest": "24.0.17",
-    "@types/node": "12.7.1",
-    "@types/yargs": "12.0.12",
-    "javascript-obfuscator": "0.18.1",
-    "jest": "24.8.0",
+    "@types/jest": "25.2.1",
+    "@types/node": "12.12.34",
+    "javascript-obfuscator": "0.27.4",
+    "jest": "25.2.7",
     "sneer": "1.0.1",
-    "ts-jest": "24.0.2",
-    "typescript": "3.5.3"
+    "ts-jest": "25.3.1",
+    "typescript": "3.8.3"
   }
 }

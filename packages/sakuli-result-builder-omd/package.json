@@ -10,8 +10,8 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "dependencies": {
-    "@sakuli/commons": "2.3.0",
-    "@sakuli/core": "2.3.0",
+    "@sakuli/commons": "2.3.1-next.62",
+    "@sakuli/core": "2.3.1-next.62",
     "@sakuli/result-builder-commons": "2.3.0",
     "common-tags": "1.8.0",
     "dateformat": "3.0.3",
@@ -21,13 +21,13 @@
   "devDependencies": {
     "@types/common-tags": "1.8.0",
     "@types/dateformat": "3.0.0",
-    "@types/jest": "24.0.17",
+    "@types/jest": "25.2.1",
     "@types/uuid": "3.4.5",
-    "@types/yargs": "12.0.12",
-    "javascript-obfuscator": "0.18.1",
-    "jest": "24.8.0",
-    "ts-jest": "24.0.2",
-    "typescript": "3.5.3"
+    "@types/node": "12.12.34",
+    "javascript-obfuscator": "0.27.4",
+    "jest": "25.2.7",
+    "ts-jest": "25.3.1",
+    "typescript": "3.8.3"
   },
   "scripts": {
     "obfuscate": "javascript-obfuscator ./dist --output ./out --config ../../scripts/obfuscate.js",
