@@ -4,7 +4,8 @@
   "description": "Prometheus forwarder for Sakuli v2+",
   "keywords": [
     "monitoring",
-    "e2e"
+    "e2e",
+    "sakuliPreset"
   ],
   "author": "Sven Hettwer <sven.hettwer@consol.de>",
   "main": "dist/index.js",

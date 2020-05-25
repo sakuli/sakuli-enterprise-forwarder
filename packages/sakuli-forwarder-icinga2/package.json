@@ -4,7 +4,8 @@
   "description": "Inciga2 forwarder for Sakuli v2+",
   "keywords": [
     "monitoring",
-    "e2e"
+    "e2e",
+    "sakuliPreset"
   ],
   "author": "Tim Keiner <keiner.tim@gmail.com>",
   "main": "dist/index.js",
