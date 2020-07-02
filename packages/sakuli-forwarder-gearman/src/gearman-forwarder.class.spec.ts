@@ -17,6 +17,17 @@ describe("gearman forwarder", () => {
     debug: jest.fn()
   });
 
+  function getProjectWithProps(props: any){
+    return mockPartial<Project>({
+      has(key: string): boolean {
+        return props[key] !== undefined;
+      },
+      get(key: string): any {
+        return props[key];
+      }
+    })
+  }
+
   beforeEach(() => {
     gearmanForwarder = new GearmanForwarder();
     context = new TestExecutionContext(logger);
@@ -34,14 +45,27 @@ describe("gearman forwarder", () => {
     expect(validateProps).not.toHaveBeenCalled();
   });
 
-  function getProjectWithProps(props: any){
-    return mockPartial<Project>({
-      has(key: string): boolean {
-        return props[key] !== undefined;
-      },
-      get(key: string): any {
-        return props[key];
-      }
-    })
-  }
+  it("should validate props if available", () => {
+    //GIVEN
+    const project = getProjectWithProps({
+    "sakuli.forwarder.gearman.enabled" : "true"
+    });
+
+    //WHEN
+    gearmanForwarder.setup(project,logger);
+
+    //THEN
+    expect(validateProps).toHaveBeenCalled();
+  });
+
+  it("should throw error when props are invalid", () => {
+    //GIVEN
+    const project = getProjectWithProps({
+    "sakuli.forwarder.gearman.enabled" : "123"
+    });
+
+    //THEN
+    expect(gearmanForwarder.setup(project,logger)).rejects.toThrow();
+  });
+
 });
