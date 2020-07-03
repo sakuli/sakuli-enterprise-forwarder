@@ -34,38 +34,28 @@ describe("check-mk forwarder", () => {
     jest.clearAllMocks();
   });
 
-  it("should not validate props if not available", () => {
+  it("should not validate props if not available", async () => {
     // GIVEN
     const project = getProjectWithProps({});
 
     //WHEN
-    checkmkForwarder.setup(project, logger);
+    await checkmkForwarder.setup(project, logger);
 
     //THEN
     expect(validateProps).not.toHaveBeenCalled();
   });
 
-  it("should validate props if available", () => {
+  it("should validate props if available", async () => {
     //GIVEN
     const project = getProjectWithProps({
-    "sakuli.forwarder.check_mk.enabled" : "true"
+    "sakuli.forwarder.check_mk.enabled" : true
     });
 
     //WHEN
-    checkmkForwarder.setup(project,logger);
+    await checkmkForwarder.setup(project,logger);
 
     //THEN
     expect(validateProps).toHaveBeenCalled();
-  });
-
-  it("should throw error when props are invalid", () => {
-    //GIVEN
-    const project = getProjectWithProps({
-    "sakuli.forwarder.check_mk.enabled" : "123"
-    });
-
-    //THEN
-    expect(checkmkForwarder.setup(project,logger)).rejects.toThrow();
   });
 
 });
