@@ -34,38 +34,28 @@ describe("gearman forwarder", () => {
     jest.clearAllMocks();
   });
 
-  it("should not validate props if not available", () => {
+  it("should not validate props if not available", async () => {
     // GIVEN
     const project = getProjectWithProps({});
 
     //WHEN
-    gearmanForwarder.setup(project, logger);
+    await gearmanForwarder.setup(project, logger);
 
     //THEN
     expect(validateProps).not.toHaveBeenCalled();
   });
 
-  it("should validate props if available", () => {
+  it("should validate props if available", async () => {
     //GIVEN
     const project = getProjectWithProps({
     "sakuli.forwarder.gearman.enabled" : "true"
     });
 
     //WHEN
-    gearmanForwarder.setup(project,logger);
+    await gearmanForwarder.setup(project,logger);
 
     //THEN
     expect(validateProps).toHaveBeenCalled();
-  });
-
-  it("should throw error when props are invalid", () => {
-    //GIVEN
-    const project = getProjectWithProps({
-    "sakuli.forwarder.gearman.enabled" : "123"
-    });
-
-    //THEN
-    expect(gearmanForwarder.setup(project,logger)).rejects.toThrow();
   });
 
 });
