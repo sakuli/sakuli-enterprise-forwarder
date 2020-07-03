@@ -61,42 +61,27 @@ describe('Icinga2Forwarder', () => {
         await forwarder.forward(ctx);
     });
 
-    it("should not validate props if not available", () => {
+    it("should not validate props if not available", async () => {
             //WHEN
-            forwarder.setup(project,logger);
+            await forwarder.setup(project,logger);
 
             //THEN
             expect(validateProps).not.toHaveBeenCalled();
 
         });
 
-    it("should validate props if available", () => {
+    it("should validate props if available", async () => {
             //GIVEN
             let project = getProjectWithProps({
             "sakuli.forwarder.icinga2.enabled" : "true"
             });
 
             //WHEN
-            forwarder.setup(project,logger);
+            await forwarder.setup(project,logger);
 
             //THEN
             expect(validateProps).toHaveBeenCalled();
 
     });
-
-    it("should throw error when props are invalie", () => {
-            //GIVEN
-            let project = getProjectWithProps({
-            "sakuli.forwarder.icinga2.enabled" : "123"
-            });
-
-            //WHEN
-            let setup = forwarder.setup(project,logger)
-
-            //THEN
-            expect(setup).rejects.toThrow();
-
-    });
-
 
 });
