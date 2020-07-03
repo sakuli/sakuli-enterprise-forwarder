@@ -50,7 +50,7 @@ export class CheckMkForwarder implements Forwarder {
                         });
                         const fileName = createSpoolFileName(testContextEntity, props);
                         const path = props.spoolDir;
-                        this.logDebug(`Forwarding final result to checkmk via spool file '${fileName}' in '${path}'.`);
+                        this.logInfo(`Forwarding final result to checkmk via spool file '${fileName}' in '${path}'.`);
                         const spoolFile = resolve(join(path, fileName));
                         if (await dirExists(path)) {
                             try {
