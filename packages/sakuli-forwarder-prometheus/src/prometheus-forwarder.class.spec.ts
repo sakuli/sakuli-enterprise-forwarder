@@ -16,7 +16,12 @@ import { mockPartial } from "sneer";
 import { Project, TestExecutionContext } from "@sakuli/core";
 import { SimpleLogger } from "@sakuli/commons";
 import { PrometheusForwarderProperties } from "./prometheus-properties.class";
+import {validateProps, getEntityId} from "@sakuli/result-builder-commons";
 
+jest.mock("@sakuli/result-builder-commons", () => ({
+            validateProps : jest.fn(),
+            getEntityId: jest.fn()
+        }));
 jest.mock('./pushgateway.service');
 jest.mock('./gauge.utils');
 
@@ -34,7 +39,8 @@ describe("prometheus forwarder", () => {
 
     const logger = mockPartial<SimpleLogger>({
         info: jest.fn(),
-        debug: jest.fn()
+        debug: jest.fn(),
+        error: jest.fn()
     });
 
     beforeEach(() => {
@@ -322,6 +328,21 @@ describe("prometheus forwarder", () => {
         expect(addStepCriticalThresholdGauge).toHaveBeenCalledTimes(1);
         expect(addStepCriticalThresholdGauge).toHaveBeenCalledTimes(1);
     });
+
+    it("should not validate props if not available", () => {
+            //GIVEN
+            let project = getProjectWithProps({});
+
+            //WHEN
+            prometheusForwarder.setup(project,logger);
+
+            //THEN
+            expect(validateProps).not.toHaveBeenCalled();
+
+        });
+
+
+
 
     function endContext(ctx: TestExecutionContext){
         ctx.endTestStep();
