@@ -334,15 +334,29 @@ describe("prometheus forwarder", () => {
         expect(addStepCriticalThresholdGauge).toHaveBeenCalledTimes(1);
     });
 
-    it("should not validate props if not available", () => {
+    it("should not validate if props not available", async () => {
         //GIVEN
         let project = getProjectWithProps({});
 
         //WHEN
-        prometheusForwarder.setup(project, logger);
+        await prometheusForwarder.setup(project, logger);
 
         //THEN
         expect(validateProps).not.toHaveBeenCalled();
+
+    });
+
+    it("should validate if props available", async () => {
+        //GIVEN
+        let project = getProjectWithProps( {
+            "sakuli.forwarder.prometheus.enabled" : true
+        });
+
+        //WHEN
+        await prometheusForwarder.setup(project,logger);
+
+        //THEN
+        expect(validateProps).toHaveBeenCalled();
 
     });
 
