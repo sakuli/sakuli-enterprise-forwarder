@@ -47,7 +47,9 @@ export class GearmanForwarder implements Forwarder {
      */
     async setup(project: Project, logger: SimpleLogger): Promise<void> {
         this.gearmanProps = createPropertyObjectFactory(project)(GearmanForwarderProperties);
+        if(this.gearmanProps.enabled){
         await validateProps(this.gearmanProps);
+        }
         this.logger = logger;
     }
 
