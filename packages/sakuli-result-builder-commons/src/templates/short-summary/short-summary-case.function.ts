@@ -1,13 +1,13 @@
 import {oneLine} from "common-tags";
 import {TestCaseContext, TestContextEntityStates, TestStepContext} from "@sakuli/core";
 import {renderCaseErrors, renderLastRun, renderStepWarnings} from "../render";
-import {getNagiosCaseState, getShortState, NagiosState, NagiosStateObject} from "../../check-result";
+import {getNagiosCaseState, NagiosState, NagiosStateObject} from "../../check-result";
 import {abbreviate} from "../../output";
 
 export function renderShortCaseSummary(testCase: TestCaseContext, suiteId: string) {
     const nagiosState = getNagiosCaseState(testCase);
     return (testCase.kind !== "case") ? "" : oneLine(`
-    ${getShortState(testCase.state)} Case "${testCase.id}" of Sakuli suite "${suiteId}"
+    Case "${testCase.id}" of Sakuli suite "${suiteId}"
     ${(testCase.state === TestContextEntityStates.ERROR) ? renderError(testCase, nagiosState) : renderSuccess(testCase, nagiosState)}
     `);
 }
