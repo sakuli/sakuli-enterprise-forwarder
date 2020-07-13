@@ -1,3 +1,20 @@
+import { CheckMkForwarder } from "./checkmk-forwarder.class";
+import { Project, TestExecutionContext } from "@sakuli/core";
+import { mockPartial } from "sneer";
+import { SimpleLogger } from "@sakuli/commons";
+import { validateProps } from "@sakuli/result-builder-commons";
+
+jest.mock("@sakuli/result-builder-commons", () => ({
+  validateProps: jest.fn(),
+}));
+describe("check-mk forwarder", () => {
+
+  let checkmkForwarder: CheckMkForwarder;
+  let context: TestExecutionContext;
+
+  const logger = mockPartial<SimpleLogger>({
+    info: jest.fn(),
+    debug: jest.fn()
 import { Project, TestExecutionContext } from "@sakuli/core";
 import { SimpleLogger } from "@sakuli/commons";
 import { mockPartial } from "sneer";
@@ -34,6 +51,8 @@ describe("checkmk forwarder", () => {
     })
   }
 
+  beforeEach(() => {
+    checkmkForwarder = new CheckMkForwarder();
   function endContext(ctx: TestExecutionContext){
       ctx.endTestStep();
       ctx.endTestCase();
@@ -46,6 +65,32 @@ describe("checkmk forwarder", () => {
     context = new TestExecutionContext(logger);
     jest.clearAllMocks();
   });
+
+  it("should not validate props if not available", async () => {
+    // GIVEN
+    const project = getProjectWithProps({});
+
+    //WHEN
+    await checkmkForwarder.setup(project, logger);
+
+    //THEN
+    expect(validateProps).not.toHaveBeenCalled();
+  });
+
+  it("should validate props if available", async () => {
+    //GIVEN
+    const project = getProjectWithProps({
+    "sakuli.forwarder.check_mk.enabled" : true
+    });
+
+    //WHEN
+    await checkmkForwarder.setup(project,logger);
+
+    //THEN
+    expect(validateProps).toHaveBeenCalled();
+  });
+
+});
 
   it("should reject when properties are not present", async () => {
     await expect(checkMkForwarder.forward(context)).rejects.toThrowError();

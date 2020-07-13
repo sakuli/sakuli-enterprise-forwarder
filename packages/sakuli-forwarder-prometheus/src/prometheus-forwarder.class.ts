@@ -24,7 +24,9 @@ export class PrometheusForwarder implements Forwarder {
 
     async setup(project: Project, logger: SimpleLogger): Promise<void> {
         this.properties = createPropertyObjectFactory(project)(PrometheusForwarderProperties);
+        if(this.properties.enabled){
         await validateProps(this.properties);
+        }
         this.logger = logger;
     }
 
