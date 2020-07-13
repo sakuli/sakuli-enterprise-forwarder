@@ -13,9 +13,19 @@ jest.mock("@sakuli/result-builder-commons", () => {
         validateProps: jest.fn(),
     };
 });
+import { CheckMkForwarder } from "./checkmk-forwarder.class";
+import { dirExists } from "./dir-exists.function";
+import { promises as fs } from "fs";
+import { cwd } from "process";
 
 jest.mock("./create-spool-file.function", () => ({
-    createSpoolFileName : jest.fn(() => { return "spoolFileName" })
+  createSpoolFileName: jest.fn(() => {
+    return "spoolFileName"
+  })
+}));
+
+jest.mock("./dir-exists.function", () => ({
+  dirExists: jest.fn()
 }));
 
 describe("check-mk forwarder", () => {
@@ -41,11 +51,20 @@ describe("check-mk forwarder", () => {
     })
   }
 
-    function endContext(ctx: TestExecutionContext){
-      ctx.endTestStep();
-      ctx.endTestCase();
-      ctx.endTestSuite();
-      ctx.endExecution();
+    async function setupDefaultProject() {
+    await checkMkForwarder.setup(defaultProject, logger);
+    context.startExecution();
+    context.startTestSuite({id: 'Suite1'});
+    context.startTestCase({id: 'Suite1Case1'});
+    context.startTestStep({id: 'Suite1Case1Step1'});
+    endContext(context);
+  }
+
+  function endContext(ctx: TestExecutionContext) {
+    ctx.endTestStep();
+    ctx.endTestCase();
+    ctx.endTestSuite();
+    ctx.endExecution();
   }
 
   beforeEach(() => {
@@ -72,9 +91,9 @@ describe("check-mk forwarder", () => {
   it("should resolve when properties are disabled", async () => {
     //GIVEN
     const project = getProjectWithProps({
-        "sakuli.forwarder.check_mk.enabled" : false
+      "sakuli.forwarder.check_mk.enabled": false
     });
-    await checkmkForwarder.setup(project,logger);
+    await checkmkForwarder.setup(project, logger);
 
     //WHEN
     await checkmkForwarder.forward(context);
@@ -85,26 +104,49 @@ describe("check-mk forwarder", () => {
   });
 
   it("should resolve when properties are enabled", async () => {
-      //GIVEN
-      const project = getProjectWithProps({
-          "sakuli.forwarder.check_mk.enabled" : true,
-          "sakuli.forwarder.check_mk.spooldir" : "spoolFilePath"
+    //GIVEN
+    (<jest.Mock>dirExists).mockReturnValueOnce(true);
+    fs.writeFile = jest.fn()
+      .mockImplementationOnce(() => {});
+    await setupDefaultProject();
+
+    //WHEN
+    await checkmkForwarder.forward(context);
+
+    //THEN
+    expect(logger.info).toBeCalledWith(`Forwarding final result to checkmk via spool file 'spoolFileName' in 'spoolFilePath'.`);
+    expect(fs.writeFile).toHaveBeenCalled();
+  });
+
+  it("should warn when spool directory does not exist", async () => {
+
+    //GIVEN
+    (<jest.Mock>dirExists).mockReturnValueOnce(false);
+    await setupDefaultProject()
+    //WHEN
+    await checkmkForwarder.forward(context);
+
+    //THEN
+    expect(validateProps).toHaveBeenCalled();
+      expect(logger.info).toBeCalledWith(`Forwarding final result to checkmk via spool file 'spoolFileName' in 'spoolFilePath'.`);expect(logger.warn).toHaveBeenCalledWith(`spool directory 'spoolFilePath' does not exists, skipping checkmk forwarding.`);
+  });
+
+  it("should throw an error if writing file does fail", async () => {
+
+    //GIVEN
+    (<jest.Mock>dirExists).mockReturnValueOnce(true);
+    fs.writeFile = jest.fn()
+      .mockImplementationOnce(() => {
+        throw Error();
       });
-      await checkmkForwarder.setup(project,logger);
-      context.startExecution();
-      context.startTestSuite({id: 'Suite1'});
-      context.startTestCase({id: 'Suite1Case1'});
-      context.startTestStep({id: 'Suite1Case1Step1'});
-      endContext(context);
+    const errorPath = `${cwd()}/spoolFilePath/spoolFileName`;
+    await setupDefaultProject();
 
-      //WHEN
-      await checkmkForwarder.forward(context);
+    //WHEN
+    await checkMkForwarder.forward(context);
 
-      //THEN
-      expect(validateProps).toHaveBeenCalled();
-      expect(logger.info).toBeCalledWith(`Forwarding final result to checkmk via spool file 'spoolFileName' in 'spoolFilePath'.`);
-
-    });
-
+    //THEN
+    expect(logger.error).toHaveBeenCalledWith(`Failed to write to '${errorPath}'. Reason:`, new Error());
+  });
 
 });
