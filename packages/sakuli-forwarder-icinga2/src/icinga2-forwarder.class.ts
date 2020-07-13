@@ -16,7 +16,9 @@ export class Icinga2Forwarder implements Forwarder {
 
     async setup(project: Project, logger: SimpleLogger): Promise<void> {
         this.properties = createPropertyObjectFactory(project)(Icinga2Properties);
+        if(this.properties.enabled){
         await validateProps(this.properties);
+        }
         this.logger = logger;
     }
 

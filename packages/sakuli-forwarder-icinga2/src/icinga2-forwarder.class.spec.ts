@@ -2,8 +2,14 @@ import {Project, TestExecutionContext} from "@sakuli/core";
 import {Icinga2Forwarder} from "./icinga2-forwarder.class";
 import {mockPartial} from 'sneer'
 import {SimpleLogger} from "@sakuli/commons";
+import { validateProps } from "@sakuli/result-builder-commons";
+
+jest.mock("@sakuli/result-builder-commons", () => ({
+        validateProps: jest.fn(),
+       }));
 
 describe('Icinga2Forwarder', () => {
+
 
     let forwarder: Icinga2Forwarder;
     const props = {
@@ -15,14 +21,19 @@ describe('Icinga2Forwarder', () => {
         "sakuli.forwarder.icinga2.api.username": 'root',
         "sakuli.forwarder.icinga2.api.password": '06974567ac6f913e'
     };
-    let project = mockPartial<Project>({
-        has(key: string): boolean {
-            return (props as any)[key] !== undefined;
-        },
-        get(key: string): any {
-            return (props as any)[key];
-        }
-    });
+
+      function getProjectWithProps(props: any){
+        return mockPartial<Project>({
+          has(key: string): boolean {
+            return props[key] !== undefined;
+          },
+          get(key: string): any {
+            return props[key];
+          }
+        })
+      }
+
+    let project = getProjectWithProps({});
 
     let logger = mockPartial<SimpleLogger>({
         info: console.log.bind(console),
@@ -44,7 +55,33 @@ describe('Icinga2Forwarder', () => {
         ctx.endExecution();
     });
 
-    it('should call forwad method', async () => {
+
+
+    it('should call forward method', async () => {
         await forwarder.forward(ctx);
-    })
+    });
+
+    it("should not validate props if not available", async () => {
+            //WHEN
+            await forwarder.setup(project,logger);
+
+            //THEN
+            expect(validateProps).not.toHaveBeenCalled();
+
+        });
+
+    it("should validate props if available", async () => {
+            //GIVEN
+            let project = getProjectWithProps({
+            "sakuli.forwarder.icinga2.enabled" : "true"
+            });
+
+            //WHEN
+            await forwarder.setup(project,logger);
+
+            //THEN
+            expect(validateProps).toHaveBeenCalled();
+
+    });
+
 });
