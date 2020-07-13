@@ -66,10 +66,10 @@ export class GearmanForwarder implements Forwarder {
                     currentSuite: entity,
                     props
                 });
-                this.logDebug(`Forwarding suite result.`);
+                this.logInfo(`Forwarding suite result.`);
                 await this.doForward(renderedTemplate);
             } else {
-                this.logDebug(`Gearman forwarding disabled via properties.`);
+                this.logInfo(`Gearman forwarding disabled via properties.`);
             }
         }, () => {
             this.logWarn(`Missing Gearman configuration, aborting forwarding`);
@@ -94,11 +94,11 @@ export class GearmanForwarder implements Forwarder {
                         currentCase: entity,
                         props
                     });
-                    this.logDebug(`Forwarding case result.`);
+                    this.logInfo(`Forwarding case result.`);
                     await this.doForward(renderedTemplate);
                 });
             } else {
-                this.logDebug(`Gearman forwarding disabled via properties.`);
+                this.logInfo(`Gearman forwarding disabled via properties.`);
             }
         }, () => {
             this.logWarn(`Missing Gearman configuration, aborting forwarding`);
