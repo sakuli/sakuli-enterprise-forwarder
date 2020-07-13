@@ -3,6 +3,10 @@ import { Project, TestExecutionContext } from "@sakuli/core";
 import { mockPartial } from "sneer";
 import { SimpleLogger } from "@sakuli/commons";
 import { validateProps } from "@sakuli/result-builder-commons";
+import { dirExists } from "./dir-exists.function";
+import { promises as fs } from "fs";
+import { cwd } from "process";
+import {join} from "path";
 
 jest.mock("@sakuli/result-builder-commons", () => {
     const originalModule = jest.requireActual("@sakuli/result-builder-commons");
@@ -13,10 +17,6 @@ jest.mock("@sakuli/result-builder-commons", () => {
         validateProps: jest.fn(),
     };
 });
-import { CheckMkForwarder } from "./checkmk-forwarder.class";
-import { dirExists } from "./dir-exists.function";
-import { promises as fs } from "fs";
-import { cwd } from "process";
 
 jest.mock("./create-spool-file.function", () => ({
   createSpoolFileName: jest.fn(() => {
@@ -52,7 +52,10 @@ describe("check-mk forwarder", () => {
   }
 
     async function setupDefaultProject() {
-    await checkMkForwarder.setup(defaultProject, logger);
+    await checkmkForwarder.setup(getProjectWithProps({
+      "sakuli.forwarder.check_mk.enabled" : true,
+      "sakuli.forwarder.check_mk.spooldir": "spoolFilePath"
+    }), logger);
     context.startExecution();
     context.startTestSuite({id: 'Suite1'});
     context.startTestCase({id: 'Suite1Case1'});
@@ -135,15 +138,13 @@ describe("check-mk forwarder", () => {
 
     //GIVEN
     (<jest.Mock>dirExists).mockReturnValueOnce(true);
+    const errorPath = join(cwd(), "spoolFilePath", "spoolFileName");
     fs.writeFile = jest.fn()
-      .mockImplementationOnce(() => {
-        throw Error();
-      });
-    const errorPath = `${cwd()}/spoolFilePath/spoolFileName`;
+      .mockImplementationOnce(() => {throw Error()});
     await setupDefaultProject();
 
     //WHEN
-    await checkMkForwarder.forward(context);
+    await checkmkForwarder.forward(context);
 
     //THEN
     expect(logger.error).toHaveBeenCalledWith(`Failed to write to '${errorPath}'. Reason:`, new Error());
