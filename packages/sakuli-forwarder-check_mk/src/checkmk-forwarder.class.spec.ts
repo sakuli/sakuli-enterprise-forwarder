@@ -4,9 +4,20 @@ import { mockPartial } from "sneer";
 import { SimpleLogger } from "@sakuli/commons";
 import { validateProps } from "@sakuli/result-builder-commons";
 
-jest.mock("@sakuli/result-builder-commons", () => ({
-  validateProps: jest.fn(),
+jest.mock("@sakuli/result-builder-commons", () => {
+    const originalModule = jest.requireActual("@sakuli/result-builder-commons");
+
+    return {
+        __esModule: true,
+        ...originalModule,
+        validateProps: jest.fn(),
+    };
+});
+
+jest.mock("./create-spool-file.function", () => ({
+    createSpoolFileName : jest.fn(() => { return "spoolFileName" })
 }));
+
 describe("check-mk forwarder", () => {
 
   let checkmkForwarder: CheckMkForwarder;
@@ -14,30 +25,9 @@ describe("check-mk forwarder", () => {
 
   const logger = mockPartial<SimpleLogger>({
     info: jest.fn(),
-    debug: jest.fn()
-import { Project, TestExecutionContext } from "@sakuli/core";
-import { SimpleLogger } from "@sakuli/commons";
-import { mockPartial } from "sneer";
-import { CheckMkForwarder } from "./checkmk-forwarder.class";
-import { createSpoolFileName } from "./create-spool-file.function";
-
-jest.mock("./create-spool-file.function", () => ({
-    createSpoolFileName : jest.fn(() => { return "spoolFileName" })
-}));
-
-describe("checkmk forwarder", () => {
-  let context: TestExecutionContext;
-  let checkMkForwarder: CheckMkForwarder;
-
-  const logger = mockPartial<SimpleLogger>({
-    info: jest.fn(),
     debug: jest.fn(),
     warn: jest.fn(),
     error: jest.fn(),
-  });
-
-  const defaultProject = getProjectWithProps({
-    "sakuli.forwarder.checkmk.enabled": true
   });
 
   function getProjectWithProps(props: any){
@@ -51,9 +41,7 @@ describe("checkmk forwarder", () => {
     })
   }
 
-  beforeEach(() => {
-    checkmkForwarder = new CheckMkForwarder();
-  function endContext(ctx: TestExecutionContext){
+    function endContext(ctx: TestExecutionContext){
       ctx.endTestStep();
       ctx.endTestCase();
       ctx.endTestSuite();
@@ -61,7 +49,7 @@ describe("checkmk forwarder", () => {
   }
 
   beforeEach(() => {
-    checkMkForwarder = new CheckMkForwarder();
+    checkmkForwarder = new CheckMkForwarder();
     context = new TestExecutionContext(logger);
     jest.clearAllMocks();
   });
@@ -77,47 +65,32 @@ describe("checkmk forwarder", () => {
     expect(validateProps).not.toHaveBeenCalled();
   });
 
-  it("should validate props if available", async () => {
-    //GIVEN
-    const project = getProjectWithProps({
-    "sakuli.forwarder.check_mk.enabled" : true
-    });
-
-    //WHEN
-    await checkmkForwarder.setup(project,logger);
-
-    //THEN
-    expect(validateProps).toHaveBeenCalled();
-  });
-
-});
-
   it("should reject when properties are not present", async () => {
-    await expect(checkMkForwarder.forward(context)).rejects.toThrowError();
+    await expect(checkmkForwarder.forward(context)).rejects.toThrowError();
   });
 
-  it("should resolve when properties are present", async () => {
+  it("should resolve when properties are disabled", async () => {
     //GIVEN
     const project = getProjectWithProps({
         "sakuli.forwarder.check_mk.enabled" : false
     });
-    await checkMkForwarder.setup(project,logger);
+    await checkmkForwarder.setup(project,logger);
 
     //WHEN
-    await checkMkForwarder.forward(context);
+    await checkmkForwarder.forward(context);
 
     //THEN
     expect(logger.debug).toBeCalledWith(`CheckMK forwarding disabled via properties.`);
 
   });
 
-  it("should resolve when properties are present", async () => {
+  it("should resolve when properties are enabled", async () => {
       //GIVEN
       const project = getProjectWithProps({
           "sakuli.forwarder.check_mk.enabled" : true,
           "sakuli.forwarder.check_mk.spooldir" : "spoolFilePath"
       });
-      await checkMkForwarder.setup(project,logger);
+      await checkmkForwarder.setup(project,logger);
       context.startExecution();
       context.startTestSuite({id: 'Suite1'});
       context.startTestCase({id: 'Suite1Case1'});
@@ -125,9 +98,10 @@ describe("checkmk forwarder", () => {
       endContext(context);
 
       //WHEN
-      await checkMkForwarder.forward(context);
+      await checkmkForwarder.forward(context);
 
       //THEN
+      expect(validateProps).toHaveBeenCalled();
       expect(logger.info).toBeCalledWith(`Forwarding final result to checkmk via spool file 'spoolFileName' in 'spoolFilePath'.`);
 
     });
