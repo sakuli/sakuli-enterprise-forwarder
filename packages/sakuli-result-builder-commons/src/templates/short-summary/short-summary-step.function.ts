@@ -2,13 +2,13 @@ import {TestContextEntityStates, TestStepContext} from "@sakuli/core";
 import {oneLine} from "common-tags";
 import {ifPresent} from "@sakuli/commons";
 import {renderLastRun} from "../render";
-import {getNagiosStepState, getShortState, NagiosStateObject} from "../../check-result";
+import {getNagiosStepState, NagiosStateObject} from "../../check-result";
 import {abbreviate} from "../../output";
 
 export const renderShortStepSummary = (testContextEntity: TestStepContext, caseId: string, suiteId: string): string => {
     const nagiosState = getNagiosStepState(testContextEntity);
     return (testContextEntity.kind !== "step") ? "" : oneLine(`
-    ${getShortState(testContextEntity.state)} Step "${testContextEntity.id}" in case "${caseId}" of Sakuli suite "${suiteId}"
+    Step "${testContextEntity.id}" in case "${caseId}" of Sakuli suite "${suiteId}"
     ${(testContextEntity.error ? renderError(testContextEntity, nagiosState) : renderSuccess(testContextEntity, nagiosState))}
     `);
 };

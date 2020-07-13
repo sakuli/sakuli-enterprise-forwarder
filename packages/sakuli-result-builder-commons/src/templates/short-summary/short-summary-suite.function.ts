@@ -10,7 +10,6 @@ import {renderCaseCritical, renderCaseWarning, renderLastRun, renderStepWarnings
 import {
     getNagiosCaseState,
     getNagiosSuiteState,
-    getShortState,
     NagiosState,
     NagiosStateObject
 } from "../../check-result";
@@ -19,7 +18,7 @@ import {abbreviate} from "../../output";
 export const renderShortSuiteSummary = (testContextEntity: TestSuiteContext): string => {
     const nagiosState = getNagiosSuiteState(testContextEntity);
     return oneLine(`
-        ${getShortState(testContextEntity.state)} Sakuli suite "${testContextEntity.id}"
+        Sakuli suite "${testContextEntity.id}"
         ${(testContextEntity.state === TestContextEntityStates.ERROR) ? renderError(testContextEntity) : renderSuccess(testContextEntity, nagiosState)}
     `)
 };
