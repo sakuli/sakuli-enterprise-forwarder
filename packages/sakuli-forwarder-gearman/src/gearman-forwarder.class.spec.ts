@@ -41,6 +41,13 @@ describe("gearman forwarder", () => {
     })
   }
 
+  function endContext(ctx: TestExecutionContext) {
+    ctx.endTestStep();
+    ctx.endTestCase();
+    ctx.endTestSuite();
+    ctx.endExecution();
+  }
+
   beforeEach(() => {
     gearmanForwarder = new GearmanForwarder();
     context = new TestExecutionContext(logger);
@@ -67,15 +74,21 @@ describe("gearman forwarder", () => {
     const project = getProjectWithProps({
     "sakuli.forwarder.gearman.enabled" : "true"
     });
+    await gearmanForwarder.setup(project,logger);
+    context.startExecution();
+    context.startTestSuite({id: 'Suite1'});
+    context.startTestCase({id: 'Suite1Case1'});
+    context.startTestStep({id: 'Suite1Case1Step1'});
+    endContext(context);
+
 
     //WHEN
-    await gearmanForwarder.setup(project,logger);
-    //await gearmanForwarder.forwardCaseResult(testCaseEntity,context);
+    await gearmanForwarder.forwardCaseResult(testCaseEntity,context);
 
 
     //THEN
     expect(validateProps).toHaveBeenCalled();
-    //expect(logger.info).toHaveBeenCalledWith("Forwarding case result.")
+    expect(logger.info).toHaveBeenCalledWith("Forwarding case result.")
 
   });
 
