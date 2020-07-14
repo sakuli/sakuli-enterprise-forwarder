@@ -90,7 +90,7 @@ describe("gearman forwarder", () => {
     expect(validateProps).not.toHaveBeenCalled();
   });
 
-  /*it("should forward final result", async () => {
+  it("should forward final result", async () => {
     //GIVEN
     endContext(ctx);
 
@@ -114,7 +114,7 @@ describe("gearman forwarder", () => {
     // THEN
     expect(logger.info).toHaveBeenCalledWith("Forwarding suite result.");
     expect(submitJob).toHaveBeenCalled();
-  })*/
+  })
 
   it("should forward test case", async () => {
     // GIVEN
