@@ -60,7 +60,6 @@ export class GearmanForwarder implements Forwarder {
      */
     async forwardSuiteResult(entity: TestSuiteContext & FinishedMeasurable, ctx: TestExecutionContext): Promise<void> {
         await ifPresent(this.gearmanProps, async (props) => {
-            await validateProps(props);
             if (props.enabled) {
                 const renderedTemplate = this.outputBuilder.render(entity, {
                     currentSuite: entity,
@@ -161,7 +160,7 @@ export class GearmanForwarder implements Forwarder {
                         currentSuite: testContextEntity,
                         props
                     });
-                    this.logDebug(`Forwarding final result.`);
+                    this.logInfo(`Forwarding final result.`);
                     await this.doForward(renderedTemplate);
                 }
             } else {
