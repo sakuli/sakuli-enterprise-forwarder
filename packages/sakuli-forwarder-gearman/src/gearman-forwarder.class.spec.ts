@@ -65,7 +65,7 @@ describe("gearman forwarder", () => {
     ctx = new TestExecutionContext(logger);
     const project = getProjectWithProps({
       "sakuli.forwarder.gearman.enabled" : "true",
-      "sakuli.forwarder.gearman.nagios.hostname": "localhorst"
+      "sakuli.forwarder.gearman.server.host": "localhorst"
     });
     await gearmanForwarder.setup(project,logger);
     ctx.startExecution();
@@ -122,6 +122,18 @@ describe("gearman forwarder", () => {
 
     // THEN
     expect(logger.info).toHaveBeenCalledWith("Forwarding case result.");
+    expect(submitJob).toHaveBeenCalled();
+  })
+
+  it("should forward test step", async () => {
+    // GIVEN
+    ctx.endTestStep();
+
+    // WHEN
+    await gearmanForwarder.forwardStepResult(stepContextMock, ctx);
+
+    // THEN
+    expect(logger.info).toHaveBeenCalledWith("Forwarding step result.");
     expect(submitJob).toHaveBeenCalled();
   })
 });
