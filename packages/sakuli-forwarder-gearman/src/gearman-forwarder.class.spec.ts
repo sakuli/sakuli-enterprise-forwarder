@@ -170,4 +170,72 @@ describe("gearman forwarder", () => {
     expect(encrypt).toHaveBeenCalled();
 
   })
+
+  it("should not forward test results when ending test step", () => {
+    //GIVEN
+    const project = getProjectWithProps({
+      "sakuli.forwarder.gearman.enabled" : false
+    })
+    gearmanForwarder.setup(project,logger);
+    startExecution();
+    ctx.endTestStep();
+
+    //WHEN
+    gearmanForwarder.forwardStepResult(ctx.testSteps[0] as TestStepContext & FinishedMeasurable, ctx);
+
+    //THEN
+    expect(logger.info).toHaveBeenCalledWith("Gearman forwarding disabled via properties.")
+  })
+
+  it("should not forward test results when ending test case", () => {
+    //GIVEN
+    const project = getProjectWithProps({
+      "sakuli.forwarder.gearman.enabled" : false
+    })
+    gearmanForwarder.setup(project,logger);
+    startExecution();
+    ctx.endTestStep();
+    ctx.endTestCase();
+
+    //WHEN
+    gearmanForwarder.forwardCaseResult(ctx.testCases[0] as TestCaseContext & FinishedMeasurable, ctx);
+
+    //THEN
+    expect(logger.info).toHaveBeenCalledWith("Gearman forwarding disabled via properties.")
+  })
+
+  it("should not forward test results when ending test suite", () => {
+    //GIVEN
+    const project = getProjectWithProps({
+      "sakuli.forwarder.gearman.enabled" : false
+    })
+    gearmanForwarder.setup(project,logger);
+    startExecution();
+    ctx.endTestStep();
+    ctx.endTestCase();
+    ctx.endTestSuite();
+
+    //WHEN
+    gearmanForwarder.forwardSuiteResult(ctx.testSuites[0] as TestSuiteContext & FinishedMeasurable, ctx);
+
+    //THEN
+    expect(logger.info).toHaveBeenCalledWith("Gearman forwarding disabled via properties.")
+  })
+
+  it("should not forward test results when ending test", () => {
+    //GIVEN
+    const project = getProjectWithProps({
+      "sakuli.forwarder.gearman.enabled" : false
+    })
+    gearmanForwarder.setup(project,logger);
+    startExecution();
+    endExecution();
+
+    //WHEN
+    gearmanForwarder.forward(ctx);
+
+    //THEN
+    expect(logger.info).toHaveBeenCalledWith("Gearman forwarding disabled via properties.")
+  })
+
 });

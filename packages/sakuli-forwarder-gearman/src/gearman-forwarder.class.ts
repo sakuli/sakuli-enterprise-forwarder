@@ -68,7 +68,7 @@ export class GearmanForwarder implements Forwarder {
                 this.logInfo(`Forwarding suite result.`);
                 await this.doForward(renderedTemplate);
             } else {
-                this.logDebug(`Gearman forwarding disabled via properties.`);
+                this.logInfo(`Gearman forwarding disabled via properties.`);
             }
         }, () => {
             this.logWarn(`Missing Gearman configuration, aborting forwarding`);
@@ -97,7 +97,7 @@ export class GearmanForwarder implements Forwarder {
                     await this.doForward(renderedTemplate);
                 });
             } else {
-                this.logDebug(`Gearman forwarding disabled via properties.`);
+                this.logInfo(`Gearman forwarding disabled via properties.`);
             }
         }, () => {
             this.logWarn(`Missing Gearman configuration, aborting forwarding`);
@@ -130,7 +130,7 @@ export class GearmanForwarder implements Forwarder {
                     return Promise.resolve();
                 });
             } else {
-                this.logDebug(`Gearman forwarding disabled via properties.`);
+                this.logInfo(`Gearman forwarding disabled via properties.`);
             }
         }, () => {
             this.logWarn(`Missing Gearman configuration, aborting forwarding`);
@@ -164,7 +164,7 @@ export class GearmanForwarder implements Forwarder {
                     await this.doForward(renderedTemplate);
                 }
             } else {
-                this.logDebug(`Gearman forwarding disabled via properties.`);
+                this.logInfo(`Gearman forwarding disabled via properties.`);
             }
         }, () => {
             this.logWarn(`Missing Gearman configuration, aborting forwarding`);

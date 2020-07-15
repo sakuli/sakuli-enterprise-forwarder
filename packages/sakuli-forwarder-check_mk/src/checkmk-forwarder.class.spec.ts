@@ -102,7 +102,7 @@ describe("check-mk forwarder", () => {
     await checkmkForwarder.forward(context);
 
     //THEN
-    expect(logger.debug).toBeCalledWith(`CheckMK forwarding disabled via properties.`);
+    expect(logger.info).toBeCalledWith(`CheckMK forwarding disabled via properties.`);
 
   });
 

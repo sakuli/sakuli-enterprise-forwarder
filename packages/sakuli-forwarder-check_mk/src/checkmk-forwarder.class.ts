@@ -69,7 +69,7 @@ export class CheckMkForwarder implements Forwarder {
                         }
                     }
                 } else {
-                    this.logDebug(`CheckMK forwarding disabled via properties.`);
+                    this.logInfo(`CheckMK forwarding disabled via properties.`);
                 }
             },
             () => Promise.reject(Error('Could not create CheckMK Properties from Project'))
