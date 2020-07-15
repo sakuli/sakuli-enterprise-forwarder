@@ -5,6 +5,7 @@ import { SimpleLogger } from "@sakuli/commons";
 import { validateProps } from "@sakuli/result-builder-commons";
 import { TestSuiteContext, FinishedMeasurable} from "@sakuli/core";
 import {submitJob} from './gearman/submit-job.function';
+import {encrypt} from './crypto/aes-crypto.function';
 
 jest.mock("@sakuli/result-builder-commons", () => {
     const originalModule = jest.requireActual("@sakuli/result-builder-commons");
@@ -15,6 +16,10 @@ jest.mock("@sakuli/result-builder-commons", () => {
         validateProps: jest.fn(),
     };
 });
+
+jest.mock("./crypto/aes-crypto.function", () => ({
+  encrypt: jest.fn()
+}));
 
 jest.mock("./gearman/submit-job.function", () => ({
   submitJob: jest.fn()
@@ -42,21 +47,36 @@ describe("gearman forwarder", () => {
     })
   }
 
+  function endExecution(){
+    ctx.endTestStep();
+    ctx.endTestCase();
+    ctx.endTestSuite();
+    ctx.endExecution();
+  }
+
   beforeEach(async () => {
     gearmanForwarder = new GearmanForwarder();
     ctx = new TestExecutionContext(logger);
+    jest.clearAllMocks();
+  });
+
+  async function setupDefaultProject(){
     const project = getProjectWithProps({
       "sakuli.forwarder.gearman.enabled" : true,
       "sakuli.forwarder.gearman.server.host": "localhorst",
       "sakuli.forwarder.gearman.encryption": false
     });
     await gearmanForwarder.setup(project,logger);
+  }
+
+  function startExecution(){
     ctx.startExecution();
     ctx.startTestSuite({id: "testSuite"});
     ctx.startTestCase({id: "testCase"});
     ctx.startTestStep({id: "testStep"});
-    jest.clearAllMocks();
-  });
+  }
+
+
 
   it("should not validate props if not available", async () => {
     // GIVEN
@@ -71,21 +91,23 @@ describe("gearman forwarder", () => {
 
   it("should forward final result", async () => {
     //GIVEN
-    ctx.endTestStep();
-    ctx.endTestCase();
-    ctx.endTestSuite();
-    ctx.endExecution();
+    await setupDefaultProject();
+    startExecution();
+    endExecution();
 
     //WHEN
     await gearmanForwarder.forward(ctx)
 
     //THEN
     expect(logger.info).toHaveBeenCalledWith("Forwarding final result.");
+    expect(encrypt).not.toHaveBeenCalled();
     expect(submitJob).toHaveBeenCalled();
   });
 
   it("should forward test suite", async () => {
     // GIVEN
+    await setupDefaultProject();
+    startExecution();
     ctx.endTestStep();
     ctx.endTestCase();
     ctx.endTestSuite();
@@ -95,11 +117,14 @@ describe("gearman forwarder", () => {
 
     // THEN
     expect(logger.info).toHaveBeenCalledWith("Forwarding suite result.");
+    expect(encrypt).not.toHaveBeenCalled();
     expect(submitJob).toHaveBeenCalled();
   })
 
   it("should forward test case", async () => {
     // GIVEN
+    await setupDefaultProject();
+    startExecution();
     ctx.endTestStep();
     ctx.endTestCase();
 
@@ -108,11 +133,14 @@ describe("gearman forwarder", () => {
 
     // THEN
     expect(logger.info).toHaveBeenCalledWith("Forwarding case result.");
+    expect(encrypt).not.toHaveBeenCalled();
     expect(submitJob).toHaveBeenCalled();
   })
 
   it("should forward test step", async () => {
     // GIVEN
+    await setupDefaultProject();
+    startExecution();
     ctx.endTestStep();
 
     // WHEN
@@ -120,6 +148,26 @@ describe("gearman forwarder", () => {
 
     // THEN
     expect(logger.info).toHaveBeenCalledWith("Forwarding step result.");
+    expect(encrypt).not.toHaveBeenCalled();
     expect(submitJob).toHaveBeenCalled();
+  })
+
+  it("should call the encrypt function when properties.encryption is enabled", () => {
+    //GIVEN
+    const project = getProjectWithProps({
+      "sakuli.forwarder.gearman.enabled" : true,
+      "sakuli.forwarder.gearman.server.host": "localhorst",
+      "sakuli.forwarder.gearman.encryption": true
+    })
+    gearmanForwarder.setup(project,logger);
+    startExecution();
+    endExecution();
+
+    //WHEN
+    gearmanForwarder.forward(ctx);
+
+    //THEN
+    expect(encrypt).toHaveBeenCalled();
+
   })
 });
