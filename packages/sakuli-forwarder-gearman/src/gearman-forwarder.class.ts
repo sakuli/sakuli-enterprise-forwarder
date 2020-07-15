@@ -117,9 +117,8 @@ export class GearmanForwarder implements Forwarder {
             if (properties.enabled) {
                 const parentCase: Maybe<TestCaseContext> = ctx.testCases.find(tc => tc.getChildren().includes(entity));
                 const parentSuite: Maybe<TestSuiteContext> = ifPresent(parentCase, (testCase) => {
-                    return ctx.testSuites.find(ts => ts.getChildren().includes(testCase));
-                }, () =>{
-                return undefined});
+                  return ctx.testSuites.find(ts => ts.getChildren().includes(testCase));
+                }, () => undefined);
                 ifPresent(parentSuite, async (suite) => {
                     const renderedTemplate = this.outputBuilder.render(entity, {
                         currentSuite: suite,

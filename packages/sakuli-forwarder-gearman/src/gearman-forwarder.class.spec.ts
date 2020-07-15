@@ -1,5 +1,5 @@
 import { GearmanForwarder } from "./gearman-forwarder.class";
-import { Project, TestActionContext, TestCaseContext, TestExecutionContext, TestStepContext } from "@sakuli/core";
+import { Project, TestCaseContext, TestExecutionContext, TestStepContext } from "@sakuli/core";
 import { mockPartial } from "sneer";
 import { SimpleLogger } from "@sakuli/commons";
 import { validateProps } from "@sakuli/result-builder-commons";
@@ -31,20 +31,6 @@ describe("gearman forwarder", () => {
     error: jest.fn()
   });
 
-  const actionContextMock = new TestActionContext();
-  const stepContextMock = mockPartial<TestStepContext & FinishedMeasurable>({
-    id: "STEP",
-    getChildren: () => [actionContextMock]
-  });
-  const caseContextMock = mockPartial<TestCaseContext & FinishedMeasurable>({
-    id: "CASE",
-    getChildren: () => [stepContextMock]
-  });
-  const suiteContextMock = mockPartial<TestSuiteContext & FinishedMeasurable>({
-    id: "SUITE",
-    getChildren: () => [caseContextMock]
-  });
-
   function getProjectWithProps(props: any){
     return mockPartial<Project>({
       has(key: string): boolean {
@@ -54,13 +40,6 @@ describe("gearman forwarder", () => {
         return props[key];
       }
     })
-  }
-
-  function endContext(ctx: TestExecutionContext) {
-    ctx.endTestStep();
-    ctx.endTestCase();
-    ctx.endTestSuite();
-    ctx.endExecution();
   }
 
   beforeEach(async () => {
@@ -73,9 +52,9 @@ describe("gearman forwarder", () => {
     });
     await gearmanForwarder.setup(project,logger);
     ctx.startExecution();
-    ctx.startTestSuite(suiteContextMock);
-    ctx.startTestCase(caseContextMock);
-    ctx.startTestStep(stepContextMock);
+    ctx.startTestSuite({id: "testSuite"});
+    ctx.startTestCase({id: "testCase"});
+    ctx.startTestStep({id: "testStep"});
     jest.clearAllMocks();
   });
 
@@ -92,7 +71,10 @@ describe("gearman forwarder", () => {
 
   it("should forward final result", async () => {
     //GIVEN
-    endContext(ctx);
+    ctx.endTestStep();
+    ctx.endTestCase();
+    ctx.endTestSuite();
+    ctx.endExecution();
 
     //WHEN
     await gearmanForwarder.forward(ctx)
@@ -109,7 +91,7 @@ describe("gearman forwarder", () => {
     ctx.endTestSuite();
 
     // WHEN
-    await gearmanForwarder.forwardSuiteResult(suiteContextMock, ctx);
+    await gearmanForwarder.forwardSuiteResult(ctx.testSuites[0] as TestSuiteContext & FinishedMeasurable, ctx);
 
     // THEN
     expect(logger.info).toHaveBeenCalledWith("Forwarding suite result.");
@@ -122,7 +104,7 @@ describe("gearman forwarder", () => {
     ctx.endTestCase();
 
     // WHEN
-    await gearmanForwarder.forwardCaseResult(caseContextMock, ctx);
+    await gearmanForwarder.forwardCaseResult(ctx.testCases[0] as TestCaseContext & FinishedMeasurable, ctx);
 
     // THEN
     expect(logger.info).toHaveBeenCalledWith("Forwarding case result.");
@@ -134,7 +116,7 @@ describe("gearman forwarder", () => {
     ctx.endTestStep();
 
     // WHEN
-    await gearmanForwarder.forwardStepResult(stepContextMock, ctx);
+    await gearmanForwarder.forwardStepResult(ctx.testSteps[0] as TestStepContext & FinishedMeasurable, ctx);
 
     // THEN
     expect(logger.info).toHaveBeenCalledWith("Forwarding step result.");
