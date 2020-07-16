@@ -3,8 +3,14 @@ import {Icinga2Forwarder} from "./icinga2-forwarder.class";
 import {mockPartial} from 'sneer'
 import {SimpleLogger} from "@sakuli/commons";
 import {validateProps} from "@sakuli/result-builder-commons";
-import {createPluginOutput} from "./data/create-plugin-output.function";
-import {createPerformanceData} from "./data/create-performance-data.function";
+
+const processCheckResultMock = jest.fn();
+
+jest.mock("./access/create-icinga2-api-adapter.function", () => ({
+    createIcinga2ApiAdapter: () => new Promise((res) => { res({
+        processCheckResult: processCheckResultMock
+    })})
+}));
 
 jest.mock("./data/create-plugin-output.function", () => ({
     createPluginOutput: jest.fn(() => [])
@@ -40,9 +46,7 @@ describe('Icinga2Forwarder', () => {
             }
         })
     }
-
-    let project = getProjectWithProps({});
-
+    
     let logger = mockPartial<SimpleLogger>({
         info: jest.fn(),
         debug: jest.fn()
@@ -50,16 +54,11 @@ describe('Icinga2Forwarder', () => {
 
     let ctx = new TestExecutionContext(logger);
 
-    async function setupDefaultProject(){
-        const project = getProjectWithProps({
-            "sakuli.forwarder.icinga2.enabled": true
-        });
+    async function setupDefaultProject(defaultProps : Object ={
+        "sakuli.forwarder.icinga2.enabled": true
+    }){
+        const project = getProjectWithProps(defaultProps);
         await forwarder.setup(project,logger);
-    }
-
-    beforeEach(async () => {
-        forwarder = new Icinga2Forwarder();
-        await forwarder.setup(project, logger);
         ctx.startExecution();
         ctx.startTestSuite({id: 'Suite'});
         ctx.startTestCase({id: 'Case1'});
@@ -68,16 +67,16 @@ describe('Icinga2Forwarder', () => {
         ctx.endTestCase();
         ctx.endTestSuite();
         ctx.endExecution();
-    });
+    }
 
-
-    it('should call forward method', async () => {
-        await forwarder.forward(ctx);
+    beforeEach(async () => {
+        forwarder = new Icinga2Forwarder();
+        jest.clearAllMocks();
     });
 
     it("should not validate props if not available", async () => {
-        //WHEN
-        await forwarder.setup(project, logger);
+        //GIVEN
+        await setupDefaultProject({});
 
         //THEN
         expect(validateProps).not.toHaveBeenCalled();
@@ -88,9 +87,6 @@ describe('Icinga2Forwarder', () => {
         //GIVEN
         await setupDefaultProject();
 
-        //WHEN
-        await forwarder.setup(project, logger);
-
         //THEN
         expect(validateProps).toHaveBeenCalled();
 
@@ -98,9 +94,9 @@ describe('Icinga2Forwarder', () => {
 
     it("should not forward results when properties disabled", async () => {
         //GIVEN
-        const project = getProjectWithProps({
+        await setupDefaultProject({
             "sakuli.forwarder.icinga2.enabled": false
-        })
+        });
 
         //WHEN
         await forwarder.forward(ctx);
@@ -119,6 +115,7 @@ describe('Icinga2Forwarder', () => {
 
         //THEN
         expect(logger.info).toHaveBeenCalledWith("Forwarding check result to Icinga2.");
+        expect(processCheckResultMock).toHaveBeenCalled();
     });
 
 });
