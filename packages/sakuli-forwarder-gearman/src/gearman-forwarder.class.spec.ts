@@ -89,7 +89,7 @@ describe("gearman forwarder", () => {
     expect(validateProps).not.toHaveBeenCalled();
   });
 
-  it("should forward final result", async () => {
+  it("should forward final result when test execution ends", async () => {
     //GIVEN
     await setupDefaultProject();
     startExecution();
@@ -104,7 +104,7 @@ describe("gearman forwarder", () => {
     expect(submitJob).toHaveBeenCalled();
   });
 
-  it("should forward test suite", async () => {
+  it("should forward results when test suite execution ends", async () => {
     // GIVEN
     await setupDefaultProject();
     startExecution();
@@ -121,7 +121,7 @@ describe("gearman forwarder", () => {
     expect(submitJob).toHaveBeenCalled();
   })
 
-  it("should forward test case", async () => {
+  it("should forward results when test case execution ends", async () => {
     // GIVEN
     await setupDefaultProject();
     startExecution();
@@ -137,7 +137,7 @@ describe("gearman forwarder", () => {
     expect(submitJob).toHaveBeenCalled();
   })
 
-  it("should forward test step", async () => {
+  it("should forward results when test step execution ends", async () => {
     // GIVEN
     await setupDefaultProject();
     startExecution();
@@ -171,7 +171,7 @@ describe("gearman forwarder", () => {
 
   })
 
-  it("should not forward test results when ending test step", () => {
+  it("should not forward test step results when forwarder is disabled", () => {
     //GIVEN
     const project = getProjectWithProps({
       "sakuli.forwarder.gearman.enabled" : false
@@ -187,7 +187,7 @@ describe("gearman forwarder", () => {
     expect(logger.info).toHaveBeenCalledWith("Gearman forwarding disabled via properties.")
   })
 
-  it("should not forward test results when ending test case", () => {
+  it("should not forward test case results when forwarder is disabled", () => {
     //GIVEN
     const project = getProjectWithProps({
       "sakuli.forwarder.gearman.enabled" : false
@@ -204,7 +204,7 @@ describe("gearman forwarder", () => {
     expect(logger.info).toHaveBeenCalledWith("Gearman forwarding disabled via properties.")
   })
 
-  it("should not forward test results when ending test suite", () => {
+  it("should not forward test suite results when forwarder is disabled", () => {
     //GIVEN
     const project = getProjectWithProps({
       "sakuli.forwarder.gearman.enabled" : false
@@ -222,7 +222,7 @@ describe("gearman forwarder", () => {
     expect(logger.info).toHaveBeenCalledWith("Gearman forwarding disabled via properties.")
   })
 
-  it("should not forward test results when ending test", () => {
+  it("should not forward test results when forwarder is disabled", () => {
     //GIVEN
     const project = getProjectWithProps({
       "sakuli.forwarder.gearman.enabled" : false

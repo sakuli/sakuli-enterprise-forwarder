@@ -91,7 +91,7 @@ describe("check-mk forwarder", () => {
     await expect(checkmkForwarder.forward(context)).rejects.toThrowError();
   });
 
-  it("should resolve when properties are disabled", async () => {
+  it("should log the correct info when forwarder is disabled", async () => {
     //GIVEN
     const project = getProjectWithProps({
       "sakuli.forwarder.check_mk.enabled": false
@@ -106,7 +106,7 @@ describe("check-mk forwarder", () => {
 
   });
 
-  it("should resolve when properties are enabled", async () => {
+  it("should forward result to file when forwarder is enabled", async () => {
     //GIVEN
     (<jest.Mock>dirExists).mockReturnValueOnce(true);
     fs.writeFile = jest.fn()
