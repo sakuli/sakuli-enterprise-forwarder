@@ -41,7 +41,7 @@ export class CheckMkForwarder implements Forwarder {
             await validateProps(this.properties);
         }
         this.logger = logger;
-        ifPresent(this.properties, (props) => this.logDebug(renderCheckmkProperties(props)))
+        ifPresent(this.properties, (props) => this.logDebug(renderCheckmkProperties(props)));
     }
 
     async forward(ctx: TestExecutionContext): Promise<any> {

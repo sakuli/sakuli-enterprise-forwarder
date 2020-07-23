@@ -7,6 +7,7 @@ import { dirExists } from "./dir-exists.function";
 import { promises as fs } from "fs";
 import { cwd } from "process";
 import {join} from "path";
+import { renderCheckmkProperties } from "./checkmk-properties-renderer.function";
 
 jest.mock("@sakuli/result-builder-commons", () => {
     const originalModule = jest.requireActual("@sakuli/result-builder-commons");
@@ -27,6 +28,10 @@ jest.mock("./create-spool-file.function", () => ({
 jest.mock("./dir-exists.function", () => ({
   dirExists: jest.fn()
 }));
+
+jest.mock("./checkmk-properties-renderer.function", () => ({
+  renderCheckmkProperties: jest.fn()
+}))
 
 describe("check-mk forwarder", () => {
 
@@ -85,6 +90,7 @@ describe("check-mk forwarder", () => {
 
     //THEN
     expect(validateProps).not.toHaveBeenCalled();
+    expect(renderCheckmkProperties).toHaveBeenCalled();
   });
 
   it("should reject when properties are not present", async () => {
