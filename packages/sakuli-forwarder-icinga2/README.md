@@ -1,5 +1,7 @@
 # Sakuli Icinga2 Forwarder
 
+[Sakuli Icinga2 forwarder documentation](https://sakuli.io/docs/enterprise_features/icinga/)
+
 ## Icinga Setup
 
 The steps to enable the Icinga2 API are described in the REST API documentation.
