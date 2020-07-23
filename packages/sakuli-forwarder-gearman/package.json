@@ -17,9 +17,11 @@
     "@sakuli/result-builder-commons": "2.3.0",
     "@sakuli/result-builder-omd": "2.3.0",
     "gearman": "2.1.0",
-    "sneer": "1.0.1"
+    "sneer": "1.0.1",
+    "common-tags": "1.8.0"
   },
   "devDependencies": {
+    "@types/common-tags": "1.8.0",
     "@types/jest": "25.2.1",
     "@types/luxon": "1.15.2",
     "@types/node": "12.12.34",

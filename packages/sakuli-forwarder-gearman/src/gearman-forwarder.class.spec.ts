@@ -6,6 +6,7 @@ import { validateProps } from "@sakuli/result-builder-commons";
 import { TestSuiteContext, FinishedMeasurable} from "@sakuli/core";
 import {submitJob} from './gearman/submit-job.function';
 import {encrypt} from './crypto/aes-crypto.function';
+import { renderGearmanProperties } from "./gearman-properties-renderer.function";
 
 jest.mock("@sakuli/result-builder-commons", () => {
     const originalModule = jest.requireActual("@sakuli/result-builder-commons");
@@ -24,6 +25,10 @@ jest.mock("./crypto/aes-crypto.function", () => ({
 jest.mock("./gearman/submit-job.function", () => ({
   submitJob: jest.fn()
 }));
+
+jest.mock("./gearman-properties-renderer.function", () => ({
+  renderGearmanProperties: jest.fn()
+}))
 
 describe("gearman forwarder", () => {
 
@@ -87,6 +92,7 @@ describe("gearman forwarder", () => {
 
     //THEN
     expect(validateProps).not.toHaveBeenCalled();
+    expect(renderGearmanProperties).toHaveBeenCalled();
   });
 
   it("should forward final result when test execution ends", async () => {

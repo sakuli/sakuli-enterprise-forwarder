@@ -15,6 +15,7 @@ import {GearmanForwarderProperties} from './gearman-forwarder-properties.class';
 import {createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger} from "@sakuli/commons";
 import {OmdTestResultOutputBuilder} from "@sakuli/result-builder-omd";
 import {validateProps} from "@sakuli/result-builder-commons";
+import { renderGearmanProperties } from "./gearman-properties-renderer.function";
 
 
 export class GearmanForwarder implements Forwarder {
@@ -51,6 +52,7 @@ export class GearmanForwarder implements Forwarder {
         await validateProps(this.gearmanProps);
         }
         this.logger = logger;
+        ifPresent(this.gearmanProps, (props) => this.logDebug(renderGearmanProperties(props)));
     }
 
     /**
