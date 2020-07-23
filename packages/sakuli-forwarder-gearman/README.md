@@ -1,11 +1,3 @@
-# `sakuli-forwarder-gearman`
+# Sakuli OMD/Gearman Forwarder 
 
-> TODO: description
-
-## Usage
-
-```
-const sakuliForwarderGearman = require('sakuli-forwarder-gearman');
-
-// TODO: DEMONSTRATE API
-```
+[Sakuli OMD/Gearman forwarder documentation](https://sakuli.io/docs/enterprise_features/omd/)
