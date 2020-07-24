@@ -3,6 +3,7 @@ import {Icinga2Forwarder} from "./icinga2-forwarder.class";
 import {mockPartial} from 'sneer'
 import {SimpleLogger} from "@sakuli/commons";
 import {validateProps} from "@sakuli/result-builder-commons";
+import { renderIcinga2Properties } from "./icinga2-properties-renderer.function";
 
 const processCheckResultMock = jest.fn();
 
@@ -30,6 +31,9 @@ jest.mock("@sakuli/result-builder-commons", () => {
     };
 });
 
+jest.mock("./icinga2-properties-renderer.function", () => ({
+    renderIcinga2Properties: jest.fn()
+}))
 
 describe('Icinga2Forwarder', () => {
 
@@ -80,7 +84,7 @@ describe('Icinga2Forwarder', () => {
 
         //THEN
         expect(validateProps).not.toHaveBeenCalled();
-
+        expect(renderIcinga2Properties).toHaveBeenCalled();
     });
 
     it("should validate props if available", async () => {
