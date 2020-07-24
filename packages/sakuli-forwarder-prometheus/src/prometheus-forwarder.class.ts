@@ -16,6 +16,7 @@ import {
     addSuiteCriticalThresholdGauge,
     addSuiteWarningThresholdGauge
 } from "./gauge.utils";
+import { renderPrometheusProperties } from "./prometheus-properties-renderer.function";
 
 export class PrometheusForwarder implements Forwarder {
 
@@ -28,6 +29,7 @@ export class PrometheusForwarder implements Forwarder {
         await validateProps(this.properties);
         }
         this.logger = logger;
+        ifPresent(this.properties, (props) => {this.logDebug(renderPrometheusProperties(props))});
     }
 
     logDebug(message: string, ...data: any[]) {
