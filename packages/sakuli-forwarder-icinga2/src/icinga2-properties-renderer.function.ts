@@ -1,8 +1,8 @@
 import { Icinga2Properties } from "./icinga2-properties.class";
-import { stripIndent } from "common-tags";
+import { stripIndents } from "common-tags";
 
 export const renderIcinga2Properties = (properties: Icinga2Properties) => {
-  return stripIndent`Icinga2 Configuration:
+  return stripIndents`Icinga2 Configuration:
   enabled: ${properties.enabled},
   allowInsecure: ${properties.allowInsecure},
   apiHost: ${properties.apiHost},

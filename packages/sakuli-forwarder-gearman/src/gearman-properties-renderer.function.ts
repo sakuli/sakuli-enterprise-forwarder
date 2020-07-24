@@ -1,8 +1,8 @@
 import { GearmanForwarderProperties } from "./gearman-forwarder-properties.class";
-import { stripIndent } from "common-tags";
+import { stripIndents } from "common-tags";
 
 export const renderGearmanProperties = (properties: GearmanForwarderProperties) => {
-  return stripIndent`Gearman Configuration:
+  return stripIndents`Gearman Configuration:
   enabled: ${properties.enabled},
   serverHost: ${properties.serverHost},
   serverPort: ${properties.serverPort},

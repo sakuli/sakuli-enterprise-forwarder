@@ -1,6 +1,6 @@
 import { GearmanForwarderProperties } from "./gearman-forwarder-properties.class";
 import { renderGearmanProperties } from "./gearman-properties-renderer.function";
-import { stripIndent } from "common-tags";
+import { stripIndents } from "common-tags";
 
 describe("gearman-properties-renderer", () => {
   it("should return render checkmk properties", () => {
@@ -22,7 +22,7 @@ describe("gearman-properties-renderer", () => {
     const result = renderGearmanProperties(gearmanProperties);
 
     //THEN
-    expect(result).toBe(stripIndent`Gearman Configuration:
+    expect(result).toBe(stripIndents`Gearman Configuration:
   enabled: true,
   serverHost: sakuli.io,
   serverPort: 1234,

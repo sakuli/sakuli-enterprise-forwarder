@@ -1,8 +1,8 @@
 import { CheckMkForwarderProperties } from "./checkmk-forwarder-properties.class";
-import { stripIndent } from "common-tags";
+import { stripIndents } from "common-tags";
 
 export const renderCheckmkProperties = (properties: CheckMkForwarderProperties) => {
-  return stripIndent`Checkmk Configuration:
+  return stripIndents`Checkmk Configuration:
   enabled: ${properties.enabled}
   spoolDir: ${properties.spoolDir}
   spoolfilePrefix: ${properties.spoolfilePrefix}

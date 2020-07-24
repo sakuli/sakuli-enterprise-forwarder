@@ -1,5 +1,5 @@
 import { Icinga2Properties } from "./icinga2-properties.class";
-import { stripIndent } from "common-tags";
+import { stripIndents } from "common-tags";
 import { renderIcinga2Properties } from "./icinga2-properties-renderer.function";
 
 describe("icinga2-properties-renderer", () => {
@@ -22,7 +22,7 @@ describe("icinga2-properties-renderer", () => {
     const result = renderIcinga2Properties(icinga2Properties);
 
     //THEN
-    expect(result).toBe(stripIndent`Icinga2 Configuration:
+    expect(result).toBe(stripIndents`Icinga2 Configuration:
   enabled: true,
   allowInsecure: false,
   apiHost: sakuli.io,

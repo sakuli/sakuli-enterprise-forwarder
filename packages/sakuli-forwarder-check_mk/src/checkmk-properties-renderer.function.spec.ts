@@ -1,6 +1,6 @@
 import { CheckMkForwarderProperties } from "./checkmk-forwarder-properties.class";
 import { renderCheckmkProperties } from "./checkmk-properties-renderer.function";
-import { stripIndent } from "common-tags";
+import { stripIndents } from "common-tags";
 
 describe("checkmk-properties-renderer", () => {
   it("should return render checkmk properties", () => {
@@ -19,7 +19,7 @@ describe("checkmk-properties-renderer", () => {
     const result = renderCheckmkProperties(checkmkProperties);
 
     //THEN
-    expect(result).toBe(stripIndent`Checkmk Configuration:
+    expect(result).toBe(stripIndents`Checkmk Configuration:
   enabled: true
   spoolDir: /testdir
   spoolfilePrefix: foo
