@@ -29,7 +29,7 @@ describe("gearman-properties-renderer", () => {
   serviceType: passive,
   serverQueue: check_results,
   encryption: true,
-  secretKey: sakuli_secret,
+  secretKey: ***,
   nagiosHost: sakuli_client,
   nagiosCheckCommand: check_sakuli,
   nagiosServiceDescription: service_description,

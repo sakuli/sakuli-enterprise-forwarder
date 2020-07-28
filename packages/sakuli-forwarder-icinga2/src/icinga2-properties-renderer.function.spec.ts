@@ -28,7 +28,7 @@ describe("icinga2-properties-renderer", () => {
   apiHost: sakuli.io,
   apiPort: 5665,
   apiUserName: root,
-  apiPassword: safePassword,
+  apiPassword: ***,
   checkCommand: check_sakuli,
   checkSource: check_sakuli,
   hostName: sakuliclient,

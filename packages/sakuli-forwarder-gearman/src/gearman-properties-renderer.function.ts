@@ -9,7 +9,7 @@ export const renderGearmanProperties = (properties: GearmanForwarderProperties) 
   serviceType: ${properties.serviceType},
   serverQueue: ${properties.serverQueue},
   encryption: ${properties.encryption},
-  secretKey: ${properties.secretKey},
+  secretKey: ***,
   nagiosHost: ${properties.nagiosHost},
   nagiosCheckCommand: ${properties.nagiosCheckCommand},
   nagiosServiceDescription: ${properties.nagiosServiceDescription},
