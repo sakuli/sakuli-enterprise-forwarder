@@ -25,7 +25,12 @@ before_deploy:
 deploy:
   - provider: script
     skip_cleanup: false
-    script: npm i && npm run lerna:publish-next
+    script: |
+      npm i && npm run lerna:publish-next &&
+      curl -H "Authorization: token $GITHUB_TOKEN" \
+          --request POST \
+          --data '{"event_type": "build-latest"}' \
+          https://api.github.com/repos/sakuli/sakuli-docker/dispatches
     on:
       branch: develop
   - provider: script
