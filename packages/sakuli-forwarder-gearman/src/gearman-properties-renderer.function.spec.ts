@@ -37,5 +37,16 @@ describe("gearman-properties-renderer", () => {
   nagiosTemplateScreenshotDivWidth: 640,
   outputDetails: true
    `);
-  })
+  });
+
+  it("should render *** when secret is not configured due to default value", () => {
+    //GIVEN
+    let gearmanProperties = new GearmanForwarderProperties();
+
+    //WHEN
+    const result = renderGearmanProperties(gearmanProperties);
+
+    //THEN
+    expect(result).toContain("secretKey: ***,");
+  });
 })

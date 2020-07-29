@@ -34,5 +34,16 @@ describe("icinga2-properties-renderer", () => {
   hostName: sakuliclient,
   serviceDescription:
    `);
-  })
+  });
+
+  it("should render empty apiPassword when password is not configured", () => {
+    //GIVEN
+    let icinga2Properties = new Icinga2Properties();
+
+    //WHEN
+    const result = renderIcinga2Properties(icinga2Properties);
+
+    //THEN
+    expect(result).toContain("apiPassword: ,");
+  });
 })

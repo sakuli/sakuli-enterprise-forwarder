@@ -8,7 +8,7 @@ export const renderIcinga2Properties = (properties: Icinga2Properties) => {
   apiHost: ${properties.apiHost},
   apiPort: ${properties.apiPort},
   apiUserName: ${properties.apiUserName},
-  apiPassword: ***,
+  apiPassword: ${properties.apiPassword ? "***" : ""},
   checkCommand: ${properties.checkCommand},
   checkSource: ${properties.checkSource},
   hostName: ${properties.hostName},
