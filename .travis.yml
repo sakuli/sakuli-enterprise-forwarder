@@ -25,12 +25,7 @@ before_deploy:
 deploy:
   - provider: script
     skip_cleanup: false
-    script: |
-      npm i && npm run lerna:publish-next &&
-      curl -H "Authorization: token $GITHUB_TOKEN" \
-          --request POST \
-          --data '{"event_type": "build-latest"}' \
-          https://api.github.com/repos/sakuli/sakuli-docker/dispatches
+    script: npm i && npm run lerna:publish-next
     on:
       branch: develop
   - provider: script
@@ -38,3 +33,6 @@ deploy:
     script: npm i && npm run lerna:publish
     on:
       tags: true
+
+after_deploy:
+  - "bash ./.build/trigger-image-build.sh"
