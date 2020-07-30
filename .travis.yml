@@ -19,20 +19,31 @@ script:
   - lerna run build:release > /dev/null 2>&1
   - npm test -- --runInBand --ci --bail
 
-before_deploy:
-  - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
+stages:
+  - name: deploy
+    if: (branch = develop) OR (tag IS present)
+  - name: trigger-image-build
+    if: (branch = develop)
 
-deploy:
-  - provider: script
-    skip_cleanup: false
-    script: npm i && npm run lerna:publish-next
-    on:
-      branch: develop
-  - provider: script
-    skip_cleanup: false
-    script: npm i && npm run lerna:publish
-    on:
-      tags: true
+jobs:
+  include:
+    - stage: deploy
+      before_deploy:
+        - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
+      deploy:
+        - provider: script
+          skip_cleanup: false
+          script: npm i && npm run lerna:publish-next
 
-after_deploy:
-  - "bash ./.build/trigger-image-build.sh"
+        - provider: script
+          skip_cleanup: false
+          script: npm i && npm run lerna:publish
+
+
+    - stage: trigger-image-build
+      os: linux
+      dist: bionic
+
+      install: true
+      script:
+        - "bash ./.build/trigger-image-build.sh"
