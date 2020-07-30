@@ -8,6 +8,7 @@ import {concat as flatten} from "./data/concat.function";
 import {createPluginOutput} from "./data/create-plugin-output.function";
 import {EOL} from "os";
 import {convertToUnixTimestamp, validateProps} from "@sakuli/result-builder-commons";
+import { renderIcinga2Properties } from "./icinga2-properties-renderer.function";
 
 export class Icinga2Forwarder implements Forwarder {
 
@@ -20,6 +21,7 @@ export class Icinga2Forwarder implements Forwarder {
         await validateProps(this.properties);
         }
         this.logger = logger;
+        ifPresent(this.properties, (props) => this.logDebug(renderIcinga2Properties(props)));
     }
 
     logDebug(message: string, ...data: any[]) {

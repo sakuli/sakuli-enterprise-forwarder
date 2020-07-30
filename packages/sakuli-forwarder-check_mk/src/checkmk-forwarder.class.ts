@@ -7,6 +7,7 @@ import {join, resolve} from "path";
 import {CheckMkTestResultOutputBuilder} from "@sakuli/result-builder-checkmk";
 import {createSpoolFileName} from "./create-spool-file.function";
 import {validateProps} from "@sakuli/result-builder-commons";
+import { renderCheckmkProperties } from "./checkmk-properties-renderer.function";
 
 export class CheckMkForwarder implements Forwarder {
 
@@ -40,6 +41,7 @@ export class CheckMkForwarder implements Forwarder {
             await validateProps(this.properties);
         }
         this.logger = logger;
+        ifPresent(this.properties, (props) => this.logDebug(renderCheckmkProperties(props)));
     }
 
     async forward(ctx: TestExecutionContext): Promise<any> {
@@ -52,7 +54,7 @@ export class CheckMkForwarder implements Forwarder {
                         });
                         const fileName = createSpoolFileName(testContextEntity, props);
                         const path = props.spoolDir;
-                        this.logDebug(`Forwarding final result to checkmk via spool file '${fileName}' in '${path}'.`);
+                        this.logInfo(`Forwarding final result to checkmk via spool file '${fileName}' in '${path}'.`);
                         const spoolFile = resolve(join(path, fileName));
                         if (await dirExists(path)) {
                             try {
@@ -69,7 +71,7 @@ export class CheckMkForwarder implements Forwarder {
                         }
                     }
                 } else {
-                    this.logDebug(`CheckMK forwarding disabled via properties.`);
+                    this.logInfo(`CheckMK forwarding disabled via properties.`);
                 }
             },
             () => Promise.reject(Error('Could not create CheckMK Properties from Project'))

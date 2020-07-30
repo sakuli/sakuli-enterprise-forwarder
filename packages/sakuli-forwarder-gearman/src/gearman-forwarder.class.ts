@@ -15,6 +15,7 @@ import {GearmanForwarderProperties} from './gearman-forwarder-properties.class';
 import {createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger} from "@sakuli/commons";
 import {OmdTestResultOutputBuilder} from "@sakuli/result-builder-omd";
 import {validateProps} from "@sakuli/result-builder-commons";
+import { renderGearmanProperties } from "./gearman-properties-renderer.function";
 
 
 export class GearmanForwarder implements Forwarder {
@@ -51,6 +52,7 @@ export class GearmanForwarder implements Forwarder {
         await validateProps(this.gearmanProps);
         }
         this.logger = logger;
+        ifPresent(this.gearmanProps, (props) => this.logDebug(renderGearmanProperties(props)));
     }
 
     /**
@@ -60,16 +62,15 @@ export class GearmanForwarder implements Forwarder {
      */
     async forwardSuiteResult(entity: TestSuiteContext & FinishedMeasurable, ctx: TestExecutionContext): Promise<void> {
         await ifPresent(this.gearmanProps, async (props) => {
-            await validateProps(props);
             if (props.enabled) {
                 const renderedTemplate = this.outputBuilder.render(entity, {
                     currentSuite: entity,
                     props
                 });
-                this.logDebug(`Forwarding suite result.`);
+                this.logInfo(`Forwarding suite result.`);
                 await this.doForward(renderedTemplate);
             } else {
-                this.logDebug(`Gearman forwarding disabled via properties.`);
+                this.logInfo(`Gearman forwarding disabled via properties.`);
             }
         }, () => {
             this.logWarn(`Missing Gearman configuration, aborting forwarding`);
@@ -94,11 +95,11 @@ export class GearmanForwarder implements Forwarder {
                         currentCase: entity,
                         props
                     });
-                    this.logDebug(`Forwarding case result.`);
+                    this.logInfo(`Forwarding case result.`);
                     await this.doForward(renderedTemplate);
                 });
             } else {
-                this.logDebug(`Gearman forwarding disabled via properties.`);
+                this.logInfo(`Gearman forwarding disabled via properties.`);
             }
         }, () => {
             this.logWarn(`Missing Gearman configuration, aborting forwarding`);
@@ -118,7 +119,7 @@ export class GearmanForwarder implements Forwarder {
             if (properties.enabled) {
                 const parentCase: Maybe<TestCaseContext> = ctx.testCases.find(tc => tc.getChildren().includes(entity));
                 const parentSuite: Maybe<TestSuiteContext> = ifPresent(parentCase, (testCase) => {
-                    return ctx.testSuites.find(ts => ts.getChildren().includes(testCase));
+                  return ctx.testSuites.find(ts => ts.getChildren().includes(testCase));
                 }, () => undefined);
                 ifPresent(parentSuite, async (suite) => {
                     const renderedTemplate = this.outputBuilder.render(entity, {
@@ -126,12 +127,12 @@ export class GearmanForwarder implements Forwarder {
                         currentCase: parentCase,
                         props
                     });
-                    this.logDebug(`Forwarding step result.`);
+                    this.logInfo(`Forwarding step result.`);
                     await this.doForward(renderedTemplate);
                     return Promise.resolve();
                 });
             } else {
-                this.logDebug(`Gearman forwarding disabled via properties.`);
+                this.logInfo(`Gearman forwarding disabled via properties.`);
             }
         }, () => {
             this.logWarn(`Missing Gearman configuration, aborting forwarding`);
@@ -161,11 +162,11 @@ export class GearmanForwarder implements Forwarder {
                         currentSuite: testContextEntity,
                         props
                     });
-                    this.logDebug(`Forwarding final result.`);
+                    this.logInfo(`Forwarding final result.`);
                     await this.doForward(renderedTemplate);
                 }
             } else {
-                this.logDebug(`Gearman forwarding disabled via properties.`);
+                this.logInfo(`Gearman forwarding disabled via properties.`);
             }
         }, () => {
             this.logWarn(`Missing Gearman configuration, aborting forwarding`);

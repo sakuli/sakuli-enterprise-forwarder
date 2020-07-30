@@ -2,49 +2,67 @@ import {Project, TestExecutionContext} from "@sakuli/core";
 import {Icinga2Forwarder} from "./icinga2-forwarder.class";
 import {mockPartial} from 'sneer'
 import {SimpleLogger} from "@sakuli/commons";
-import { validateProps } from "@sakuli/result-builder-commons";
+import {validateProps} from "@sakuli/result-builder-commons";
+import { renderIcinga2Properties } from "./icinga2-properties-renderer.function";
 
-jest.mock("@sakuli/result-builder-commons", () => ({
+const processCheckResultMock = jest.fn();
+
+jest.mock("./access/create-icinga2-api-adapter.function", () => ({
+    createIcinga2ApiAdapter: () => new Promise((res) => { res({
+        processCheckResult: processCheckResultMock
+    })})
+}));
+
+jest.mock("./data/create-plugin-output.function", () => ({
+    createPluginOutput: jest.fn(() => [])
+}))
+
+jest.mock("./data/create-performance-data.function", () => ({
+    createPerformanceData: jest.fn(() => [])
+}))
+
+jest.mock("@sakuli/result-builder-commons", () => {
+    const originalModule = jest.requireActual("@sakuli/result-builder-commons");
+
+    return {
+        __esModule: true,
+        ...originalModule,
         validateProps: jest.fn(),
-       }));
+    };
+});
+
+jest.mock("./icinga2-properties-renderer.function", () => ({
+    renderIcinga2Properties: jest.fn()
+}))
 
 describe('Icinga2Forwarder', () => {
 
 
     let forwarder: Icinga2Forwarder;
-    const props = {
-        "sakuli.forwarder.icinga2.enabled": false,
-        "sakuli.forwarder.icinga2.api.host": 'https://localhost',
-        "sakuli.forwarder.icinga2.api.port": 5665,
-        "sakuli.forwarder.icinga2.hostname": 'sakuliclient01',
-        "sakuli.forwarder.icinga2.service_description": 'sakuli_demo',
-        "sakuli.forwarder.icinga2.api.username": 'root',
-        "sakuli.forwarder.icinga2.api.password": '06974567ac6f913e'
-    };
 
-      function getProjectWithProps(props: any){
+    function getProjectWithProps(props: any) {
         return mockPartial<Project>({
-          has(key: string): boolean {
-            return props[key] !== undefined;
-          },
-          get(key: string): any {
-            return props[key];
-          }
+            has(key: string): boolean {
+                return props[key] !== undefined;
+            },
+            get(key: string): any {
+                return props[key];
+            }
         })
-      }
-
-    let project = getProjectWithProps({});
-
+    }
+    
     let logger = mockPartial<SimpleLogger>({
-        info: console.log.bind(console),
-        debug: console.log.bind(console)
+        info: jest.fn(),
+        debug: jest.fn()
     });
 
     let ctx = new TestExecutionContext(logger);
 
-    beforeEach(async () => {
-        forwarder = new Icinga2Forwarder();
-        await forwarder.setup(project, logger);
+    async function setupDefaultProject(defaultProps : Object ={
+        "sakuli.forwarder.icinga2.enabled": true
+    }){
+        const project = getProjectWithProps(defaultProps);
+        await forwarder.setup(project,logger);
         ctx.startExecution();
         ctx.startTestSuite({id: 'Suite'});
         ctx.startTestCase({id: 'Case1'});
@@ -53,35 +71,55 @@ describe('Icinga2Forwarder', () => {
         ctx.endTestCase();
         ctx.endTestSuite();
         ctx.endExecution();
-    });
+    }
 
-
-
-    it('should call forward method', async () => {
-        await forwarder.forward(ctx);
+    beforeEach(async () => {
+        forwarder = new Icinga2Forwarder();
+        jest.clearAllMocks();
     });
 
     it("should not validate props if not available", async () => {
-            //WHEN
-            await forwarder.setup(project,logger);
+        //GIVEN
+        await setupDefaultProject({});
 
-            //THEN
-            expect(validateProps).not.toHaveBeenCalled();
-
-        });
+        //THEN
+        expect(validateProps).not.toHaveBeenCalled();
+        expect(renderIcinga2Properties).toHaveBeenCalled();
+    });
 
     it("should validate props if available", async () => {
-            //GIVEN
-            let project = getProjectWithProps({
-            "sakuli.forwarder.icinga2.enabled" : "true"
-            });
+        //GIVEN
+        await setupDefaultProject();
 
-            //WHEN
-            await forwarder.setup(project,logger);
+        //THEN
+        expect(validateProps).toHaveBeenCalled();
 
-            //THEN
-            expect(validateProps).toHaveBeenCalled();
+    });
 
+    it("should not forward results when properties disabled", async () => {
+        //GIVEN
+        await setupDefaultProject({
+            "sakuli.forwarder.icinga2.enabled": false
+        });
+
+        //WHEN
+        await forwarder.forward(ctx);
+
+        //THEN
+        expect(logger.info).toHaveBeenCalledWith("Icinga2 forwarding disabled via properties.");
+
+    });
+
+    it("should forward results when properties enabled", async () => {
+        //GIVEN
+        await setupDefaultProject();
+
+        //WHEN
+        await forwarder.forward(ctx);
+
+        //THEN
+        expect(logger.info).toHaveBeenCalledWith("Forwarding check result to Icinga2.");
+        expect(processCheckResultMock).toHaveBeenCalled();
     });
 
 });
