@@ -20,6 +20,7 @@ script:
   - npm test -- --runInBand --ci --bail
 
 stages:
+  - test
   - name: deploy
     if: (branch = develop) OR (tag IS present)
   - name: trigger-image-build
