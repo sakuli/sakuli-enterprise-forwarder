@@ -35,10 +35,14 @@ jobs:
         - provider: script
           skip_cleanup: false
           script: npm i && npm run lerna:publish-next
+          on:
+            branch: develop
 
         - provider: script
           skip_cleanup: false
           script: npm i && npm run lerna:publish
+          on:
+            tags: true
 
 
     - stage: trigger-image-build
