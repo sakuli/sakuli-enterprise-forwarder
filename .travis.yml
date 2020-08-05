@@ -17,7 +17,7 @@ stages:
 
 jobs:
   include:
-    - name: test
+    - stage: test
       before_install:
         - npm i -g lerna
 
