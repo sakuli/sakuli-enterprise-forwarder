@@ -6,30 +6,64 @@ node_js:
   - "10"
 cache: npm
 
-before_install:
-  - npm i -g lerna
 
-install: true
 
-before_script:
-  - export TZ=Europe/Vienna
+stages:
+  - name: test
+  - name: deploy
+    if: ((branch = develop) OR (tag IS present)) AND type != pull_request
+  - name: trigger-image-build
+    if: (branch = develop) AND type != pull_request
 
-script:
-  - travis_wait npm ci
-  - lerna run build:release > /dev/null 2>&1
-  - npm test -- --runInBand --ci --bail
+jobs:
+  include:
+    - stage: test
+      before_install:
+        - npm i -g lerna
 
-before_deploy:
-  - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
+      install: true
 
-deploy:
-  - provider: script
-    skip_cleanup: false
-    script: npm i && npm run lerna:publish-next
-    on:
-      branch: develop
-  - provider: script
-    skip_cleanup: false
-    script: npm i && npm run lerna:publish
-    on:
-      tags: true
+      before_script:
+        - export TZ=Europe/Vienna
+
+      script:
+        - travis_wait npm ci
+        - lerna run build:release > /dev/null 2>&1
+        - npm test -- --runInBand --ci --bail
+
+    - stage: deploy
+      before_install:
+        - npm i -g lerna
+
+      install: true
+
+      before_script:
+        - export TZ=Europe/Vienna
+
+      script:
+        - travis_wait npm ci
+        - lerna run build:release > /dev/null 2>&1
+
+      before_deploy:
+        - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
+      deploy:
+        - provider: script
+          skip_cleanup: false
+          script: npm i && npm run lerna:publish-next
+          on:
+            branch: develop
+
+        - provider: script
+          skip_cleanup: false
+          script: npm i && npm run lerna:publish
+          on:
+            tags: true
+
+
+    - stage: trigger-image-build
+      os: linux
+      dist: bionic
+
+      install: true
+      script:
+        - "bash ./.build/trigger-image-build.sh"
