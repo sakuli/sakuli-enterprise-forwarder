@@ -167,73 +167,153 @@ describe("prometheus forwarder", () => {
 
     describe("gauge creation", () => {
 
-        it("should create gauges for suites", async () => {
+        describe("suite gauges", () =>{
 
-            //GIVEN
-            context.startExecution();
-            context.startTestSuite({id: 'Suite1'});
-            context.startTestCase({id: 'Suite1Case1'});
-            context.endTestCase();
-            context.startTestCase({id: 'Suite1Case2'});
-            context.endTestCase();
-            context.endTestSuite();
-            context.endExecution();
-            context.startExecution();
-            context.startTestSuite({id: 'Suite2'});
-            context.startTestCase({id: 'Suite2Case1'});
-            context.endTestCase();
-            context.startTestCase({id: 'Suite2Case2'});
-            context.endTestCase();
-            context.endTestSuite();
-            context.endExecution();
-            await prometheusForwarder.setup(defaultProject, logger);
+            it("should create gauges for suites", async () => {
 
-            //WHEN
-            await prometheusForwarder.forward(context);
+                //GIVEN
+                context.startExecution();
+                context.startTestSuite({id: 'Suite1'});
+                context.startTestCase({id: 'Suite1Case1'});
+                context.endTestCase();
+                context.startTestCase({id: 'Suite1Case2'});
+                context.endTestCase();
+                context.endTestSuite();
+                context.endExecution();
+                context.startExecution();
+                context.startTestSuite({id: 'Suite2'});
+                context.startTestCase({id: 'Suite2Case1'});
+                context.endTestCase();
+                context.startTestCase({id: 'Suite2Case2'});
+                context.endTestCase();
+                context.endTestSuite();
+                context.endExecution();
+                await prometheusForwarder.setup(defaultProject, logger);
 
-            //THEN
-            expect(addCaseDurationGauge).toHaveBeenCalledTimes(4);
-            expect(addCaseError).toHaveBeenCalledTimes(4);
-        });
+                //WHEN
+                await prometheusForwarder.forward(context);
 
-        it("should create gauges for cases", async () => {
+                //THEN
+                expect(addCaseDurationGauge).toHaveBeenCalledTimes(4);
+                expect(addCaseError).toHaveBeenCalledTimes(4);
+            });
+        })
 
-            //GIVEN
-            context.startExecution();
-            context.startTestSuite({id: 'Suite1'});
-            context.startTestCase({id: 'Suite1Case1'});
-            context.startTestStep({id: 'Suite1Case1Step1'});
-            context.endTestStep();
-            context.startTestStep({id: 'Suite1Case1Step2'});
-            endContext(context);
-            await prometheusForwarder.setup(defaultProject, logger);
+        describe("case gauges", () => {
 
-            //WHEN
-            await prometheusForwarder.forward(context);
+            it("should create gauges for cases", async () => {
 
-            //THEN
-            expect(addStepDurationGauge).toHaveBeenCalledTimes(2);
-            expect(addStepError).toHaveBeenCalledTimes(2);
-        });
+                //GIVEN
+                context.startExecution();
+                context.startTestSuite({id: 'Suite1'});
+                context.startTestCase({id: 'Suite1Case1'});
+                context.startTestStep({id: 'Suite1Case1Step1'});
+                context.endTestStep();
+                context.startTestStep({id: 'Suite1Case1Step2'});
+                endContext(context);
+                await prometheusForwarder.setup(defaultProject, logger);
 
-        it("should create gauges for actions", async () => {
+                //WHEN
+                await prometheusForwarder.forward(context);
 
-            //GIVEN
-            context.startExecution();
-            context.startTestSuite({id: 'Suite1'});
-            context.startTestCase({id: 'Suite1Case1'});
-            context.startTestStep({id: 'Suite1Case1Step1'});
-            context.startTestAction({id: "Suite1Case1Step1Action1"})
-            context.endTestAction();
-            endContext(context);
-            await prometheusForwarder.setup(defaultProject, logger);
+                //THEN
+                expect(addStepDurationGauge).toHaveBeenCalledTimes(2);
+                expect(addStepError).toHaveBeenCalledTimes(2);
+            });
 
-            //WHEN
-            await prometheusForwarder.forward(context);
+            it("should add error gauge on case", async () => {
 
-            //THEN
-            expect(addActionError).toHaveBeenCalledTimes(1);
-        });
+                //GIVEN
+                context.startExecution();
+                context.startTestSuite({id: 'Suite1'});
+                context.startTestCase({id: 'Suite1Case1'});
+                context.endTestCase();
+                context.startTestCase({id: 'Suite1Case2'});
+                context.updateCurrentTestCase({error: Error('stop it... NOW!!!')});
+                context.startTestStep({id: 'Suite1Case1Step1'});
+                endContext(context);
+                await prometheusForwarder.setup(defaultProject, logger);
+
+                //WHEN
+                await prometheusForwarder.forward(context);
+
+                //THEN
+                expect(addCaseError).toHaveBeenCalledTimes(2);
+                expect(addStepError).toHaveBeenCalledTimes(1);
+                expect(addActionError).not.toHaveBeenCalled();
+            });
+        })
+
+        describe("step gauges", () => {
+
+            it("should create gauges for step", async () => {
+
+                //GIVEN
+                context.startExecution();
+                context.startTestSuite({id: 'Suite1'});
+                context.startTestCase({id: 'Suite1Case1'});
+                context.startTestStep({id: 'Suite1Case1Step1'});
+                context.endTestStep();
+                context.startTestStep({id: 'Suite1Case1Step2'});
+                context.updateCurrentTestStep({error: Error('stop it... NOW!!!')});
+                endContext(context);
+                await prometheusForwarder.setup(defaultProject, logger);
+
+                //WHEN
+                await prometheusForwarder.forward(context);
+
+                //THEN
+                expect(addCaseError).toHaveBeenCalledTimes(1);
+                expect(addStepError).toHaveBeenCalledTimes(2);
+                expect(addActionError).not.toHaveBeenCalled();
+            });
+        })
+
+        describe("action gauges", () => {
+
+            it("should create gauges for actions", async () => {
+
+                //GIVEN
+                context.startExecution();
+                context.startTestSuite({id: 'Suite1'});
+                context.startTestCase({id: 'Suite1Case1'});
+                context.startTestStep({id: 'Suite1Case1Step1'});
+                context.startTestAction({id: "Suite1Case1Step1Action1"})
+                context.endTestAction();
+                endContext(context);
+                await prometheusForwarder.setup(defaultProject, logger);
+
+                //WHEN
+                await prometheusForwarder.forward(context);
+
+                //THEN
+                expect(addActionError).toHaveBeenCalledTimes(1);
+            });
+
+            it("should add error gauge on action", async () => {
+
+                //GIVEN
+                context.startExecution();
+                context.startTestSuite({id: 'Suite1'});
+                context.startTestCase({id: 'Suite1Case1'});
+                context.startTestStep({id: 'Suite1Case1Step1'});
+                context.startTestAction({id: 'Suite1Case1Step1Action1'});
+                context.endTestAction();
+                context.startTestAction({id: 'Suite1Case1Step1Action2'});
+                context.updateCurrentTestAction({error: Error('stop it... NOW!!!')});
+                endContext(context);
+                await prometheusForwarder.setup(defaultProject, logger);
+
+                //WHEN
+                await prometheusForwarder.forward(context);
+
+                //THEN
+                expect(addCaseError).toHaveBeenCalledTimes(1);
+                expect(addStepError).toHaveBeenCalledTimes(1);
+                expect(addActionError).toHaveBeenCalledTimes(2);
+            });
+        })
+
 
         it("should add warning threshold gauges", async () => {
 
@@ -254,7 +334,6 @@ describe("prometheus forwarder", () => {
             expect(addStepWarningThresholdGauge).toHaveBeenCalledTimes(1);
         });
 
-
         it("should add critical threshold gauges", async () => {
 
             //GIVEN
@@ -274,72 +353,9 @@ describe("prometheus forwarder", () => {
             expect(addStepCriticalThresholdGauge).toHaveBeenCalledTimes(1);
         });
 
-        it("should add error gauge on case", async () => {
 
-            //GIVEN
-            context.startExecution();
-            context.startTestSuite({id: 'Suite1'});
-            context.startTestCase({id: 'Suite1Case1'});
-            context.endTestCase();
-            context.startTestCase({id: 'Suite1Case2'});
-            context.updateCurrentTestCase({error: Error('stop it... NOW!!!')});
-            context.startTestStep({id: 'Suite1Case1Step1'});
-            endContext(context);
-            await prometheusForwarder.setup(defaultProject, logger);
 
-            //WHEN
-            await prometheusForwarder.forward(context);
 
-            //THEN
-            expect(addCaseError).toHaveBeenCalledTimes(2);
-            expect(addStepError).toHaveBeenCalledTimes(1);
-            expect(addActionError).not.toHaveBeenCalled();
-        });
-
-        it("should add error gauge on step", async () => {
-
-            //GIVEN
-            context.startExecution();
-            context.startTestSuite({id: 'Suite1'});
-            context.startTestCase({id: 'Suite1Case1'});
-            context.startTestStep({id: 'Suite1Case1Step1'});
-            context.endTestStep();
-            context.startTestStep({id: 'Suite1Case1Step2'});
-            context.updateCurrentTestStep({error: Error('stop it... NOW!!!')});
-            endContext(context);
-            await prometheusForwarder.setup(defaultProject, logger);
-
-            //WHEN
-            await prometheusForwarder.forward(context);
-
-            //THEN
-            expect(addCaseError).toHaveBeenCalledTimes(1);
-            expect(addStepError).toHaveBeenCalledTimes(2);
-            expect(addActionError).not.toHaveBeenCalled();
-        });
-
-        it("should add error gauge on action", async () => {
-
-            //GIVEN
-            context.startExecution();
-            context.startTestSuite({id: 'Suite1'});
-            context.startTestCase({id: 'Suite1Case1'});
-            context.startTestStep({id: 'Suite1Case1Step1'});
-            context.startTestAction({id: 'Suite1Case1Step1Action1'});
-            context.endTestAction();
-            context.startTestAction({id: 'Suite1Case1Step1Action2'});
-            context.updateCurrentTestAction({error: Error('stop it... NOW!!!')});
-            endContext(context);
-            await prometheusForwarder.setup(defaultProject, logger);
-
-            //WHEN
-            await prometheusForwarder.forward(context);
-
-            //THEN
-            expect(addCaseError).toHaveBeenCalledTimes(1);
-            expect(addStepError).toHaveBeenCalledTimes(1);
-            expect(addActionError).toHaveBeenCalledTimes(2);
-        });
 
         it("should not add the last, implicit test step", async () => {
 
