@@ -16,17 +16,7 @@ import { mockPartial } from "sneer";
 import { Project, TestExecutionContext } from "@sakuli/core";
 import { SimpleLogger } from "@sakuli/commons";
 import { PrometheusForwarderProperties } from "./prometheus-properties.class";
-import { validateProps } from "@sakuli/result-builder-commons";
 
-jest.mock("@sakuli/result-builder-commons", () => {
-    const originalModule = jest.requireActual("@sakuli/result-builder-commons");
-
-    return {
-        __esModule: true,
-        ...originalModule,
-        validateProps: jest.fn(),
-    };
-});
 jest.mock('./pushgateway.service');
 jest.mock('./gauge.utils');
 
@@ -58,10 +48,10 @@ describe("prometheus forwarder", () => {
     });
 
     describe("properties parsing", () =>{
-        it.skip("should throw in case host is not set", async () => {
-            //TODO: enable after https://github.com/sakuli/sakuli/issues/350
+        it("should throw in case host is not set", async () => {
             //GIVEN
             const project = getProjectWithProps({
+                "sakuli.forwarder.prometheus.enabled": true,
                 "sakuli.forwarder.prometheus.api.job": 'foo'
             });
 
@@ -86,10 +76,10 @@ describe("prometheus forwarder", () => {
                     }))
         });
 
-        it.skip("should throw in case job is not set", async () => {
-            //TODO: enable after https://github.com/sakuli/sakuli/issues/350
+        it("should throw in case job is not set", async () => {
             //GIVEN
             const project = getProjectWithProps({
+                "sakuli.forwarder.prometheus.enabled": true,
                 "sakuli.forwarder.prometheus.api.host": 'localhost'
             });
 
@@ -114,32 +104,16 @@ describe("prometheus forwarder", () => {
             expect(logger.info).toBeCalledWith("Prometheus forwarding disabled via properties.");
         });
 
-        it("should not validate if props not available", async () => {
+        it("should resolve if props not available", async () => {
             //GIVEN
             let project = getProjectWithProps({});
 
             //WHEN
-            await prometheusForwarder.setup(project, logger);
-
-            //THEN
-            expect(validateProps).not.toHaveBeenCalled();
-
-        });
-
-        it("should validate if props available", async () => {
-            //GIVEN
-            let project = getProjectWithProps( {
-                "sakuli.forwarder.prometheus.enabled" : true
-            });
-
-            //WHEN
-            await prometheusForwarder.setup(project,logger);
-
-            //THEN
-            expect(validateProps).toHaveBeenCalled();
+            await expect(prometheusForwarder.setup(project, logger))
+                //THEN
+                .resolves.toBeUndefined();
 
         });
-
     })
 
     it("should reject in case setup was not called", async () => {
