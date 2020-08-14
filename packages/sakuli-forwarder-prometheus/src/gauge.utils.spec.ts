@@ -297,8 +297,7 @@ describe("gauge utils", () => {
             });
             const stepContextMock = mockPartial<TestStepContext>({
                 id: "Step Context Mock",
-                kind: "step",
-                error: new Error()
+                kind: "step"
             });
             const expectedMeasurement = 0;
 
@@ -350,8 +349,7 @@ describe("gauge utils", () => {
             });
             const actionContextMock = mockPartial<TestActionContext>({
                 id: "Action Context Mock",
-                kind: "action",
-                error: new Error()
+                kind: "action"
             });
             const expectedMeasurement = 0;
 
