@@ -1,4 +1,4 @@
-import { TestActionContext, TestContextEntity, TestSuiteContext } from "@sakuli/core";
+import { TestActionContext, TestContextEntity, TestContextEntityStates, TestSuiteContext } from "@sakuli/core";
 import { Gauge, GaugeConfiguration, register } from "prom-client";
 import { getEntityId } from "@sakuli/result-builder-commons";
 
@@ -107,7 +107,7 @@ export function addCaseError(testSuiteContext: TestSuiteContext,
         labels: {
             "case": `${caseIdentifier}`
         },
-        measurement: 1
+        measurement: getErrorMeasurement(testCaseContext)
     });
 }
 
@@ -123,7 +123,7 @@ export function addStepError(testCaseIndex: number,
         labels: {
             "step": `${stepIdentifier}`
         },
-        measurement: 1
+        measurement: getErrorMeasurement(testStepContext)
     });
 }
 
@@ -139,7 +139,7 @@ export function addActionError(testStepIndex: number,
         labels: {
             "action": `${actionIdentifier}`
         },
-        measurement: 1
+        measurement: getErrorMeasurement(testActionContext)
     });
 }
 
@@ -197,6 +197,10 @@ function createActionIdentifier(testActionIndex: number, testActionContext: Test
     return `${addPaddingZeroes(testActionIndex)}_${getEntityId(testActionContext)}`;
 }
 
-function  addPaddingZeroes(number: number){
+function addPaddingZeroes(number: number){
     return number.toString().padStart(3, '0');
+}
+
+function getErrorMeasurement<T extends TestContextEntity>(context: T){
+    return context.state !== TestContextEntityStates.ERROR ? 0 : 1;
 }

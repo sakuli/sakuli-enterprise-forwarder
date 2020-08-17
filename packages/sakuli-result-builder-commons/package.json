@@ -16,7 +16,7 @@
   "dependencies": {
     "@sakuli/commons": "2.3.1-next.62",
     "@sakuli/core": "2.3.1-next.62",
-    "class-validator": "0.9.1",
+    "class-validator": "0.12.2",
     "common-tags": "1.8.0",
     "dateformat": "3.0.3",
     "sneer": "1.0.1",
