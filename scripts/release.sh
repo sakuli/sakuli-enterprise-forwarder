@@ -15,6 +15,8 @@ function help () {
 # \. matches dot
 semver_pattern="^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$"
 
+RELEASE_VERSION=${1}
+
 # -z -> string is null (empty string), so if empty string then throw error
 [[ -z "${RELEASE_VERSION}" ]] && echo "ERROR: RELEASE_VERSION is empty" && help && exit 1
 # ! returns true if false -> if release version not like semver_pattern then throw error
@@ -30,11 +32,24 @@ git checkout -b release/${RELEASE_VERSION} origin/develop
 printf "\n%s\n" "Run npm install"
 npm install
 
-printf "\n%s\n" "Change Version in package.json"
+printf "\n%s\n" "Change version in package.json"
 # --no-git-tag-version -> doesnt commit changes made to package.json files and doesnt tag the release
 # --no-push -> doesnt push to the configured git remote branch
 # --exact -> specify updated dependencies in updated packages exactly instead with ^
-npx lerna-version --no-git-tag-version --no-push -y --exact ${RELEASE_VERSION}
+npx lerna version --no-git-tag-version --no-push -y --exact ${RELEASE_VERSION}
+printf "\n%s\n" "Update @sakuli package versions in package.json"
+npx lerna add @sakuli/commons@${RELEASE_VERSION} -E --no-bootstrap
+npx lerna add @sakuli/core@${RELEASE_VERSION} -E --no-bootstrap
+npx lerna add @sakuli/result-builder-commons@${RELEASE_VERSION} -E --scope=@sakuli/forwarder-checkmk \
+  --scope=@sakuli/forwarder-gearman \
+  --scope=@sakuli/forwarder-icinga2 \
+  --scope=@sakuli/forwarder-prometheus \
+  --scope=@sakuli/result-builder-checkmk \
+  --scope=@sakuli/result-builder-omd \
+  --no-bootstrap
+npx lerna add @sakuli/result-builder-checkmk@${RELEASE_VERSION} -E --scope=@sakuli/forwarder-checkmk --no-bootstrap
+npx lerna add @sakuli/result-builder-omd@${RELEASE_VERSION} -E --scope=@sakuli/forwarder-gearman --no-bootstrap
+
 
 printf "\n%s\n" "Run npm run rebuild"
 npm run rebuild
@@ -58,7 +73,3 @@ echo "git push --tags"
 
 #go back to the directory you started in
 popd
-
-
-
-
