@@ -1,7 +1,5 @@
 #! /usr/bin/env bash
 
-# -e exit immediatly when command fails, for pipeline operations: -o pipefail
-# if one command during the pipeline operation fails then the whole pipeline fails, otherwise only the last commands exit code considered
 set -eo pipefail
 
 function help () {
@@ -11,18 +9,14 @@ function help () {
   echo "RELEASE_VERSION: SemVer Version of the release"
 }
 
-# RegEx:(<first capture group>) -> matches 0 or character between 1-9, matches further a character between 0-9 zero or unlimited times
-# \. matches dot
 semver_pattern="^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$"
 
 RELEASE_VERSION=${1}
 
-# -z -> string is null (empty string), so if empty string then throw error
 [[ -z "${RELEASE_VERSION}" ]] && echo "ERROR: RELEASE_VERSION is empty" && help && exit 1
-# ! returns true if false -> if release version not like semver_pattern then throw error
 [[ ! "${RELEASE_VERSION}" =~ $semver_pattern ]] && echo "ERROR: RELEASE_VERSION does not match the SemVer specification" && help && exit 1
 
-# go back one directory (like cd ..)
+
 pushd ..
 
 git fetch
@@ -33,9 +27,6 @@ printf "\n%s\n" "Run npm install"
 npm install
 
 printf "\n%s\n" "Change version in package.json"
-# --no-git-tag-version -> doesnt commit changes made to package.json files and doesnt tag the release
-# --no-push -> doesnt push to the configured git remote branch
-# --exact -> specify updated dependencies in updated packages exactly instead with ^
 npx lerna version --no-git-tag-version --no-push -y --exact ${RELEASE_VERSION}
 printf "\n%s\n" "Update @sakuli package versions in package.json"
 npx lerna add @sakuli/commons@${RELEASE_VERSION} -E --no-bootstrap
@@ -71,5 +62,4 @@ echo "To release the sakuli-enterprise-forwarder use following commands:"
 printf "%s\n" "git tag -a v${RELEASE_VERSION} -m 'Release ${RELEASE_VERSION}'"
 echo "git push --tags"
 
-#go back to the directory you started in
 popd
