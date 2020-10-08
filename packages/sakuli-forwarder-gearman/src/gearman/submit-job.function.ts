@@ -30,7 +30,7 @@ export async function submitJob(data: GearmanData, logger: Maybe<SimpleLogger>):
             ifPresent(logger, (log) => {
                 log.debug(`Received Gearman event: 'WORK_COMPLETE'... Closing connection!`);
             });
-            finish(resolve)
+            finish(resolve);
         });
         data.connection.on('JOB_CREATED', id => {
             ifPresent(logger, (log) => {
@@ -59,6 +59,7 @@ export async function submitJob(data: GearmanData, logger: Maybe<SimpleLogger>):
             ifPresent(logger, (log) => {
                 log.error('Failed to connect to Gearman server.', err);
             });
+            reject('Failed to connect to Gearman server.');
         }
     })
 }
