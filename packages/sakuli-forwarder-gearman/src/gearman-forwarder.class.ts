@@ -9,12 +9,12 @@ import {
     TestSuiteContext
 } from '@sakuli/core'
 import gearman from 'gearman'
-import {GearmanData, submitJob} from './gearman/submit-job.function';
-import {encrypt} from './crypto/aes-crypto.function';
-import {GearmanForwarderProperties} from './gearman-forwarder-properties.class';
-import {createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger} from "@sakuli/commons";
-import {OmdTestResultOutputBuilder} from "@sakuli/result-builder-omd";
-import {validateProps} from "@sakuli/result-builder-commons";
+import { GearmanData, submitJob } from './gearman/submit-job.function';
+import { encrypt } from './crypto/aes-crypto.function';
+import { GearmanForwarderProperties } from './gearman-forwarder-properties.class';
+import { createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger } from "@sakuli/commons";
+import { OmdTestResultOutputBuilder } from "@sakuli/result-builder-omd";
+import { validateProps } from "@sakuli/result-builder-commons";
 import { renderGearmanProperties } from "./gearman-properties-renderer.function";
 
 
@@ -182,7 +182,7 @@ export class GearmanForwarder implements Forwarder {
                 let client = gearman(
                     properties.serverHost,
                     properties.serverPort,
-                    {timeout: 15000}
+                    {timeout: 60000}
                 );
 
                 this.logDebug(`Forwarding to queue '${properties.serverQueue}' on Gearman host '${properties.serverHost}:${properties.serverPort}'.`);
