@@ -1,11 +1,17 @@
 import { GearmanForwarder } from "./gearman-forwarder.class";
-import { Project, TestCaseContext, TestExecutionContext, TestStepContext } from "@sakuli/core";
+import {
+  FinishedMeasurable,
+  Project,
+  TestCaseContext,
+  TestExecutionContext,
+  TestStepContext,
+  TestSuiteContext
+} from "@sakuli/core";
 import { mockPartial } from "sneer";
 import { SimpleLogger } from "@sakuli/commons";
 import { validateProps } from "@sakuli/result-builder-commons";
-import { TestSuiteContext, FinishedMeasurable} from "@sakuli/core";
-import {submitJob} from './gearman/submit-job.function';
-import {encrypt} from './crypto/aes-crypto.function';
+import { submitJob } from './gearman/submit-job.function';
+import { encrypt } from './crypto/aes-crypto.function';
 import { renderGearmanProperties } from "./gearman-properties-renderer.function";
 
 jest.mock("@sakuli/result-builder-commons", () => {
@@ -190,7 +196,7 @@ describe("gearman forwarder", () => {
     gearmanForwarder.forwardStepResult(ctx.testSteps[0] as TestStepContext & FinishedMeasurable, ctx);
 
     //THEN
-    expect(logger.info).toHaveBeenCalledWith("Gearman forwarding disabled via properties.")
+    expect(logger.debug).toHaveBeenCalledWith("Gearman forwarding disabled via properties.")
   })
 
   it("should not forward test case results when forwarder is disabled", () => {
@@ -207,7 +213,7 @@ describe("gearman forwarder", () => {
     gearmanForwarder.forwardCaseResult(ctx.testCases[0] as TestCaseContext & FinishedMeasurable, ctx);
 
     //THEN
-    expect(logger.info).toHaveBeenCalledWith("Gearman forwarding disabled via properties.")
+    expect(logger.debug).toHaveBeenCalledWith("Gearman forwarding disabled via properties.")
   })
 
   it("should not forward test suite results when forwarder is disabled", () => {
@@ -225,7 +231,7 @@ describe("gearman forwarder", () => {
     gearmanForwarder.forwardSuiteResult(ctx.testSuites[0] as TestSuiteContext & FinishedMeasurable, ctx);
 
     //THEN
-    expect(logger.info).toHaveBeenCalledWith("Gearman forwarding disabled via properties.")
+    expect(logger.debug).toHaveBeenCalledWith("Gearman forwarding disabled via properties.")
   })
 
   it("should not forward test results when forwarder is disabled", () => {
@@ -241,7 +247,7 @@ describe("gearman forwarder", () => {
     gearmanForwarder.forward(ctx);
 
     //THEN
-    expect(logger.info).toHaveBeenCalledWith("Gearman forwarding disabled via properties.")
+    expect(logger.debug).toHaveBeenCalledWith("Gearman forwarding disabled via properties.")
   })
 
 });

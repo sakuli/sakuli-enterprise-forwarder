@@ -6,7 +6,7 @@ import { validateProps } from "@sakuli/result-builder-commons";
 import { dirExists } from "./dir-exists.function";
 import { promises as fs } from "fs";
 import { cwd } from "process";
-import {join} from "path";
+import { join } from "path";
 import { renderCheckmkProperties } from "./checkmk-properties-renderer.function";
 
 jest.mock("@sakuli/result-builder-commons", () => {
@@ -108,7 +108,7 @@ describe("check-mk forwarder", () => {
     await checkmkForwarder.forward(context);
 
     //THEN
-    expect(logger.info).toBeCalledWith(`CheckMK forwarding disabled via properties.`);
+    expect(logger.debug).toBeCalledWith(`CheckMK forwarding disabled via properties.`);
 
   });
 

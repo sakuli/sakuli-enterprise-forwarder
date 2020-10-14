@@ -1,13 +1,13 @@
-import {Forwarder, Project, TestExecutionContext} from "@sakuli/core";
-import {ProcessCheckResultRequest} from "./access/process-check-result-request.interface";
-import {createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger} from "@sakuli/commons";
-import {Icinga2Properties} from "./icinga2-properties.class";
-import {createIcinga2ApiAdapter} from "./access/create-icinga2-api-adapter.function";
-import {createPerformanceData} from "./data/create-performance-data.function";
-import {concat as flatten} from "./data/concat.function";
-import {createPluginOutput} from "./data/create-plugin-output.function";
-import {EOL} from "os";
-import {convertToUnixTimestamp, validateProps} from "@sakuli/result-builder-commons";
+import { Forwarder, Project, TestExecutionContext } from "@sakuli/core";
+import { ProcessCheckResultRequest } from "./access/process-check-result-request.interface";
+import { createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger } from "@sakuli/commons";
+import { Icinga2Properties } from "./icinga2-properties.class";
+import { createIcinga2ApiAdapter } from "./access/create-icinga2-api-adapter.function";
+import { createPerformanceData } from "./data/create-performance-data.function";
+import { concat as flatten } from "./data/concat.function";
+import { createPluginOutput } from "./data/create-plugin-output.function";
+import { EOL } from "os";
+import { convertToUnixTimestamp, validateProps } from "@sakuli/result-builder-commons";
 import { renderIcinga2Properties } from "./icinga2-properties-renderer.function";
 
 export class Icinga2Forwarder implements Forwarder {
@@ -40,7 +40,7 @@ export class Icinga2Forwarder implements Forwarder {
                     this.logInfo(`Forwarding check result to Icinga2.`);
                     return this.send(props, ctx);
                 } else {
-                    this.logInfo(`Icinga2 forwarding disabled via properties.`);
+                    this.logDebug(`Icinga2 forwarding disabled via properties.`);
                     return Promise.resolve();
                 }
             },
