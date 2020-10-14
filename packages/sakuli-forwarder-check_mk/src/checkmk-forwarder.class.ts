@@ -1,12 +1,12 @@
-import {Forwarder, Project, TestExecutionContext} from "@sakuli/core";
-import {createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger} from "@sakuli/commons";
-import {CheckMkForwarderProperties} from "./checkmk-forwarder-properties.class";
-import {promises as fs} from 'fs';
-import {dirExists} from "./dir-exists.function";
-import {join, resolve} from "path";
-import {CheckMkTestResultOutputBuilder} from "@sakuli/result-builder-checkmk";
-import {createSpoolFileName} from "./create-spool-file.function";
-import {validateProps} from "@sakuli/result-builder-commons";
+import { Forwarder, Project, TestExecutionContext } from "@sakuli/core";
+import { createPropertyObjectFactory, ifPresent, Maybe, SimpleLogger } from "@sakuli/commons";
+import { CheckMkForwarderProperties } from "./checkmk-forwarder-properties.class";
+import { promises as fs } from 'fs';
+import { dirExists } from "./dir-exists.function";
+import { join, resolve } from "path";
+import { CheckMkTestResultOutputBuilder } from "@sakuli/result-builder-checkmk";
+import { createSpoolFileName } from "./create-spool-file.function";
+import { validateProps } from "@sakuli/result-builder-commons";
 import { renderCheckmkProperties } from "./checkmk-properties-renderer.function";
 
 export class CheckMkForwarder implements Forwarder {
@@ -71,7 +71,7 @@ export class CheckMkForwarder implements Forwarder {
                         }
                     }
                 } else {
-                    this.logInfo(`CheckMK forwarding disabled via properties.`);
+                    this.logDebug(`CheckMK forwarding disabled via properties.`);
                 }
             },
             () => Promise.reject(Error('Could not create CheckMK Properties from Project'))

@@ -50,7 +50,7 @@ export class PrometheusForwarder implements Forwarder {
                 this.logInfo(`Forwarding check result to Prometheus.`);
                 await this.push(ctx, properties);
             }else{
-                this.logInfo(`Prometheus forwarding disabled via properties.`);
+                this.logDebug(`Prometheus forwarding disabled via properties.`);
             }
         },
         () => {

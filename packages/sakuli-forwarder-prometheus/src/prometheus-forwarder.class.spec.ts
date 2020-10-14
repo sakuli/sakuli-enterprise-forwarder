@@ -101,7 +101,7 @@ describe("prometheus forwarder", () => {
 
             //THEN
             await expect(forward).resolves.toBeUndefined();
-            expect(logger.info).toBeCalledWith("Prometheus forwarding disabled via properties.");
+            expect(logger.debug).toBeCalledWith("Prometheus forwarding disabled via properties.");
         });
 
         it("should resolve if props not available", async () => {

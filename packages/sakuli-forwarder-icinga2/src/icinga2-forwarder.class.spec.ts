@@ -1,8 +1,8 @@
-import {Project, TestExecutionContext} from "@sakuli/core";
-import {Icinga2Forwarder} from "./icinga2-forwarder.class";
-import {mockPartial} from 'sneer'
-import {SimpleLogger} from "@sakuli/commons";
-import {validateProps} from "@sakuli/result-builder-commons";
+import { Project, TestExecutionContext } from "@sakuli/core";
+import { Icinga2Forwarder } from "./icinga2-forwarder.class";
+import { mockPartial } from 'sneer'
+import { SimpleLogger } from "@sakuli/commons";
+import { validateProps } from "@sakuli/result-builder-commons";
 import { renderIcinga2Properties } from "./icinga2-properties-renderer.function";
 
 const processCheckResultMock = jest.fn();
@@ -106,7 +106,7 @@ describe('Icinga2Forwarder', () => {
         await forwarder.forward(ctx);
 
         //THEN
-        expect(logger.info).toHaveBeenCalledWith("Icinga2 forwarding disabled via properties.");
+        expect(logger.debug).toHaveBeenCalledWith("Icinga2 forwarding disabled via properties.");
 
     });
 
