@@ -54,7 +54,7 @@ export class Icinga2Forwarder implements Forwarder {
             const requestData: ProcessCheckResultRequest = {
                 "check_source": properties.checkSource,
                 "check_command": properties.checkCommand,
-                //For error states we use the critical state of icinga because the error state 4 does not exist
+                //For Sakuli error states we use the critical state in icinga because the error state 4 results in UNKNOWN
                 "exit_status": ctx.resultState === 4 ? 2 : ctx.resultState,
                 "plugin_output": ctx.testSuites.map(createPluginOutput).reduce(flatten, []).join(EOL),
                 "performance_data": ctx.testSuites.map(createPerformanceData).reduce(flatten, []),
