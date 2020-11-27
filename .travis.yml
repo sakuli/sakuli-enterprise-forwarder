@@ -1,27 +1,25 @@
+## clone the complete repository => preventing lerna versioning issues during next releases
+git:
+  depth: false
+
 os: linux
-dist: xenial
+dist: bionic
 
 language: node_js
 node_js:
-  - "10"
+  - lts/fermium
 cache: npm
-
-
 
 stages:
   - name: test
   - name: deploy
     if: ((branch = develop) OR (tag IS present)) AND type != pull_request
-  - name: trigger-image-build
-    if: (branch = develop) AND type != pull_request
 
 jobs:
   include:
     - stage: test
-      before_install:
+      install:
         - npm i -g lerna
-
-      install: true
 
       before_script:
         - export TZ=Europe/Vienna
@@ -32,10 +30,8 @@ jobs:
         - npm test -- --runInBand --ci --bail
 
     - stage: deploy
-      before_install:
+      install:
         - npm i -g lerna
-
-      install: true
 
       before_script:
         - export TZ=Europe/Vienna
@@ -58,12 +54,5 @@ jobs:
           script: npm i && npm run lerna:publish
           on:
             tags: true
-
-
-    - stage: trigger-image-build
-      os: linux
-      dist: bionic
-
-      install: true
-      script:
+      after_success:
         - "bash ./.build/trigger-image-build.sh"
