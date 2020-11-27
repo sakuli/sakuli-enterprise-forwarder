@@ -1,5 +1,5 @@
 import {readFileSync} from "fs";
-import uuid from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid'
 import {oneLineTrim} from "common-tags";
 
 const template = ({id, format, base64Screenshot}: { id: string, format: string, base64Screenshot: string }) => `
@@ -20,7 +20,7 @@ export const extractScreenshot = (error: any | { screenshot: string }) => {
             const screeShotFile = readFileSync(error.screenshot);
             const base64Screenshot = Buffer.from(screeShotFile).toString('base64');
             return oneLineTrim(template({
-                id: uuid(),
+                id: uuidv4(),
                 base64Screenshot,
                 format
             }))

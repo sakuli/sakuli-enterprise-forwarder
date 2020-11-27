@@ -22,12 +22,12 @@
   },
   "devDependencies": {
     "@types/common-tags": "1.8.0",
-    "@types/jest": "25.2.1",
-    "@types/luxon": "1.15.2",
-    "@types/node": "12.12.34",
-    "javascript-obfuscator": "0.27.4",
-    "jest": "25.2.7",
-    "ts-jest": "25.3.1",
+    "@types/jest": "26.0.15",
+    "@types/luxon": "1.25.0",
+    "@types/node": "14.14.10",
+    "javascript-obfuscator": "2.9.4",
+    "jest": "26.6.3",
+    "ts-jest": "26.4.4",
     "typescript": "3.8.3"
   },
   "scripts": {

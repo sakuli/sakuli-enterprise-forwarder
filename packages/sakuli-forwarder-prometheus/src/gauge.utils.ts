@@ -147,7 +147,7 @@ export function addActionError(testStepIndex: number,
 function registerGauge(gaugeDefinition: GaugeDefinition){
     verifyGaugeName(gaugeDefinition.name);
 
-    let gauge = register.getSingleMetric(gaugeDefinition.name) as Gauge;
+    let gauge = register.getSingleMetric(gaugeDefinition.name) as Gauge<string>;
     if(!gauge){
         gauge = registerNewGauge(gaugeDefinition);
     }
@@ -167,7 +167,7 @@ function verifyGaugeName(gaugeName: string){
 }
 
 function registerNewGauge(gaugeDefinition: GaugeDefinition) {
-    let gaugeConfiguration: GaugeConfiguration = {
+    let gaugeConfiguration: GaugeConfiguration<string> = {
         name: gaugeDefinition.name,
         help: gaugeDefinition.help
     };
