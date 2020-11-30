@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 - Bugfix: Icinga Mapping is not correct [(#81)](https://github.com/sakuli/sakuli-enterprise-forwarder/issues/81)
 - Enhancement: change log level of "* disabled by properties" to debug [(#77)](https://github.com/sakuli/sakuli-enterprise-forwarder/issues/77)
 - Bugfix: Close gearman connection properly [(#73)](https://github.com/sakuli/sakuli-enterprise-forwarder/issues/73)
+- Maintenance: Update dependencies [(#83)](https://github.com/sakuli/sakuli-enterprise-forwarder/issues/83)
 
 ## v2.4.0
 - Enhancement: Improve logging [(#338)](https://github.com/sakuli/sakuli/issues/338)

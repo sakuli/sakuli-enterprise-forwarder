@@ -13,19 +13,19 @@
     "@sakuli/core": "2.4.0",
     "@sakuli/result-builder-commons": "2.4.0",
     "common-tags": "1.8.0",
-    "dateformat": "3.0.3",
+    "dateformat": "4.0.0",
     "sneer": "1.0.1",
-    "uuid": "3.3.2"
+    "uuid": "8.3.1"
   },
   "devDependencies": {
     "@types/common-tags": "1.8.0",
-    "@types/dateformat": "3.0.0",
-    "@types/jest": "25.2.1",
-    "@types/uuid": "3.4.5",
-    "@types/node": "12.12.34",
-    "javascript-obfuscator": "0.27.4",
-    "jest": "25.2.7",
-    "ts-jest": "25.3.1",
+    "@types/dateformat": "3.0.1",
+    "@types/jest": "26.0.15",
+    "@types/uuid": "8.3.0",
+    "@types/node": "14.14.10",
+    "javascript-obfuscator": "2.9.4",
+    "jest": "26.6.3",
+    "ts-jest": "26.4.4",
     "typescript": "3.8.3"
   },
   "scripts": {
