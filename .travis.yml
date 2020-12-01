@@ -54,5 +54,5 @@ jobs:
           script: npm i && npm run lerna:publish
           on:
             tags: true
-      after_success:
+      after_deploy:
         - "bash ./.build/trigger-image-build.sh"
