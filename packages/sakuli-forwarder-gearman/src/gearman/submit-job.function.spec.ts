@@ -69,10 +69,11 @@ describe("submit gearman job", () => {
     "error"
   ])("should close connection and reject when %s", async (event: string) => {
     // GIVEN
+    const argsObject = {handle: `gearman handler ${event}`};
     let emitter = new EventEmitter();
     gearmanData = mockPartial<GearmanData>({
       connection: mockPartial<GearmanClient>({
-        connect: jest.fn(() => {emitter.emit(event)}),
+        connect: jest.fn(() => {emitter.emit(event, argsObject)}),
         on: jest.fn((event: string, cb: Function) => { emitter.on(event, cb as any)}),
         close: jest.fn()
       })
@@ -83,6 +84,7 @@ describe("submit gearman job", () => {
 
     // THEN
     await expect(submittedJob).rejects.toBeUndefined();
+    expect(logger.debug).toHaveBeenCalledWith(`Received Gearman event ${event} with following data:`, argsObject);
     expect(gearmanData.connection.close).toHaveBeenCalled();
   });
 
