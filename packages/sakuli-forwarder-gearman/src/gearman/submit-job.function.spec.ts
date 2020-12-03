@@ -84,7 +84,7 @@ describe("submit gearman job", () => {
 
     // THEN
     await expect(submittedJob).rejects.toBeUndefined();
-    expect(logger.debug).toHaveBeenCalledWith(`Received Gearman event ${event} with following data:`, argsObject);
+    expect(logger.error).toHaveBeenCalledWith(`Received Gearman event ${event} with following data:`, argsObject);
     expect(gearmanData.connection.close).toHaveBeenCalled();
   });
 
