@@ -21,7 +21,7 @@ export async function submitJob(data: GearmanData, logger: Maybe<SimpleLogger>):
             "error"
         ].forEach(evt => data.connection.on(evt, (args: any) => {
             ifPresent(logger, (log) => {
-                log.debug(`Received Gearman event: ${evt} - ${args ? args : ""}`);
+                log.error(`Received Gearman event ${evt} with following data:`, args);
             });
             finish(reject);
         }));
@@ -56,10 +56,11 @@ export async function submitJob(data: GearmanData, logger: Maybe<SimpleLogger>):
                 });
             })
         } catch (err) {
+            const errorMessage = 'Failed to connect to Gearman server.'
             ifPresent(logger, (log) => {
-                log.error('Failed to connect to Gearman server.', err);
+                log.error(errorMessage, err);
             });
-            reject('Failed to connect to Gearman server.');
+            reject(errorMessage);
         }
     })
 }

@@ -36,22 +36,21 @@ jobs:
       before_script:
         - export TZ=Europe/Vienna
 
-      script:
-        - travis_wait npm ci
-        - lerna run build:release > /dev/null 2>&1
-
+      script: true
       before_deploy:
         - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
+        - travis_wait npm ci
+        - lerna run build:release > /dev/null 2>&1
       deploy:
         - provider: script
-          skip_cleanup: false
-          script: npm i && npm run lerna:publish-next
+          skip_cleanup: true
+          script: npm run lerna:publish-next
           on:
             branch: develop
 
         - provider: script
-          skip_cleanup: false
-          script: npm i && npm run lerna:publish
+          skip_cleanup: true
+          script: npm run lerna:publish
           on:
             tags: true
       after_deploy:
