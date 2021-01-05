@@ -1,0 +1,39 @@
+name: release-version
+
+on:
+  push:
+    tags:
+      - v*.*.*
+
+jobs:
+  release-version:
+    name: release-version
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Set Timezone
+        uses: szenius/set-timezone@v1.0
+        with:
+          timezoneLinux: "Europe/Vienna"
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: "0"
+      - run: git fetch origin +refs/tags/*:refs/tags/*
+      - name: Use Node.js 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+          registry-url: https://registry.npmjs.org/
+      - name: Set SAKULI_VERSION according to tag
+        run: echo "SAKULI_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
+      - run: npm install
+      - run: npx lerna version --no-git-tag-version --no-push -y --exact ${SAKULI_VERSION}
+      - run: npm run lerna:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: trigger docker image builds
+        uses: mvasigh/dispatch-action@1.1.6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repo: sakuli-docker
+          owner: sakulidev
+          event_type: build-latest
