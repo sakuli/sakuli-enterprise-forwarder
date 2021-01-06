@@ -1,7 +1,7 @@
 tsconfig.json
-.travis.yml
 .vscode
 .idea
 tsconfig.tsbuildinfo
 lerna-debug.log
 scripts
+.github

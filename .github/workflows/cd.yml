@@ -1,0 +1,35 @@
+name: cd
+
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  release-next:
+    name: release-next
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Set Timezone
+        uses: szenius/set-timezone@v1.0
+        with:
+          timezoneLinux: "Europe/Vienna"
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: "0"
+      - run: git fetch origin +refs/tags/*:refs/tags/*
+      - name: Use Node.js 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+          registry-url: https://registry.npmjs.org/
+      - run: npm install
+      - run: npm run lerna:publish-next
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: trigger docker image builds
+        uses: mvasigh/dispatch-action@1.1.6
+        with:
+          token: ${{ secrets.REPOSITORY_TOKEN }}
+          repo: sakuli-docker
+          owner: sakulidev
+          event_type: build-latest
