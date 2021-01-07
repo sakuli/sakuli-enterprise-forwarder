@@ -10,7 +10,7 @@ interface PushgatewayService {
     push: (properties: PrometheusForwarderProperties) => Promise<PushGatewayResponse>
 }
 
-function handlePushGatewayResponse (res: (value?: PushGatewayResponse) => void, rej: (reason?: any) => void) {
+function handlePushGatewayResponse (res: (value: (PromiseLike<PushGatewayResponse> | PushGatewayResponse))=> void, rej: (reason?: any) => void) {
     return (err: Error | undefined, resp: any, body: any) => {
         if (err) {
             rej(err);
@@ -28,7 +28,7 @@ export function pushgatewayService(): PushgatewayService{
             gateway.pushAdd({
                     jobName: properties.apiJob
                 },
-                handlePushGatewayResponse(res, rej));
+              handlePushGatewayResponse(res, rej));
         });
     }
 
