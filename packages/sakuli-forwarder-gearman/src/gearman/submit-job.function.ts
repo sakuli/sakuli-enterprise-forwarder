@@ -9,9 +9,9 @@ export interface GearmanData {
 
 export async function submitJob(data: GearmanData, logger: Maybe<SimpleLogger>): Promise<any> {
     return new Promise((resolve, reject) => {
-        const finish = (fn: () => void) => {
+        const finish = (fn: (value: unknown) => void) => {
             data.connection.close();
-            fn();
+            fn(undefined);
         };
 
         [
