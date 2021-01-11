@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Bugfix: Close gearman connection properly [(#73)](https://github.com/sakuli/sakuli-enterprise-forwarder/issues/73)
 - Maintenance: Update dependencies [(#83)](https://github.com/sakuli/sakuli-enterprise-forwarder/issues/83)
 - Enhancement: forwarder-gearman: Improve Gearman queue log output [(#26)](https://github.com/sakuli/sakuli-enterprise-forwarder/issues/26)
+- Maintenance: Add node matrix builds again [(#93)](https://github.com/sakuli/sakuli-enterprise-forwarder/issues/93)
 
 ## v2.4.0
 - Enhancement: Improve logging [(#338)](https://github.com/sakuli/sakuli/issues/338)
