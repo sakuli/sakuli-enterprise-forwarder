@@ -11,6 +11,9 @@ on:
 jobs:
   test:
     name: test
+    strategy:
+      matrix:
+        node: [ 10, 12, 14 ]
     runs-on: ubuntu-20.04
     steps:
       - name: Set Timezone
@@ -21,7 +24,7 @@ jobs:
       - name: Use Node.js 14
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: ${{ matrix.node }}
       - run: npm install
       - run: npx lerna run build
       - run: npm t -- --runInBand --ci --bail
