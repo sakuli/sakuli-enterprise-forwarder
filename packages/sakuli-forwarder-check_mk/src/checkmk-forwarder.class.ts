@@ -19,29 +19,13 @@ export class CheckMkForwarder implements Forwarder {
     ) {
     }
 
-    logDebug(message: string, ...data: any[]) {
-        ifPresent(this.logger, log => log.debug(message, ...data));
-    }
-
-    logInfo(message: string, ...data: any[]) {
-        ifPresent(this.logger, log => log.info(message, ...data));
-    }
-
-    logWarn(message: string, ...data: any[]) {
-        ifPresent(this.logger, log => log.warn(message, ...data));
-    }
-
-    logError(message: string, ...data: any[]) {
-        ifPresent(this.logger, log => log.error(message, ...data));
-    }
-
     async setup(project: Project, logger: SimpleLogger): Promise<void> {
         this.properties = createPropertyObjectFactory(project)(CheckMkForwarderProperties);
         if(this.properties.enabled){
             await validateProps(this.properties);
         }
         this.logger = logger;
-        ifPresent(this.properties, (props) => this.logDebug(renderCheckmkProperties(props)));
+        ifPresent(this.properties, (props) => this.logger?.debug(renderCheckmkProperties(props)));
     }
 
     async forward(ctx: TestExecutionContext): Promise<any> {
@@ -54,7 +38,7 @@ export class CheckMkForwarder implements Forwarder {
                         });
                         const fileName = createSpoolFileName(testContextEntity, props);
                         const path = props.spoolDir;
-                        this.logInfo(`Forwarding final result to checkmk via spool file '${fileName}' in '${path}'.`);
+                        this.logger?.info(`Forwarding final result to checkmk via spool file '${fileName}' in '${path}'.`);
                         const spoolFile = resolve(join(path, fileName));
                         if (await dirExists(path)) {
                             try {
@@ -64,14 +48,14 @@ export class CheckMkForwarder implements Forwarder {
                                     {flag: 'w'}
                                 );
                             } catch (e) {
-                                this.logError(`Failed to write to '${spoolFile}'. Reason:`, e);
+                                this.logger?.error(`Failed to write to '${spoolFile}'. Reason:`, e);
                             }
                         } else {
-                            this.logWarn(`spool directory '${path}' does not exists, skipping checkmk forwarding.`);
+                            this.logger?.warn(`spool directory '${path}' does not exists, skipping checkmk forwarding.`);
                         }
                     }
                 } else {
-                    this.logDebug(`CheckMK forwarding disabled via properties.`);
+                    this.logger?.debug(`CheckMK forwarding disabled via properties.`);
                 }
             },
             () => Promise.reject(Error('Could not create CheckMK Properties from Project'))

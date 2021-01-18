@@ -21,26 +21,16 @@ export class Icinga2Forwarder implements Forwarder {
         await validateProps(this.properties);
         }
         this.logger = logger;
-        ifPresent(this.properties, (props) => this.logDebug(renderIcinga2Properties(props)));
-    }
-
-    logDebug(message: string, ...data: any[]) {
-        ifPresent(this.logger, log => log.debug(message, ...data));
-    }
-    logInfo(message: string, ...data: any[]) {
-        ifPresent(this.logger, log => log.info(message, ...data));
-    }
-    logError(message: string, ...data: any[]) {
-        ifPresent(this.logger, log => log.error(message, ...data));
+        ifPresent(this.properties, (props) => this.logger?.debug(renderIcinga2Properties(props)));
     }
 
     async forward(ctx: TestExecutionContext): Promise<any> {
         await ifPresent(this.properties, props => {
                 if (props.enabled) {
-                    this.logInfo(`Forwarding check result to Icinga2.`);
+                    this.logger?.info(`Forwarding check result to Icinga2.`);
                     return this.send(props, ctx);
                 } else {
-                    this.logDebug(`Icinga2 forwarding disabled via properties.`);
+                    this.logger?.debug(`Icinga2 forwarding disabled via properties.`);
                     return Promise.resolve();
                 }
             },
@@ -48,7 +38,7 @@ export class Icinga2Forwarder implements Forwarder {
     }
 
     async send(properties: Icinga2Properties, ctx: TestExecutionContext) {
-        this.logDebug(`Creating API client.`);
+        this.logger?.debug(`Creating API client.`);
         try {
             const api = await createIcinga2ApiAdapter(properties, this.logger);
             const requestData: ProcessCheckResultRequest = {
@@ -63,7 +53,7 @@ export class Icinga2Forwarder implements Forwarder {
             };
             return await api.processCheckResult(requestData);
         } catch (e) {
-            this.logError(e);
+            this.logger?.error(e);
             return await Promise.reject(e);
         }
     }
