@@ -1,5 +1,5 @@
-import {GearmanClient} from "gearman";
-import {ifPresent, Maybe, SimpleLogger} from "@sakuli/commons";
+import { GearmanClient } from "gearman";
+import { Maybe, SimpleLogger } from "@sakuli/commons";
 
 export interface GearmanData {
     connection: GearmanClient;
@@ -20,46 +20,32 @@ export async function submitJob(data: GearmanData, logger: Maybe<SimpleLogger>):
             "timeout",
             "error"
         ].forEach(evt => data.connection.on(evt, (args: any) => {
-            ifPresent(logger, (log) => {
-                log.error(`Received Gearman event ${evt} with following data:`, args);
-            });
+            logger?.error(`Received Gearman event ${evt} with following data:`, args);
             finish(reject);
         }));
 
         data.connection.on("WORK_COMPLETE", () => {
-            ifPresent(logger, (log) => {
-                log.debug(`Received Gearman event: 'WORK_COMPLETE'... Closing connection!`);
-            });
+            logger?.debug(`Received Gearman event: 'WORK_COMPLETE'... Closing connection!`);
             finish(resolve);
         });
         data.connection.on('JOB_CREATED', id => {
-            ifPresent(logger, (log) => {
-                log.debug('Created JOB: ' + id)
-            });
+        logger?.debug('Created JOB: ' + id)
         });
 
         // connect to the gearman server
         try {
             data.connection.connect(() => {
-                ifPresent(logger, (log) => {
-                    log.debug('Connected to gearman host...');
-                });
+                logger?.debug('Connected to gearman host...');
                 data.connection.setOption();
-                ifPresent(logger, (log) => {
-                    log.trace(`Submitting job to queue '${data.checkQueue}'`);
-                });
+                logger?.trace(`Submitting job to queue '${data.checkQueue}'`);
                 data.connection.submitJob(data.checkQueue, data.payload, {
                     encoding: 'utf8'
                 });
-                ifPresent(logger, (log) => {
-                    log.trace('Job submitted...');
-                });
+                logger?.trace('Job submitted...');
             })
         } catch (err) {
             const errorMessage = 'Failed to connect to Gearman server.'
-            ifPresent(logger, (log) => {
-                log.error(errorMessage, err);
-            });
+            logger?.error(errorMessage, err);
             reject(errorMessage);
         }
     })

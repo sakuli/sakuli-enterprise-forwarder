@@ -1,7 +1,7 @@
-import {Icinga2Properties} from "../icinga2-properties.class";
+import { Icinga2Properties } from "../icinga2-properties.class";
 import axios from 'axios';
-import {Agent} from "https";
-import {ifPresent, Maybe, SimpleLogger} from "@sakuli/commons";
+import { Agent } from "https";
+import { Maybe, SimpleLogger } from "@sakuli/commons";
 
 /**
  * Validates the properties object and returns a new AxiosInstance if it is valid
@@ -10,10 +10,8 @@ import {ifPresent, Maybe, SimpleLogger} from "@sakuli/commons";
  * @param logger
  */
 export const createAxiosClientFromProperties = async (properties: Icinga2Properties, logger: Maybe<SimpleLogger>) => {
-    ifPresent(logger,
-        (log) => log.debug(`Forwarding check result to Icinga2 host at ${properties.hostBaseUrl}.`));
-    ifPresent(logger,
-        (log) => log.debug(`Username: ${properties.apiUserName}, password: ${(properties.apiPassword.length) ? '***' : 'PASSWORD EMPTY, CHECK PROPERTIES'}`));
+    logger?.debug(`Forwarding check result to Icinga2 host at ${properties.hostBaseUrl}.`);
+    logger?.debug(`Username: ${properties.apiUserName}, password: ${(properties.apiPassword.length) ? '***' : 'PASSWORD EMPTY, CHECK PROPERTIES'}`);
     return axios.create({
         baseURL: properties.hostBaseUrl,
         headers: {
