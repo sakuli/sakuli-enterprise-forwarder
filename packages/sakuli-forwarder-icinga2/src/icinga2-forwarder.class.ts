@@ -21,7 +21,7 @@ export class Icinga2Forwarder implements Forwarder {
         await validateProps(this.properties);
         }
         this.logger = logger;
-        ifPresent(this.properties, (props) => this.logger?.debug(renderIcinga2Properties(props)));
+        ifPresent(this.properties, (props) => logger.debug(renderIcinga2Properties(props)));
     }
 
     async forward(ctx: TestExecutionContext): Promise<any> {

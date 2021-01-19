@@ -29,7 +29,7 @@ export class PrometheusForwarder implements Forwarder {
             await validateProps(this.properties);
         }
         this.logger = logger;
-        ifPresent(this.properties, (props) => {this.logger?.debug(renderPrometheusProperties(props))});
+        ifPresent(this.properties, (props) => {logger.debug(renderPrometheusProperties(props))});
     }
 
     async forward(ctx: TestExecutionContext): Promise<any> {
