@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Upcoming Release
+## v2.5.0
 
 - Bugfix: Icinga Mapping is not correct [(#81)](https://github.com/sakuli/sakuli-enterprise-forwarder/issues/81)
 - Enhancement: change log level of "* disabled by properties" to debug [(#77)](https://github.com/sakuli/sakuli-enterprise-forwarder/issues/77)

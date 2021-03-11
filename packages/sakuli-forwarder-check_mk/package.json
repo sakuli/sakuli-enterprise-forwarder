@@ -1,6 +1,6 @@
 {
   "name": "@sakuli/forwarder-checkmk",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "check_mk forwarder for Sakuli v2+",
   "keywords": [
     "monitoring",
@@ -19,11 +19,11 @@
     "prepublishOnly": "npm run build:release && npm test"
   },
   "dependencies": {
-    "@sakuli/commons": "2.4.0",
-    "@sakuli/core": "2.4.0",
-    "@sakuli/result-builder-checkmk": "2.4.0",
-    "@sakuli/result-builder-commons": "2.4.0",
-    "axios": "0.21.0",
+    "@sakuli/commons": "2.5.0",
+    "@sakuli/core": "2.5.0",
+    "@sakuli/result-builder-checkmk": "2.5.0",
+    "@sakuli/result-builder-commons": "2.5.0",
+    "axios": "0.21.1",
     "class-validator": "0.12.2",
     "common-tags": "1.8.0"
   },
