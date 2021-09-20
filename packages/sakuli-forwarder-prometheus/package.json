@@ -22,7 +22,7 @@
     "@sakuli/commons": "2.5.0",
     "@sakuli/core": "2.5.0",
     "@sakuli/result-builder-commons": "2.5.0",
-    "axios": "0.21.1",
+    "axios": "0.21.4",
     "class-validator": "0.12.2",
     "common-tags": "1.8.0",
     "prom-client": "12.0.0"
