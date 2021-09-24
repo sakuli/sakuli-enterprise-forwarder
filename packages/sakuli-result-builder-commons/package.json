@@ -1,6 +1,6 @@
 {
   "name": "@sakuli/result-builder-commons",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "Common code for result builders",
   "author": "Simon Hofmann <simon.hofmann@consol.de>",
   "main": "dist/index.js",
@@ -14,8 +14,8 @@
     "prepublishOnly": "npm run build:release && npm test"
   },
   "dependencies": {
-    "@sakuli/commons": "2.5.0",
-    "@sakuli/core": "2.5.0",
+    "@sakuli/commons": "2.5.1",
+    "@sakuli/core": "2.5.1",
     "class-validator": "0.12.2",
     "common-tags": "1.8.0",
     "dateformat": "4.0.0",

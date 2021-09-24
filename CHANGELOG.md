@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.5.1
+
+- Security fixes
+
 ## v2.5.0
 
 - Bugfix: Icinga Mapping is not correct [(#81)](https://github.com/sakuli/sakuli-enterprise-forwarder/issues/81)
