@@ -16,9 +16,6 @@ RELEASE_VERSION=${1}
 [[ -z "${RELEASE_VERSION}" ]] && echo "ERROR: RELEASE_VERSION is empty" && help && exit 1
 [[ ! "${RELEASE_VERSION}" =~ $semver_pattern ]] && echo "ERROR: RELEASE_VERSION does not match the SemVer specification" && help && exit 1
 
-
-pushd ..
-
 git fetch
 printf "\n%s\n" "Create new branch release/${RELEASE_VERSION}"
 git checkout -b release/${RELEASE_VERSION} origin/develop
@@ -61,5 +58,3 @@ printf "\n\n%s\n" "Verify successful builds on GitHub Actions before continuing.
 echo "To release the sakuli-enterprise-forwarder use following commands:"
 printf "%s\n" "git tag -a v${RELEASE_VERSION} -m 'Release ${RELEASE_VERSION}'"
 echo "git push --tags"
-
-popd
