@@ -11,12 +11,9 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "obfuscate": "javascript-obfuscator ./dist --output ./out --config ../../scripts/obfuscate.js",
-    "copy": "node ../../scripts/move-files.js ./out ./dist",
     "build": "tsc",
-    "build:release": "tsc && npm run obfuscate && npm run copy",
     "test": "jest",
-    "prepublishOnly": "npm run build:release && npm test"
+    "prepublishOnly": "npm run build && npm test"
   },
   "dependencies": {
     "@sakuli/commons": "2.5.1",
@@ -31,7 +28,6 @@
     "@types/common-tags": "1.8.0",
     "@types/jest": "27.0.1",
     "@types/node": "14.14.10",
-    "javascript-obfuscator": "2.9.4",
     "jest": "27.2.0",
     "sneer": "1.0.1",
     "ts-jest": "27.0.5",

@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## next
+
+- Open Source [(#113)](https://github.com/sakuli/sakuli-enterprise-forwarder/issues/113)
+
 ## v2.5.1
 
 - Security fixes
