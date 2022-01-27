@@ -14,7 +14,7 @@
     "@sakuli/core": "2.5.1",
     "@sakuli/result-builder-commons": "2.5.1",
     "common-tags": "1.8.2",
-    "dateformat": "5.0.2",
+    "dateformat": "4.6.3",
     "sneer": "1.0.1",
     "uuid": "8.3.2"
   },
