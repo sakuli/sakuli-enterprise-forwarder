@@ -1,6 +1,6 @@
 {
   "name": "@sakuli/result-builder-omd",
-  "version": "2.5.1",
+  "version": "3.0.0",
   "description": "OMD check result builder for Sakuli v2+",
   "keywords": [
     "monitoring",
@@ -10,9 +10,9 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "dependencies": {
-    "@sakuli/commons": "2.5.1",
-    "@sakuli/core": "2.5.1",
-    "@sakuli/result-builder-commons": "2.5.1",
+    "@sakuli/commons": "3.0.0",
+    "@sakuli/core": "3.0.0",
+    "@sakuli/result-builder-commons": "3.0.0",
     "common-tags": "1.8.2",
     "dateformat": "4.6.3",
     "sneer": "1.0.1",

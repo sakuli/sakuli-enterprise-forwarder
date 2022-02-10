@@ -1,6 +1,6 @@
 {
   "name": "@sakuli/forwarder-icinga2",
-  "version": "2.5.1",
+  "version": "3.0.0",
   "description": "Inciga2 forwarder for Sakuli v2+",
   "keywords": [
     "monitoring",
@@ -10,9 +10,9 @@
   "author": "Tim Keiner <keiner.tim@gmail.com>",
   "main": "dist/index.js",
   "dependencies": {
-    "@sakuli/commons": "2.5.1",
-    "@sakuli/core": "2.5.1",
-    "@sakuli/result-builder-commons": "2.5.1",
+    "@sakuli/commons": "3.0.0",
+    "@sakuli/core": "3.0.0",
+    "@sakuli/result-builder-commons": "3.0.0",
     "axios": "0.25.0",
     "class-validator": "0.13.2",
     "common-tags": "1.8.2"
@@ -21,6 +21,7 @@
     "@types/common-tags": "1.8.1",
     "@types/jest": "27.4.0",
     "@types/node": "17.0.17",
+    "@types/validator": "13.7.1",
     "jest": "27.5.1",
     "sneer": "1.0.1",
     "ts-jest": "27.1.3",
