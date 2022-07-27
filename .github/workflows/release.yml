@@ -19,7 +19,7 @@ jobs:
           fetch-depth: "0"
       - run: git fetch origin +refs/tags/*:refs/tags/*
       - name: Use Node.js 16
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.4.1
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
