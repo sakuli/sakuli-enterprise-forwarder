@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## next
 
+- Chore: removed node 12 (EOL)
+
+
 ## 3.0.0
 
 - Open Source [(#113)](https://github.com/sakuli/sakuli-enterprise-forwarder/issues/113)
