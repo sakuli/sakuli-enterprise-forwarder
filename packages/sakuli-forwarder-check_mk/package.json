@@ -21,7 +21,7 @@
     "@sakuli/result-builder-checkmk": "3.0.0",
     "@sakuli/result-builder-commons": "3.0.0",
     "axios": "0.25.0",
-    "class-validator": "0.13.2",
+    "class-validator": "0.14.0",
     "common-tags": "1.8.2"
   },
   "devDependencies": {
